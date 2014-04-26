@@ -2,6 +2,7 @@
 
 #include "state.hxx"
 #include "world.hxx"
+#include "button.hxx"
 
 class GameState : public State {
 public:
@@ -17,5 +18,6 @@ private:
     World world;
 
     map<string, int> collected;
+    vector<Button> gui;
 };
 

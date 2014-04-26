@@ -19,9 +19,17 @@ TilePtr create_tile(TileType type, int x, int y) {
 }
 
 // Tile class
-Tile::Tile(sf::Sprite s, int x, int y) : spr(s), pos(x, y) {
+Tile::Tile(sf::Sprite s, int x, int y) : spr(s), pos(x, y), is_marked(false) {
     spr.setPosition(pos.x, pos.y);
-    is_marked = false;
+}
+Tile::Tile(const Tile &t) : spr(t.spr), pos(t.pos), is_marked(t.is_marked) {
+
+}
+Tile &Tile::operator = (const Tile &t) {
+    spr = t.spr;
+    pos = t.pos;
+    is_marked = t.is_marked;
+    return *this;
 }
 void Tile::draw(sf::RenderWindow &w) {
     if (is_marked) {
@@ -33,7 +41,15 @@ void Tile::draw(sf::RenderWindow &w) {
     w.draw(spr);
 }
 
-void Tile::set_type(TileType tile) {
+void Tile::mark() {
+    is_marked = true;
+}
+bool Tile::is_walkable() {
+    return !is_marked;
+}
 
+void Tile::set_type(TileType type) {
+    spr = get_sprite(type);
+    spr.setPosition(pos.x, pos.y);
 }
 

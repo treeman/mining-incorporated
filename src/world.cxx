@@ -50,20 +50,38 @@ void World::build(sf::Vector2i wp) {
     auto tpos = world2tile(wp.x, wp.y);
     TilePtr tile = grid.at(tpos.y).at(tpos.x);
     // TODO better building...
-    printf("click at %d %d\n", wp.x, wp.y);
+    //printf("click at %d %d\n", wp.x, wp.y);
     //TilePtr tile = get_tile(wp);
-    tile->is_marked =  true;
+    //tile->is_marked =  true;
 
     // Assign task to worker
     WorkerPtr worker = choose_free_worker();
     auto path = pathfind(worker->tile_pos, tpos);
     worker->set_path(path);
+    tile->mark();
+}
+void World::remove(sf::Vector2i wp) {
+    if (!in_world(wp)) return;
+
+    auto tpos = world2tile(wp.x, wp.y);
+    TilePtr tile = grid.at(tpos.y).at(tpos.x);
+    //printf("del at %d %d\n", wp.x, wp.y);
+    tile->mark();
 }
 
 void World::handle_input(const sf::Event &e) {
     switch (e.type) {
         case sf::Event::MouseButtonPressed:
-            build(window2world(e.mouseButton.x, e.mouseButton.y));
+            //printf("button: %d\n", e.mouseButton.button);
+            switch (e.mouseButton.button) {
+                case sf::Mouse::Button::Left:
+                    build(window2world(e.mouseButton.x, e.mouseButton.y));
+                    break;
+                case sf::Mouse::Button::Right:
+                    remove(window2world(e.mouseButton.x, e.mouseButton.y));
+                    break;
+                default: break;
+            }
             break;
         default: break;
     }
@@ -104,7 +122,7 @@ void World::new_worker() {
 }
 
 WorkerPtr World::choose_free_worker() {
-    // TODO select worker with smallest task queue
+    // TODO select worker with smallest task queue and closest
     return workers.front();
 }
 
@@ -112,6 +130,7 @@ int manhattan(int x1, int y1, int x2, int y2) {
     return abs(x1 - x2) + abs(y1 - y2);
 }
 
+// TODO levels??`
 vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t) {
     const int rows = grid.size(), cols = grid[0].size();
 
@@ -140,9 +159,10 @@ vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t) {
 
     while (!pq.empty()) {
         State s = pq.top(); pq.pop();
-        //printf("  cost %d at %d,%d (h %d) tot: %d\n", s.dist, s.x, s.y, s.h, s.dist + s.h);
 
         if (s.dist > dist[s.y][s.x]) continue;
+        //printf("  cost %d at %d,%d (h %d) tot: %d\n", s.dist, s.x, s.y, s.h, s.dist + s.h);
+        //printf("  %s\n", grid[s.y][s.x]->is_walkable() ? "ok" : "NO");
 
         // Goal check
         if (s.x == t.x && s.y == t.y) break;
@@ -150,6 +170,10 @@ vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t) {
         for (int d = 0; d < 4; ++d) {
             int nx = s.x + dx[d], ny = s.y + dy[d];
             if (nx < 0 || nx >= cols || ny < 0 || ny >= rows) continue;
+            if (!grid.at(ny).at(nx)->is_walkable()) {
+                //printf("skip %d %d\n", nx, ny);
+                continue;
+            }
 
             int next_cost = 1 + dist[s.y][s.x];
             if (next_cost < dist[ny][nx]) {
@@ -162,6 +186,13 @@ vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t) {
 
     // Backtrack for path and transform to world coordinates.
     vector<sf::Vector2i> res;
+
+    //printf("Cost %d\n", dist[t.y][t.x]);
+
+    // Impossible!
+    if (dist[t.y][t.x] == numeric_limits<int>::max())
+        return res;
+
     sf::Vector2i p(t);
     while (p.x != -1) {
         res.push_back(tile2world(p));

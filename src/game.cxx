@@ -13,10 +13,19 @@ GameState::GameState(sf::RenderWindow &w) : State(w), world(w) {
     set<string> vals = { "coal", "iron", "copper", "gold", "silver", "diamond", "aluminium" };
     for (string x : vals)
         collected[x] = 0;
+
+    gui.push_back(Button([&]() mutable { printf("click!\n"); }, 100, 100, "Rooms"));
 }
 
 void GameState::handle_input(const sf::Event &e) {
     switch (e.type) {
+        case sf::Event::MouseButtonPressed:
+            //printf("button: %d\n", e.mouseButton.button);
+            if (e.mouseButton.button == sf::Mouse::Button::Left) {
+                for (auto b : gui)
+                    b.check_click(sf::Vector2i(e.mouseButton.x, e.mouseButton.y));
+            }
+            break;
         default: break;
     }
     world.handle_input(e);
@@ -60,5 +69,8 @@ void GameState::draw() {
 
         curry += h;
     }
+
+    for (auto b : gui)
+        b.draw(window);
 }
 

@@ -22,12 +22,12 @@ public:
     bool in_world(int x, int y);
 
     void build(sf::Vector2i wp);
+    void remove(sf::Vector2i wp);
 
     void handle_input(const sf::Event &e);
     void update(const sf::Time &dt);
     void draw();
 
-    //TilePtr get_tile(sf::Vector2i wp);
     void new_worker();
     WorkerPtr choose_free_worker();
     vector<sf::Vector2i> pathfind(sf::Vector2i s, sf::Vector2i t);
