@@ -19,3 +19,5 @@ sf::Color make_color(int hex);
 
 float len(sf::Vector2f v);
 sf::Vector2f normalize(sf::Vector2f v);
+
+sf::ConvexShape make_rect(const sf::FloatRect &rect);

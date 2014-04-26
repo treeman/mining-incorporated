@@ -6,28 +6,25 @@ Rooms
 -----
 
 * Baracks
-* Kitchen (?)
 * Canteen/Mass hall
-* Infirmary
-* Morgue (?)
 * Office
 * Laboratory/Research
-* Training room (?)
 * Storage
 * Deliveries
-* Garbage (?)
+* Corridor
 
 Workers
 -------
 
 If time
 
-* Exhaustion level
-* Happiness level
-* Hygien
+* Exhaustion level - maybe
+* Hunger - maybe
+* Happiness level - nope
+* Hygien - nope
 
-* Worker minions
-* Scientists
+* Worker minions - yes!
+* Scientists - nope
 
 Ores/Minerals/Things to collect
 
@@ -44,15 +41,8 @@ Ores/Minerals/Things to collect
 * Uranium
 * Etherium
 
-1. Locate (?)
+1. Locate (?) - maybe have a hover over effect on level (estimated X ores...)
 2. Mine
 3. Refine      ore -> ingot
 4. Enhance (?) diamonds -> jewelry
-
-Todo
-====
-
-* h for help screen
-* worker movement
-* level system
 

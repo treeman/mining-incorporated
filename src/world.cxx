@@ -16,7 +16,7 @@ World::World(sf::RenderWindow &_w) :
     grid.assign(num_tiles_high, vector<TilePtr>(num_tiles_wide));
     for (int i = 0; i < num_tiles_high; ++i) {
         for (int j = 0; j < num_tiles_wide; ++j) {
-            grid[i][j] = create_tile(StoneTile, j * tile_width, i * tile_width);
+            grid[i][j] = create_tile(Demolish, j * tile_width, i * tile_width);
         }
     }
 
@@ -44,49 +44,96 @@ bool World::in_world(int x, int y) {
     return 0 <= x && x <= world_width && 0 <= y && y <= world_height;
 }
 
-void World::build(sf::Vector2i wp) {
+bool World::is_tile(int x, int y) {
+    return 0 <= x && x < (int)grid[0].size()
+        && 0 <= y && y < (int)grid.size();
+}
+
+void World::build(sf::Vector2i wp, BuildType type) {
     if (!in_world(wp)) return;
 
     auto tpos = world2tile(wp.x, wp.y);
-    TilePtr tile = grid.at(tpos.y).at(tpos.x);
-    // TODO better building...
-    //printf("click at %d %d\n", wp.x, wp.y);
-    //TilePtr tile = get_tile(wp);
-    //tile->is_marked =  true;
-
-    // Assign task to worker
-    WorkerPtr worker = choose_free_worker();
-    auto path = pathfind(worker->tile_pos, tpos);
-    worker->set_path(path);
-    tile->mark();
+    build(tpos.x, tpos.y, type);
 }
 void World::remove(sf::Vector2i wp) {
     if (!in_world(wp)) return;
 
     auto tpos = world2tile(wp.x, wp.y);
-    TilePtr tile = grid.at(tpos.y).at(tpos.x);
-    //printf("del at %d %d\n", wp.x, wp.y);
-    tile->mark();
+    remove(tpos.x, tpos.y);
 }
 
-void World::handle_input(const sf::Event &e) {
-    switch (e.type) {
-        case sf::Event::MouseButtonPressed:
-            //printf("button: %d\n", e.mouseButton.button);
-            switch (e.mouseButton.button) {
-                case sf::Mouse::Button::Left:
-                    build(window2world(e.mouseButton.x, e.mouseButton.y));
-                    break;
-                case sf::Mouse::Button::Right:
-                    remove(window2world(e.mouseButton.x, e.mouseButton.y));
-                    break;
-                default: break;
+// Tile positions
+void World::build(int x, int y, BuildType type) {
+    TilePtr tile = grid[y][x];
+
+    // TODO better task assignments!
+    // Assign task to worker
+    WorkerPtr worker = choose_free_worker();
+    if (worker) {
+        auto path = pathfind(worker->tile_pos, sf::Vector2i(x, y));
+        worker->set_path(path);
+    }
+    tile->set_type(type);
+    //tile->mark();
+}
+void World::remove(int x, int y) {
+    TilePtr tile = grid[y][x];
+    tile->unmark();
+}
+
+void World::build(int x1, int y1, int x2, int y2, BuildType type) {
+    if (x2 < x1) swap(x1, x2);
+    if (y2 < y1) swap(y1, y2);
+    for (int y = y1; y <= y2; ++y) {
+        for (int x = x1; x <= x2; ++x) {
+            if (is_tile(x, y)) {
+                build(x, y, type);
             }
-            break;
-        default: break;
+        }
     }
 }
+void World::remove(int x1, int y1, int x2, int y2) {
+    if (x2 < x1) swap(x1, x2);
+    if (y2 < y1) swap(y1, y2);
+    for (int y = y1; y <= y2; ++y) {
+        for (int x = x1; x <= x2; ++x) {
+            if (is_tile(x, y)) {
+                remove(x, y);
+            }
+        }
+    }
+}
+
+void World::preview_build(int x, int y) {
+    if (is_tile(x, y)) {
+        grid[y][x]->set_room_preview();
+    }
+}
+
+void World::preview_build(int x1, int y1, int x2, int y2) {
+    clear_preview();
+
+    if (x2 < x1) swap(x1, x2);
+    if (y2 < y1) swap(y1, y2);
+    for (int y = y1; y <= y2; ++y) {
+        for (int x = x1; x <= x2; ++x) {
+            if (is_tile(x, y)) {
+                preview_build(x, y);
+            }
+        }
+    }
+}
+void World::clear_preview() {
+    for (auto row : grid) {
+        for (auto t : row) {
+            t->clear_preview();
+        }
+    }
+}
+
+void World::handle_input(const sf::Event &e) { }
 void World::update(const sf::Time &dt) {
+    // TODO assign tasks to workers here instead.
     for (auto worker : workers) {
         worker->update(dt);
     }

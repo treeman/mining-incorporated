@@ -9,5 +9,6 @@ const int world_height = tile_width * num_tiles_high;
 const int screen_width = 800;
 const int screen_height = 600;
 
-const int button_pad = 3;
+const int button_pad = 5;
+const int button_space = 5;
 

@@ -13,3 +13,13 @@ sf::Vector2f normalize(sf::Vector2f v) {
     return v * (1.0f / l);
 }
 
+sf::ConvexShape make_rect(const sf::FloatRect &rect) {
+    sf::ConvexShape shape;
+    shape.setPointCount(4);
+    shape.setPoint(0, sf::Vector2f(rect.left, rect.top));
+    shape.setPoint(1, sf::Vector2f(rect.left, rect.top + rect.height));
+    shape.setPoint(2, sf::Vector2f(rect.left + rect.width, rect.top + rect.height));
+    shape.setPoint(3, sf::Vector2f(rect.left + rect.width, rect.top));
+    return shape;
+}
+

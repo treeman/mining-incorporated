@@ -7,27 +7,18 @@ using namespace std;
 #include "butler.hxx"
 #include "currentstate.hxx"
 
-GameState::GameState(sf::RenderWindow &w) : State(w), world(w) {
+GameState::GameState(sf::RenderWindow &w) : State(w), world(w), gui(&world, w) {
     txt = create_txt("consola.ttf", 14);
 
     set<string> vals = { "coal", "iron", "copper", "gold", "silver", "diamond", "aluminium" };
     for (string x : vals)
         collected[x] = 0;
 
-    gui.push_back(Button([&]() mutable { printf("click!\n"); }, 100, 100, "Rooms"));
+    //gui.push_back(Button([&]() mutable { printf("click!\n"); }, 20, 570, "Rooms"));
 }
 
 void GameState::handle_input(const sf::Event &e) {
-    switch (e.type) {
-        case sf::Event::MouseButtonPressed:
-            //printf("button: %d\n", e.mouseButton.button);
-            if (e.mouseButton.button == sf::Mouse::Button::Left) {
-                for (auto b : gui)
-                    b.check_click(sf::Vector2i(e.mouseButton.x, e.mouseButton.y));
-            }
-            break;
-        default: break;
-    }
+    gui.handle_input(e);
     world.handle_input(e);
 }
 void GameState::update(const sf::Time &dt) {
@@ -35,6 +26,10 @@ void GameState::update(const sf::Time &dt) {
 }
 void GameState::draw() {
     world.draw();
+
+    gui.draw(window);
+
+    // TODO move?
 
     // Draw list of levels
     txt.setColor(sf::Color::White);
@@ -69,8 +64,5 @@ void GameState::draw() {
 
         curry += h;
     }
-
-    for (auto b : gui)
-        b.draw(window);
 }
 
