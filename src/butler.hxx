@@ -8,6 +8,11 @@
 
 using namespace std;
 
-shared_ptr<sf::Font> get_font(string path);
-sf::Text create_txt(string path, int size, string txt = "");
+typedef shared_ptr<sf::Font> FontPtr;
+typedef shared_ptr<sf::Texture> TexPtr;
 
+FontPtr get_font(string path);
+TexPtr get_texture(string path);
+
+sf::Text create_txt(string path, int size, string txt = "");
+sf::Sprite create_sprite(string path);

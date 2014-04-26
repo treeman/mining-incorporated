@@ -3,13 +3,14 @@ using namespace std;
 
 #include "butler.hxx"
 
-map<string, shared_ptr<sf::Font>> fnts;
+map<string, FontPtr> fnts;
+map<string, TexPtr> texs;
 
-shared_ptr<sf::Font> get_font(string path) {
+FontPtr get_font(string path) {
     auto it = fnts.find(path);
     if (it != fnts.end()) return it->second;
 
-    shared_ptr<sf::Font> fnt(new sf::Font);
+    FontPtr fnt(new sf::Font);
     string realpath = "fnt/" + path;
     if (!fnt->loadFromFile(realpath)) {
         printf("Error! Couldn't load font: %s\n", realpath.c_str());
@@ -19,8 +20,27 @@ shared_ptr<sf::Font> get_font(string path) {
     return fnt;
 }
 
+TexPtr get_sprite(string path) {
+    auto it = texs.find(path);
+    if (it != texs.end()) return it->second;
+
+    TexPtr tex(new sf::Texture);
+    string realpath = "gfx/" + path;
+    if (!tex->loadFromFile(realpath)) {
+        printf("Error! Couldn't load texture: %s\n", realpath.c_str());
+        exit(-1);
+    }
+    texs.insert(make_pair(path, tex));
+    return tex;
+}
+
 sf::Text create_txt(string path, int size, string txt) {
     sf::Text res(txt, *get_font(path), size);
+    return res;
+}
+
+sf::Sprite create_sprite(string path) {
+    sf::Sprite res(*get_sprite(path));
     return res;
 }
 

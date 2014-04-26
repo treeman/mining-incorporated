@@ -1,18 +1,18 @@
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
-
-using namespace std;
-
+#include "util.hxx"
 #include "butler.hxx"
 #include "help.hxx"
 #include "currentstate.hxx"
+#include "constants.hxx"
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Mining Inc.", sf::Style::None);
+    sf::RenderWindow window(sf::VideoMode(screen_width, screen_height), "Mining Inc.", sf::Style::None);
 
     push_next_state("game", window);
-    push_next_state("help", window);
+    //push_next_state("help", window);
+
+    sf::Text mpos = create_txt("arial.ttf", 14, "0, 0");
+    mpos.setPosition(8, 5);
 
     sf::Clock clock;
     while (window.isOpen() && has_state())
@@ -43,8 +43,16 @@ int main()
         sf::Time dt = clock.restart();
         state->update(dt);
 
+        // Draw things!
         window.clear();
+
         state->draw();
+
+        auto mp = sf::Mouse::getPosition(window);
+        stringstream ss; ss << mp.x << ", " << mp.y;
+        mpos.setString(ss.str());
+        window.draw(mpos);
+
         window.display();
     }
 

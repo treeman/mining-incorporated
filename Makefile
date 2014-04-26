@@ -31,7 +31,7 @@ $(OBJDIR)/%.o: %.cxx
 .depend: $(SRC)
 	@(rm -f ./.depend)
 	@($(CC) $(CFLAGS) -MM $^ >> ./.depend)
-#	@(sed -i 's|\(^.*:\)|$(OBJDIR)/$(SRCDIR)/\1|g' ./.depend)
+	@(sed -i 's|\(^.*:\)|$(OBJDIR)/$(SRCDIR)/\1|g' ./.depend)
 
 include .depend
 
