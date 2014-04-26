@@ -1,24 +1,53 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+
+using namespace std;
+
+#include "butler.hxx"
+#include "help.hxx"
+#include "currentstate.hxx"
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Mining Inc.", sf::Style::None);
 
-    while (window.isOpen())
+    push_next_state("game", window);
+    push_next_state("help", window);
+
+    sf::Clock clock;
+    while (window.isOpen() && has_state())
     {
-        sf::Event event;
-        while (window.pollEvent(event))
+        shared_ptr<State> state = current_state();
+        sf::Event e;
+        while (window.pollEvent(e))
         {
-            if (event.type == sf::Event::Closed)
-                window.close();
+            bool drop = true;
+            switch (e.type) {
+                case sf::Event::Closed:
+                    window.close();
+                    break;
+                case sf::Event::KeyPressed:
+                    if (e.key.code == sf::Keyboard::H) {
+                        drop = false;
+                        if (state->id() != "help")
+                            push_next_state("help", window);
+                    }
+                    break;
+                default: break;
+            }
+
+            if (drop)
+                state->handle_input(e);
         }
 
+        sf::Time dt = clock.restart();
+        state->update(dt);
+
         window.clear();
-        window.draw(shape);
+        state->draw();
         window.display();
     }
 
     return 0;
 }
+

@@ -2,8 +2,8 @@ export SRCDIR = src
 export OBJDIR = obj
 export BINDIR = bin
 
-export CC = g++ 
-export LIBS = -lX11 -lGL -lXrandr -lfreetype -lsndfile -lopenal -lpthread -lsfml-graphics -lsfml-window -lsfml-system -llua
+export CC = g++
+export LIBS = -lX11 -lGL -lXrandr -lfreetype -lsndfile -lopenal -lpthread -lsfml-audio -lsfml-graphics -lsfml-window -lsfml-system -llua
 
 export CFLAGS = -std=gnu++0x -Wall -I$(SRCDIR)
 
@@ -31,7 +31,7 @@ $(OBJDIR)/%.o: %.cxx
 .depend: $(SRC)
 	@(rm -f ./.depend)
 	@($(CC) $(CFLAGS) -MM $^ >> ./.depend)
-	@(sed -i 's|\(^.*:\)|$(OBJDIR)/$(_SRCDIR)/\1|g' ./.depend)
+#	@(sed -i 's|\(^.*:\)|$(OBJDIR)/$(SRCDIR)/\1|g' ./.depend)
 
 include .depend
 
