@@ -21,8 +21,15 @@ TilePtr create_tile(TileType type, int x, int y) {
 // Tile class
 Tile::Tile(sf::Sprite s, int x, int y) : spr(s), pos(x, y) {
     spr.setPosition(pos.x, pos.y);
+    is_marked = false;
 }
 void Tile::draw(sf::RenderWindow &w) {
+    if (is_marked) {
+        spr.setColor(make_color(0xFF367C));
+    }
+    else {
+        spr.setColor(sf::Color::White);
+    }
     w.draw(spr);
 }
 

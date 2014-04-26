@@ -12,11 +12,11 @@ public:
 
     void set_type(TileType tile);
     void draw(sf::RenderWindow &w);
+    bool is_marked;
+
 private:
     sf::Sprite spr;
     sf::Vector2i pos;
-
-    bool is_marked;
 };
 
 typedef shared_ptr<Tile> TilePtr;
