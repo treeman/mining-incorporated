@@ -21,3 +21,10 @@ float len(sf::Vector2f v);
 sf::Vector2f normalize(sf::Vector2f v);
 
 sf::ConvexShape make_rect(const sf::FloatRect &rect);
+
+template<typename T>
+ostream& operator<< (ostream &o, sf::Vector2<T> &p) {
+    o << p.x << ", " << p.y;
+    return o;
+}
+

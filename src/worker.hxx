@@ -1,7 +1,7 @@
 #pragma once
 
 #include "util.hxx"
-#include "worker.hxx"
+#include "task.hxx"
 
 class World;
 
@@ -9,11 +9,14 @@ class Worker {
 public:
     Worker(int x, int y, World *world);
 
-    void follow_path(const sf::Time &dt);
-    void set_path(vector<sf::Vector2i> p);
+    bool is_free();
+    void assign_task(Task task);
 
     void update(const sf::Time &dt);
     void draw(sf::RenderWindow &w);
+
+private:
+    void follow_path(const sf::Time &dt);
 
     sf::Sprite spr;
     sf::Vector2f pos;
@@ -21,8 +24,11 @@ public:
     vector<sf::Vector2i> path;
 
     World *world;
+
+    Task current_task;
 };
 
 typedef shared_ptr<Worker> WorkerPtr;
 
 WorkerPtr create_worker(int x, int y, World *world);
+

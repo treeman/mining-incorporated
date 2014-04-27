@@ -21,6 +21,7 @@ World::World(sf::RenderWindow &_w) :
 
     mpos = create_txt("arial.ttf", 14, "0, 0");
     mpos.setPosition(100, 5);
+    txt = create_txt("arial.ttf", 14);
 }
 
 sf::Vector2i World::window2tile(int x, int y) {
@@ -64,42 +65,28 @@ void World::remove(sf::Vector2i wp) {
 // Tile positions
 void World::build(int x, int y, RoomType type) {
     if (!is_tile(x, y)) return;
-    TilePtr tile = grid[y][x];
 
-    // TODO better task assignments!
-    // Assign task to worker
-    /*
-    WorkerPtr worker = choose_free_worker();
-    if (worker) {
-        auto path = pathfind(worker->tile_pos, sf::Vector2i(x, y));
-        worker->set_path(path);
-    }
-    */
-    //tile->mark();
-    tile->set_type(type);
+    // TODO can only build if it's dug out?
+    tasks.push_back(create_room_task(x, y, type));
+
+    //TilePtr tile = grid[y][x];
+    //tile->set_type(type);
 }
 void World::build(int x, int y, ObjectType type) {
     if (!is_tile(x, y)) return;
     TilePtr tile = grid[y][x];
 
     if (tile->has_object() && type == SellObject) {
-        sell_object(x, y);
+        tasks.push_back(create_sell_task(x, y));
+        //sell_object(x, y);
     }
     else if (type != SellObject) {
         if (!tile->has_object()) {
-            tile->set_object(make_object(type));
+            tasks.push_back(create_object_task(x, y, type));
+            //tile->set_object(make_object(type));
         }
     }
 
-    // TODO better task assignments!
-    // Assign task to worker
-    /*
-    WorkerPtr worker = choose_free_worker();
-    if (worker) {
-        auto path = pathfind(worker->tile_pos, sf::Vector2i(x, y));
-        worker->set_path(path);
-    }
-    */
     //tile->set_type(type);
     //tile->mark();
 }
@@ -178,7 +165,8 @@ void World::clear_preview() {
 
 void World::handle_input(const sf::Event &e) { }
 void World::update(const sf::Time &dt) {
-    // TODO assign tasks to workers here instead.
+    assign_tasks();
+
     for (auto worker : workers) {
         worker->update(dt);
     }
@@ -205,6 +193,15 @@ void World::draw() {
     stringstream ss; ss << wp.x << ", " << wp.y;
     mpos.setString(ss.str());
     w.draw(mpos);
+
+    // Draw current task queue
+    int x = 620, y = 250, dy = 16;
+    for (auto t : tasks) {
+        txt.setString(t.to_str());
+        txt.setPosition(x, y);
+        w.draw(txt);
+        y += dy;
+    }
 }
 
 void World::new_worker() {
@@ -213,9 +210,12 @@ void World::new_worker() {
     free_workers.push_back(worker);
 }
 
+// TODO choose based on task and closeness.
 WorkerPtr World::choose_free_worker() {
-    // TODO select worker with smallest task queue and closest
-    return workers.front();
+    for (auto w : workers) {
+        if (w->is_free()) return w;
+    }
+    return WorkerPtr();
 }
 
 int manhattan(int x1, int y1, int x2, int y2) {
@@ -294,5 +294,40 @@ vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t) {
     //printf("path:\n");
     //for (auto p : res) printf(" %d,%d\n", p.x, p.y);
     return res;
+}
+
+void World::task_done(Task task) {
+    // TODO update grid here!
+    if (task.type == Dig) {
+        TilePtr tile = get_tile(task.pos);
+    }
+    else if (task.type == BuildRoom) {
+        TilePtr tile = get_tile(task.pos);
+        tile->set_type(task.room_type);
+    }
+    else if (task.type == PlaceObject) {
+        TilePtr tile = get_tile(task.pos);
+        tile->set_object(make_object(task.object_type));
+    }
+    else if (task.type == SellTask) {
+        TilePtr tile = get_tile(task.pos);
+        tile->remove_object();
+    }
+    else {
+        printf("Unknown task %d is done!\n", task.type);
+    }
+}
+void World::assign_tasks() {
+    while (!tasks.empty()) {
+        WorkerPtr worker = choose_free_worker();
+        if (!worker) return;
+
+        Task t = tasks.front(); tasks.pop_front();
+        worker->assign_task(t);
+    }
+}
+
+TilePtr World::get_tile(sf::Vector2i pos) {
+    return grid.at(pos.y).at(pos.x);
 }
 

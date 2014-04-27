@@ -5,6 +5,7 @@
 #include "worker.hxx"
 #include "roomtype.hxx"
 #include "objecttype.hxx"
+#include "task.hxx"
 
 class World {
 public:
@@ -52,16 +53,22 @@ public:
     void new_worker();
     WorkerPtr choose_free_worker();
     vector<sf::Vector2i> pathfind(sf::Vector2i s, sf::Vector2i t);
+    void task_done(Task task);
+    void assign_tasks();
 
+private:
     sf::RenderWindow &w;
     sf::View view;
 
     // TODO multiple levels
+    TilePtr get_tile(sf::Vector2i pos);
     vector<vector<TilePtr>> grid;
     vector<WorkerPtr> workers;
 
     deque<WorkerPtr> free_workers;
+    deque<Task> tasks;
 
     sf::Text mpos;
+    sf::Text txt;
 };
 
