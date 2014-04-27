@@ -87,5 +87,8 @@ private:
     Resources resources;
     void draw_stats();
     void draw_stats(string pre, int &val, sf::Color color, int x, int y);
+
+    // Levels
+    int current_level;
 };
 

@@ -432,17 +432,17 @@ void World::draw_stats() {
 
     // Draw collected resources.
     int h = 16, curr_y = yoff + h + 5;
-    draw_stats("Aluminium: ", resources.aluminium, sf::Color::Red, xoff, curr_y);
+    draw_stats("Aluminium: ", resources.aluminium, make_color(0xF6926D), xoff, curr_y);
     curr_y += h;
-    draw_stats("Coal: ", resources.coal, sf::Color::Red, xoff, curr_y);
+    draw_stats("Coal: ", resources.coal, make_color(0xB6926D), xoff, curr_y);
     curr_y += h;
-    draw_stats("Copper: ", resources.copper, sf::Color::Red, xoff, curr_y);
+    draw_stats("Copper: ", resources.copper, make_color(0x924924), xoff, curr_y);
     curr_y += h;
-    draw_stats("Diamond: ", resources.diamond, sf::Color::Red, xoff, curr_y);
+    draw_stats("Diamond: ", resources.diamond, make_color(0x0092DB), xoff, curr_y);
     curr_y += h;
-    draw_stats("Gold: ", resources.gold, sf::Color::Red, xoff, curr_y);
+    draw_stats("Gold: ", resources.gold, make_color(0xFFB600), xoff, curr_y);
     curr_y += h;
-    draw_stats("Iron: ", resources.iron, sf::Color::Red, xoff, curr_y);
+    draw_stats("Iron: ", resources.iron, make_color(0xFFFFFF), xoff, curr_y);
     curr_y += h;
 }
 
