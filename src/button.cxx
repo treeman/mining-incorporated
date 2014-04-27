@@ -49,8 +49,8 @@ void Button::update(const sf::Time &dt) {
 }
 void Button::draw(sf::RenderWindow &w) {
     if (selected) {
-        txt.setColor(sf::Color::White);
-        back.setFillColor(sf::Color::Blue);
+        txt.setColor(make_color(0x303030));
+        back.setFillColor(make_color(0xD4D4D4));
     }
     else if (hover) {
         txt.setColor(sf::Color::Black);
@@ -58,7 +58,7 @@ void Button::draw(sf::RenderWindow &w) {
     }
     else {
         txt.setColor(sf::Color::Black);
-        back.setFillColor(make_color(0x919191));
+        back.setFillColor(make_color(0xA4A4A4));
     }
     w.draw(back);
     w.draw(txt);

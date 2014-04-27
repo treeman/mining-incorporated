@@ -205,6 +205,7 @@ void World::draw() {
 
     w.setView(curr);
 
+#if 0
     // Draw position in world.
     auto mp = sf::Mouse::getPosition(w);
     auto wp = window2world(mp.x, mp.y);
@@ -214,7 +215,6 @@ void World::draw() {
     mpos.setString(ss.str());
     w.draw(mpos);
 
-
     // Draw current task queue
     int x = 620, y = 250, dy = 16;
     for (auto t : tasks) {
@@ -223,6 +223,7 @@ void World::draw() {
         w.draw(txt);
         y += dy;
     }
+#endif
 
     draw_stats();
 }

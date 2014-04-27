@@ -13,5 +13,6 @@ public:
     void draw();
 private:
     sf::Text txt;
+    sf::Sprite pic;
 };
 

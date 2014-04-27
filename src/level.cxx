@@ -72,10 +72,7 @@ RoomType randomize_ore_type(int) {
     for (int type = 0; type < (int)ratio.size(); ++type) {
         sum += ratio[type];
         if (r <= sum) {
-            RoomType res = static_cast<RoomType>(type + 7);
-            printf("r: %d => type: %d (%d)\n", r, type, res);
-            return res;
-            //return static_cast<RoomType>(type) + AluminiumOre;
+            return static_cast<RoomType>(type + 7);
         }
     }
     return Rock; // fallback?
@@ -96,10 +93,6 @@ vector<vector<TilePtr>> make_random_level(int level) {
         RoomType type = randomize_ore_type(level);
         int num_ores = rand_int(3, 8);
 
-        // TODO bound to a box?
-        //int w = rand_int(3, 6);
-        //int h = rand_int(3, 6);
-
         // Floodfill with randomization to place ores xD
         int r = rand_int(0, num_tiles_high - 1);
         int c = rand_int(0, num_tiles_wide - 1);
@@ -118,8 +111,6 @@ vector<vector<TilePtr>> make_random_level(int level) {
             int r = pos.first, c = pos.second;
 
             if (seen[r][c]) continue;
-
-            //printf("at %d,%d\n", r, c);
 
             ++placed;
             seen[r][c] = 1;
@@ -147,10 +138,7 @@ vector<vector<TilePtr>> make_random_level(int level) {
 }
 
 vector<vector<TilePtr>> make_level(int level) {
-    return make_random_level(level);
     //if (level == 1) return make_first_level();
-    // TODO
-    // Crate an empty level, but with ores!
-    //exit(-1);
+    return make_random_level(level);
 }
 

@@ -38,9 +38,9 @@ int main()
                     break;
                 case sf::Event::KeyPressed:
                     if (e.key.code == sf::Keyboard::H) {
-                        drop = false;
-                        if (state->id() != "help")
-                            push_next_state("help", window);
+                        //drop = false;
+                        //if (state->id() != "help")
+                            //push_next_state("help", window);
                     }
                     break;
                 default: break;
@@ -58,10 +58,12 @@ int main()
 
         state->draw();
 
+        /*
         auto mp = sf::Mouse::getPosition(window);
         stringstream ss; ss << mp.x << ", " << mp.y;
         mpos.setString(ss.str());
         window.draw(mpos);
+        */
 
         window.display();
     }

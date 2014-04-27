@@ -33,10 +33,13 @@ void GameState::draw() {
 
     // TODO move?
 
+
+/*
     // Draw list of levels
     txt.setColor(sf::Color::White);
     txt.setPosition(20, 25);
     txt.setString("Level 1");
     window.draw(txt);
+*/
 }
 

@@ -31,9 +31,9 @@ void add_ore(RoomType type, string spr, float mining_time, int least, int most, 
     info.min_ores = least;
     info.max_ores = most;
     info.money_per_ore = val;
-    //info.remove_time = mining_time;
+    info.remove_time = mining_time;
     // TODO fix. Just for checking
-    info.remove_time = mining_time / 20;
+    //info.remove_time = mining_time / 20;
 
     room_info.insert(make_pair(type, info));
 }
@@ -43,8 +43,8 @@ void init_rooms() {
     RoomInfo rock(Rock);
     rock.spr_path = "rock_tile.png";
     rock.is_walkable = false;
-    //rock.remove_time = 1;
-    rock.remove_time = 0.2;
+    rock.remove_time = 1;
+    //rock.remove_time = 0.2;
     room_info.insert(make_pair(Rock, rock));
 
     add_buildable_room(Mine, "Mine", "stone_tile.png", 0);
