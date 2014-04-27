@@ -2,17 +2,35 @@
 #include "world.hxx"
 
 Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
-    categories(20, 570), rooms(20, 530), to_build(NULL) {
+    categories(20, 570), room_to_build(NULL), object_to_build(NULL) {
     // TODO make better
-    //categories.add(ButtonPtr(new Button([&]() mutable { printf("Rooms!\n"); }, "Rooms")));
-    //categories.add(ButtonPtr(new Button([&]() mutable { printf("Economy!\n"); }, "Economy")));
+    curr_subcategory = -1;
+    categories.add(ButtonPtr(new Button([&]() mutable { curr_subcategory = 0; }, "Rooms")));
+    categories.add(ButtonPtr(new Button([&]() mutable { curr_subcategory = 1; }, "Objects")));
 
-    for (auto x : build_info) {
+    // Rooms
+    const int subx = 20, suby = 530;
+    ButtonList rooms(subx, suby);
+    for (auto x : room_info) {
         const auto info = x.second;
         rooms.add(ButtonPtr(new Button([=]() mutable {
-                        this->to_build = get_info(info.type);
+                        this->room_to_build = get_info(info.type); // TODO we hacve info already?!?
+                        this->object_to_build = NULL;
                     }, info.name)));
     }
+    subcategory.push_back(rooms);
+
+    // Objects
+    ButtonList objects(subx, suby);
+    for (auto x : object_info) {
+        const auto info = x.second;
+        objects.add(ButtonPtr(new Button([=]() mutable {
+                        this->object_to_build = get_info(info.type); // TODO we have it??
+                        this->room_to_build = NULL;
+                    }, info.name)));
+    }
+    //objects.add(ButtonPtr(new Button([&]() mutable { printf("Bed!\n"); }, "Bed")));
+    subcategory.push_back(objects);
 
     active_selection = false;
 }
@@ -42,24 +60,28 @@ void Gui::handle_input(const sf::Event &e) {
 }
 void Gui::update(const sf::Time &dt) {
     categories.update(dt);
-    rooms.update(dt);
+    if (curr_subcategory != -1)
+        subcategory[curr_subcategory].update(dt);
 }
 void Gui::draw(sf::RenderWindow &w) {
     categories.draw(w);
-    rooms.draw(w);
+    if (curr_subcategory != -1)
+        subcategory[curr_subcategory].draw(w);
 }
 
 void Gui::handle_move(int x, int y) {
     sf::Vector2i p(x, y);
     categories.check_hover(p);
-    rooms.check_hover(p);
+    if (curr_subcategory != -1)
+        subcategory[curr_subcategory].check_hover(p);
 
     handle_preview(x, y);
 }
 void Gui::handle_left_click(int x, int y) {
     sf::Vector2i p(x, y);
     categories.check_click(p);
-    rooms.check_click(p);
+    if (curr_subcategory != -1)
+        subcategory[curr_subcategory].check_click(p);
 
     selection_start = sf::Vector2i(x, y);
     active_selection = true;
@@ -76,7 +98,11 @@ void Gui::handle_right_release(int x, int y) {
 
 }
 void Gui::build() {
-    if (!to_build) return;
+    if (room_to_build) build_room();
+    else if (object_to_build) build_object();
+}
+void Gui::build_room() {
+    if (!room_to_build) return;
 
     sf::Vector2i tstart = world->window2tile(selection_start);
     sf::Vector2i tend = world->window2tile(selection_end);
@@ -84,39 +110,34 @@ void Gui::build() {
     world->clear_preview();
     //printf("type: %d\n", to_build->type);
     // XXX ???
-    if (to_build->type == Demolish) {
+    if (room_to_build->type == Demolish) {
     }
-    world->build(tstart.x, tstart.y, tend.x, tend.y, to_build->type);
+    world->build(tstart.x, tstart.y, tend.x, tend.y, room_to_build->type);
+}
+void Gui::build_object() {
+    sf::Vector2i pos = world->window2tile(selection_end); // Harr! Selection! Harr!
+
+    world->clear_preview();
+    //printf("Placing object %s at %d %d\n", object_to_build->name.c_str(), pos.x, pos.y);
+    world->build(pos.x, pos.y, object_to_build->type);
 }
 
 void Gui::handle_preview(int x, int y) {
     auto curr = world->window2tile(sf::Mouse::getPosition(window));
-    // TODO hover over 1 if no selection
-    if (active_selection) {
+    if (object_to_build) {
+        world->clear_preview();
+        world->preview_object_build(curr.x, curr.y);
+    }
+    else if (active_selection) {
         sf::Vector2i tstart = world->window2tile(selection_start);
 
-        world->preview_build(tstart.x, tstart.y, curr.x, curr.y);
+        world->preview_room_build(tstart.x, tstart.y, curr.x, curr.y);
     }
-    else {
+    // TODO hover over 1 if no selection
+    // possibly?
+    //else {
         //world->clear_preview();
         //world->preview_build(curr.x, curr.y);
-    }
+    //}
 }
 
-void Gui::add_room(string s) {
-            //set_
-            //printf("%s!\n", s.c_str());
-        //}, s)));
-    //rooms.add(ButtonPtr(new Button([=]() mutable {
-            //printf("%s!\n", s.c_str());
-        //}, s)));
-}
-
-void Gui::set_build_info(BuildType type) {
-    if (!to_build) printf("Error no build info!\n");
-    else {
-        auto info = get_info(type);
-        printf("Building %s\n", info->name.c_str());
-        to_build = info;
-    }
-}

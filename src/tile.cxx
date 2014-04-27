@@ -1,13 +1,13 @@
 #include "tile.hxx"
 #include "butler.hxx"
 
-TilePtr create_tile(BuildType type, int x, int y) {
+TilePtr create_tile(RoomType type, int x, int y) {
     return TilePtr(new Tile(type, x, y));
 }
 
 
 // Tile class
-Tile::Tile(BuildType type, int x, int y) : pos(x, y) {
+Tile::Tile(RoomType type, int x, int y) : pos(x, y) {
     set_type(type);
     is_marked = room_preview = object_preview = false;
 
@@ -38,7 +38,7 @@ void Tile::set_room_preview() { room_preview = true; object_preview = false; }
 void Tile::set_object_preview() { room_preview = false; object_preview = true; }
 void Tile::clear_preview() { room_preview = object_preview = false; }
 
-void Tile::set_type(BuildType type) {
+void Tile::set_type(RoomType type) {
     spr = create_tile_sprite(type);
     spr.setPosition(pos.x, pos.y);
 }

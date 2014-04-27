@@ -1,7 +1,7 @@
-#include "buildtype.hxx"
+#include "roomtype.hxx"
 #include "butler.hxx"
 
-map<int, BuildInfo> build_info = {
+map<int, RoomInfo> room_info = {
     { Demolish, { Demolish, "Demolish", "rock_tile.png", }, },
     { Corridor, { Corridor, "Corridor", "stone_tile.png" } },
     { Baracks, { Baracks, "Baracks", "wood_tile.png" } },
@@ -11,18 +11,18 @@ map<int, BuildInfo> build_info = {
     { Research, { Research, "Research", "star_tile.png" } },
 };
 
-BuildInfo *get_info(BuildType type) {
-    auto it = build_info.find(type);
-    if (it == build_info.end()) {
+RoomInfo *get_info(RoomType type) {
+    auto it = room_info.find(type);
+    if (it == room_info.end()) {
         printf("Error! Could not find RoomType %d!\n", type);
         exit(-1);
     }
     return &it->second;
 }
 
-sf::Sprite create_tile_sprite(BuildType type) {
-    auto it = build_info.find(type);
-    if (it == build_info.end()) {
+sf::Sprite create_tile_sprite(RoomType type) {
+    auto it = room_info.find(type);
+    if (it == room_info.end()) {
         printf("Error type %d not found in build_info!\n", type);
         exit(-1);
     }

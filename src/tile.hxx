@@ -1,11 +1,11 @@
 #pragma once
 
 #include "util.hxx"
-#include "buildtype.hxx"
+#include "roomtype.hxx"
 
 class Tile {
 public:
-    Tile(BuildType type, int x, int y);
+    Tile(RoomType type, int x, int y);
 
     void draw(sf::RenderWindow &w);
 
@@ -13,7 +13,7 @@ public:
     void set_object_preview();
     void clear_preview();
 
-    void set_type(BuildType type);
+    void set_type(RoomType type);
 
     void set_sprite(sf::Sprite spr);
     void mark(); // TODO remove
@@ -27,4 +27,4 @@ private:
 };
 
 typedef shared_ptr<Tile> TilePtr;
-TilePtr create_tile(BuildType type, int x, int y);
+TilePtr create_tile(RoomType type, int x, int y);

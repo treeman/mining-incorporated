@@ -2,7 +2,8 @@
 
 #include "util.hxx"
 #include "buttonlist.hxx"
-#include "buildtype.hxx"
+#include "roomtype.hxx"
+#include "objecttype.hxx"
 
 class World;
 
@@ -20,20 +21,23 @@ private:
     void handle_left_release(int x, int y);
     void handle_right_release(int x, int y);
     void build();
+    void build_room();
+    void build_object();
     void handle_preview(int x, int y);
-
-    void add_room(string s); // TODO extend?
 
     World *world;
     sf::RenderWindow &window;
 
     ButtonList categories;
-    ButtonList rooms;
+
+    vector<ButtonList> subcategory;
+    int curr_subcategory;
+    //ButtonList rooms;
 
     sf::Vector2i selection_start, selection_end;
     bool active_selection;
 
-    BuildInfo *to_build;
-    void set_build_info(BuildType type);
+    RoomInfo *room_to_build;
+    ObjectInfo *object_to_build;
 };
 

@@ -3,6 +3,7 @@
 #include "constants.hxx"
 #include "butler.hxx"
 #include "assert.h"
+#include "level.hxx"
 
 const int view_xoff = (screen_width - world_width) / 2;
 const int view_yoff = (screen_height - world_height) / 2;
@@ -13,12 +14,8 @@ World::World(sf::RenderWindow &_w) :
 {
     view.move(-view_xoff, -view_yoff);
 
-    grid.assign(num_tiles_high, vector<TilePtr>(num_tiles_wide));
-    for (int i = 0; i < num_tiles_high; ++i) {
-        for (int j = 0; j < num_tiles_wide; ++j) {
-            grid[i][j] = create_tile(Demolish, j * tile_width, i * tile_width);
-        }
-    }
+    // TODO multiple levels
+    grid = make_level(1);
 
     new_worker();
 
@@ -49,7 +46,7 @@ bool World::is_tile(int x, int y) {
         && 0 <= y && y < (int)grid.size();
 }
 
-void World::build(sf::Vector2i wp, BuildType type) {
+void World::build(sf::Vector2i wp, RoomType type) {
     if (!in_world(wp)) return;
 
     auto tpos = world2tile(wp.x, wp.y);
@@ -63,7 +60,8 @@ void World::remove(sf::Vector2i wp) {
 }
 
 // Tile positions
-void World::build(int x, int y, BuildType type) {
+void World::build(int x, int y, RoomType type) {
+    if (!is_tile(x, y)) return;
     TilePtr tile = grid[y][x];
 
     // TODO better task assignments!
@@ -78,12 +76,32 @@ void World::build(int x, int y, BuildType type) {
     tile->set_type(type);
     //tile->mark();
 }
+void World::build(int x, int y, ObjectType type) {
+    if (!is_tile(x, y)) return;
+    TilePtr tile = grid[y][x];
+
+    //tile->set_object_preview();
+
+    printf("Building at %d %d\n", x, y);
+
+    // TODO better task assignments!
+    // Assign task to worker
+    /*
+    WorkerPtr worker = choose_free_worker();
+    if (worker) {
+        auto path = pathfind(worker->tile_pos, sf::Vector2i(x, y));
+        worker->set_path(path);
+    }
+    */
+    //tile->set_type(type);
+    //tile->mark();
+}
 void World::remove(int x, int y) {
     TilePtr tile = grid[y][x];
     tile->unmark();
 }
 
-void World::build(int x1, int y1, int x2, int y2, BuildType type) {
+void World::build(int x1, int y1, int x2, int y2, RoomType type) {
     if (x2 < x1) swap(x1, x2);
     if (y2 < y1) swap(y1, y2);
     for (int y = y1; y <= y2; ++y) {
@@ -106,13 +124,13 @@ void World::remove(int x1, int y1, int x2, int y2) {
     }
 }
 
-void World::preview_build(int x, int y) {
+void World::preview_room_build(int x, int y) {
     if (is_tile(x, y)) {
         grid[y][x]->set_room_preview();
     }
 }
 
-void World::preview_build(int x1, int y1, int x2, int y2) {
+void World::preview_room_build(int x1, int y1, int x2, int y2) {
     clear_preview();
 
     if (x2 < x1) swap(x1, x2);
@@ -120,9 +138,14 @@ void World::preview_build(int x1, int y1, int x2, int y2) {
     for (int y = y1; y <= y2; ++y) {
         for (int x = x1; x <= x2; ++x) {
             if (is_tile(x, y)) {
-                preview_build(x, y);
+                preview_room_build(x, y);
             }
         }
+    }
+}
+void World::preview_object_build(int x, int y) {
+    if (is_tile(x, y)) {
+        grid[y][x]->set_object_preview();
     }
 }
 void World::clear_preview() {

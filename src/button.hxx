@@ -1,7 +1,6 @@
 #pragma once
 
 #include "util.hxx"
-#include "buildtype.hxx"
 
 class Button {
 public:

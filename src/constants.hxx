@@ -1,8 +1,8 @@
 
 // Define constants here I guess
 const int tile_width = 20;
-const int num_tiles_wide = 20;
-const int num_tiles_high = 16;
+const int num_tiles_wide = 20; // Hardcoded in first level generation!
+const int num_tiles_high = 16; // Same!
 const int world_width = tile_width * num_tiles_wide;
 const int world_height = tile_width * num_tiles_high;
 
