@@ -115,7 +115,7 @@ void Gui::build_room() {
     sf::Vector2i tstart = world->window2tile(selection_start);
     sf::Vector2i tend = world->window2tile(selection_end);
 
-    world->clear_preview();
+    //world->clear_preview();
     world->build(tstart.x, tstart.y, tend.x, tend.y, room_to_build->type);
 }
 void Gui::build_object() {

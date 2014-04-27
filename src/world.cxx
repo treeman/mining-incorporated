@@ -69,11 +69,8 @@ void World::build(int x, int y, RoomType type) {
     TilePtr tile = get_tile(x, y);
     if (tile->get_type() == type) return;
 
-    // TODO can only build if it's dug out?
     tasks.push_back(create_room_task(x, y, type));
-
-    //TilePtr tile = grid[y][x];
-    //tile->set_type(type);
+    tile->set_room_build_pending();
 }
 void World::build(int x, int y, ObjectType type) {
     if (!is_tile(x, y)) return;
@@ -81,17 +78,13 @@ void World::build(int x, int y, ObjectType type) {
 
     if (tile->has_object() && type == SellObject) {
         tasks.push_back(create_sell_task(x, y));
-        //sell_object(x, y);
     }
     else if (type != SellObject) {
         if (!tile->has_object()) {
+            tile->set_object_build_pending();
             tasks.push_back(create_object_task(x, y, type));
-            //tile->set_object(make_object(type));
         }
     }
-
-    //tile->set_type(type);
-    //tile->mark();
 }
 
 void World::sell_object(int x, int y) {

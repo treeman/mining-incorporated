@@ -14,6 +14,9 @@ public:
     void set_object_preview();
     void clear_preview();
 
+    void set_room_build_pending();
+    void set_object_build_pending();
+
     void set_type(RoomType type);
     RoomType get_type();
 
@@ -33,6 +36,7 @@ private:
     sf::Sprite room_preview_spr, object_preview_spr;
     ObjectPtr obj;
     RoomType room_type;
+    bool room_build_pending, object_build_pending;
 };
 
 typedef shared_ptr<Tile> TilePtr;

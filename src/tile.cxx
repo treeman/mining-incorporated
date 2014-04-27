@@ -10,6 +10,7 @@ TilePtr create_tile(RoomType type, int x, int y) {
 Tile::Tile(RoomType type, int x, int y) : pos(x, y), room_type(type) {
     set_type(type);
     is_marked = room_preview = object_preview = false;
+    room_build_pending = object_build_pending = false;
 
     room_preview_spr = create_sprite("room_preview.png");
     room_preview_spr.setColor(sf::Color(255, 255, 255, 100));
@@ -26,14 +27,14 @@ void Tile::draw(sf::RenderWindow &w) {
         spr.setColor(sf::Color::White);
     w.draw(spr);
 
-    if (room_preview) {
+    if (room_preview || room_build_pending) {
         w.draw(room_preview_spr);
     }
 
     if (has_object()) {
         obj->draw(w);
     }
-    else if (object_preview) {
+    else if (object_preview || object_build_pending) {
         w.draw(object_preview_spr);
     }
 }
@@ -42,10 +43,14 @@ void Tile::set_room_preview() { room_preview = true; object_preview = false; }
 void Tile::set_object_preview() { room_preview = false; object_preview = true; }
 void Tile::clear_preview() { room_preview = object_preview = false; }
 
+void Tile::set_room_build_pending() { room_build_pending = true; }
+void Tile::set_object_build_pending() { object_build_pending = true; }
+
 void Tile::set_type(RoomType type) {
     room_type = type;
     spr = create_tile_sprite(type);
     spr.setPosition(pos.x, pos.y);
+    room_preview = room_build_pending = false;
 }
 RoomType Tile::get_type() { return room_type; }
 
@@ -65,6 +70,7 @@ bool Tile::has_object() const {
     return (bool)obj;
 }
 void Tile::set_object(ObjectPtr o) {
+    object_preview = object_build_pending = false;
     obj = o;
     obj->set_pos(pos.x, pos.y);
 }
