@@ -73,28 +73,16 @@ void World::build(int x, int y, RoomType type) {
         worker->set_path(path);
     }
     */
-    tile->set_type(type);
     //tile->mark();
+    tile->set_type(type);
 }
 void World::build(int x, int y, ObjectType type) {
     if (!is_tile(x, y)) return;
     TilePtr tile = grid[y][x];
 
-    //tile->set_object_preview();
-
-    printf("Building at %d %d\n", x, y);
-
-    // TODO better task assignments!
-    // Assign task to worker
-    /*
-    WorkerPtr worker = choose_free_worker();
-    if (worker) {
-        auto path = pathfind(worker->tile_pos, sf::Vector2i(x, y));
-        worker->set_path(path);
+    if (!tile->has_object()) {
+        tile->set_object(make_object(type));
     }
-    */
-    //tile->set_type(type);
-    //tile->mark();
 }
 void World::remove(int x, int y) {
     TilePtr tile = grid[y][x];

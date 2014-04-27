@@ -17,6 +17,11 @@ void ButtonList::add(shared_ptr<Button> b) {
     buttons.push_back(b);
 }
 
+void ButtonList::deselect_all() {
+    for (auto b : buttons)
+        b->deselect();
+}
+
 void ButtonList::check_hover(sf::Vector2i pos) {
     for (auto b : buttons) b->check_hover(pos);
 }

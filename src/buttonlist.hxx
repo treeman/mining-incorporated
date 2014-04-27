@@ -9,6 +9,8 @@ public:
 
     void add(shared_ptr<Button> b);
 
+    void deselect_all();
+
     void check_hover(sf::Vector2i pos);
     void check_click(sf::Vector2i pos);
     void update(const sf::Time &dt);

@@ -29,6 +29,10 @@ void Tile::draw(sf::RenderWindow &w) {
     if (room_preview) {
         w.draw(room_preview_spr);
     }
+
+    if (has_object()) {
+        obj->draw(w);
+    }
     else if (object_preview) {
         w.draw(object_preview_spr);
     }
@@ -52,4 +56,14 @@ bool Tile::is_walkable() {
     return !is_marked;
 }
 
+bool Tile::has_object() const {
+    return (bool)obj;
+}
+void Tile::set_object(ObjectPtr o) {
+    obj = o;
+    obj->set_pos(pos.x, pos.y);
+}
+void Tile::remove_object() {
+    obj.reset();
+}
 

@@ -5,8 +5,14 @@ Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
     categories(20, 570), room_to_build(NULL), object_to_build(NULL) {
     // TODO make better
     curr_subcategory = -1;
-    categories.add(ButtonPtr(new Button([&]() mutable { curr_subcategory = 0; }, "Rooms")));
-    categories.add(ButtonPtr(new Button([&]() mutable { curr_subcategory = 1; }, "Objects")));
+    categories.add(ButtonPtr(new Button([&]() mutable {
+            curr_subcategory = 0;
+            this->clear_selection();
+        }, "Rooms")));
+    categories.add(ButtonPtr(new Button([&]() mutable {
+            curr_subcategory = 1;
+            this->clear_selection();
+        }, "Objects")));
 
     // Rooms
     const int subx = 20, suby = 530;
@@ -108,17 +114,12 @@ void Gui::build_room() {
     sf::Vector2i tend = world->window2tile(selection_end);
 
     world->clear_preview();
-    //printf("type: %d\n", to_build->type);
-    // XXX ???
-    if (room_to_build->type == Demolish) {
-    }
     world->build(tstart.x, tstart.y, tend.x, tend.y, room_to_build->type);
 }
 void Gui::build_object() {
     sf::Vector2i pos = world->window2tile(selection_end); // Harr! Selection! Harr!
 
     world->clear_preview();
-    //printf("Placing object %s at %d %d\n", object_to_build->name.c_str(), pos.x, pos.y);
     world->build(pos.x, pos.y, object_to_build->type);
 }
 
@@ -133,11 +134,12 @@ void Gui::handle_preview(int x, int y) {
 
         world->preview_room_build(tstart.x, tstart.y, curr.x, curr.y);
     }
-    // TODO hover over 1 if no selection
-    // possibly?
-    //else {
-        //world->clear_preview();
-        //world->preview_build(curr.x, curr.y);
-    //}
+}
+
+void Gui::clear_selection() {
+    room_to_build = NULL;
+    object_to_build = NULL;
+    for (auto bl : subcategory)
+        bl.deselect_all();
 }
 

@@ -37,6 +37,7 @@ private:
     sf::Vector2i selection_start, selection_end;
     bool active_selection;
 
+    void clear_selection();
     RoomInfo *room_to_build;
     ObjectInfo *object_to_build;
 };
