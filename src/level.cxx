@@ -25,10 +25,10 @@ vector<vector<TilePtr>> make_first_level() {
     for (int i = 0; i < num_tiles_high; ++i) {
         for (int j = 0; j < num_tiles_wide; ++j) {
             if (first_level[i][j] == '.') {
-                grid[i][j] = create_tile(Corridor, j * tile_width, i * tile_width);
+                grid[i][j] = create_tile(Mine, j * tile_width, i * tile_width);
             }
             else {
-                grid[i][j] = create_tile(Demolish, j * tile_width, i * tile_width);
+                grid[i][j] = create_tile(Rock, j * tile_width, i * tile_width);
             }
         }
     }

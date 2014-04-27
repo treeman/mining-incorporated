@@ -6,15 +6,13 @@
 // Shall only build when everything is mined out!!
 // Cannot build on Stone Tiles... Must mine them out first.
 enum RoomType {
-    Demolish, // Also serves as unpassable
+    Rock, // Also serves as unpassable
+    Mine, // Serves as a corridor
     Baracks, // So we can hire more workers
     Office,  // Unlock other things?
     Storage, // Store goodies!!
-
-    // TODO
-    Corridor, // Connections. Need to start with a few on the top layer.
-    MassHall,
-    Research,
+    MassHall, // Eat?
+    Research, // Unlock new things?
 
     // If time
     // Hygien, // only maybe!
@@ -37,3 +35,4 @@ extern map<int, RoomInfo> room_info;
 RoomInfo *get_info(RoomType type);
 
 sf::Sprite create_tile_sprite(RoomType type);
+

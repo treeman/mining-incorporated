@@ -54,6 +54,7 @@ public:
     WorkerPtr choose_free_worker();
     vector<sf::Vector2i> pathfind(sf::Vector2i s, sf::Vector2i t);
     void task_done(Task task);
+    void skip_task(Task task);
     void assign_tasks();
 
 private:
@@ -61,7 +62,9 @@ private:
     sf::View view;
 
     // TODO multiple levels
+    TilePtr get_tile(int x, int y);
     TilePtr get_tile(sf::Vector2i pos);
+
     vector<vector<TilePtr>> grid;
     vector<WorkerPtr> workers;
 

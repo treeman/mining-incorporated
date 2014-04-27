@@ -7,7 +7,7 @@ TilePtr create_tile(RoomType type, int x, int y) {
 
 
 // Tile class
-Tile::Tile(RoomType type, int x, int y) : pos(x, y) {
+Tile::Tile(RoomType type, int x, int y) : pos(x, y), room_type(type) {
     set_type(type);
     is_marked = room_preview = object_preview = false;
 
@@ -43,9 +43,12 @@ void Tile::set_object_preview() { room_preview = false; object_preview = true; }
 void Tile::clear_preview() { room_preview = object_preview = false; }
 
 void Tile::set_type(RoomType type) {
+    room_type = type;
     spr = create_tile_sprite(type);
     spr.setPosition(pos.x, pos.y);
 }
+RoomType Tile::get_type() { return room_type; }
+
 void Tile::mark() {
     is_marked = true;
 }
@@ -53,7 +56,9 @@ void Tile::unmark() {
     is_marked = false;
 }
 bool Tile::is_walkable() {
-    return !is_marked;
+    //return true;
+    //return !is_marked;
+    return room_type != Rock;
 }
 
 bool Tile::has_object() const {

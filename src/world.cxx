@@ -66,6 +66,9 @@ void World::remove(sf::Vector2i wp) {
 void World::build(int x, int y, RoomType type) {
     if (!is_tile(x, y)) return;
 
+    TilePtr tile = get_tile(x, y);
+    if (tile->get_type() == type) return;
+
     // TODO can only build if it's dug out?
     tasks.push_back(create_room_task(x, y, type));
 
@@ -191,8 +194,11 @@ void World::draw() {
     auto mp = sf::Mouse::getPosition(w);
     auto wp = window2world(mp.x, mp.y);
     stringstream ss; ss << wp.x << ", " << wp.y;
+    auto tp = world2tile(wp.x, wp.y);
+    ss << "   " << tp;
     mpos.setString(ss.str());
     w.draw(mpos);
+
 
     // Draw current task queue
     int x = 620, y = 250, dy = 16;
@@ -262,7 +268,8 @@ vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t) {
         for (int d = 0; d < 4; ++d) {
             int nx = s.x + dx[d], ny = s.y + dy[d];
             if (nx < 0 || nx >= cols || ny < 0 || ny >= rows) continue;
-            if (!grid.at(ny).at(nx)->is_walkable()) {
+            bool is_goal = nx == t.x && ny == t.y;
+            if (!grid.at(ny).at(nx)->is_walkable() && !is_goal) {
                 //printf("skip %d %d\n", nx, ny);
                 continue;
             }
@@ -287,9 +294,11 @@ vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t) {
 
     sf::Vector2i p(t);
     while (p.x != -1) {
-        res.push_back(tile2world(p));
+        res.push_back(p);
+        //res.push_back(tile2world(p));
         p = prev[p.y][p.x];
     }
+    res.pop_back(); // Temporary workaround, ignore start
     //reverse(res.begin(), res.end());
     //printf("path:\n");
     //for (auto p : res) printf(" %d,%d\n", p.x, p.y);
@@ -317,17 +326,29 @@ void World::task_done(Task task) {
         printf("Unknown task %d is done!\n", task.type);
     }
 }
+void World::skip_task(Task task) {
+    tasks.push_back(task);
+}
 void World::assign_tasks() {
-    while (!tasks.empty()) {
-        WorkerPtr worker = choose_free_worker();
-        if (!worker) return;
-
-        Task t = tasks.front(); tasks.pop_front();
-        worker->assign_task(t);
+    // TODO make something better...
+    deque<Task> unfinished;
+    for (Task t : tasks) {
+        bool assigned = false;
+        for (auto worker : workers) {
+            if (!worker->is_free()) continue;
+            if (worker->assign_task(t)) {
+                assigned = true;
+                break;
+            }
+        }
+        if (!assigned) unfinished.push_back(t);
     }
+
+    tasks.swap(unfinished);
 }
 
-TilePtr World::get_tile(sf::Vector2i pos) {
-    return grid.at(pos.y).at(pos.x);
+TilePtr World::get_tile(int x, int y) {
+    return grid.at(y).at(x);
 }
+TilePtr World::get_tile(sf::Vector2i pos) { return get_tile(pos.x, pos.y); }
 

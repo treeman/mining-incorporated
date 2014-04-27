@@ -2,8 +2,8 @@
 #include "butler.hxx"
 
 map<int, RoomInfo> room_info = {
-    { Demolish, { Demolish, "Demolish", "rock_tile.png", }, },
-    { Corridor, { Corridor, "Corridor", "stone_tile.png" } },
+    { Rock, { Rock, "", "rock_tile.png", }, }, // Special!
+    { Mine, { Mine, "Mine", "stone_tile.png" } },
     { Baracks, { Baracks, "Baracks", "wood_tile.png" } },
     { Office, { Office, "Office", "marble_tile.png" } },
     { Storage, { Storage, "Storage", "store_tile.png" } },

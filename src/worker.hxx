@@ -10,11 +10,10 @@ public:
     Worker(int x, int y, World *world);
 
     bool is_free();
-    void assign_task(Task task);
+    bool assign_task(Task task);
 
     void update(const sf::Time &dt);
     void draw(sf::RenderWindow &w);
-
 private:
     void follow_path(const sf::Time &dt);
 
@@ -26,6 +25,7 @@ private:
     World *world;
 
     Task current_task;
+    sf::Text txt;
 };
 
 typedef shared_ptr<Worker> WorkerPtr;

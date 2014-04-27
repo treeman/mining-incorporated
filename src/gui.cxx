@@ -19,6 +19,7 @@ Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
     ButtonList rooms(subx, suby);
     for (auto x : room_info) {
         const auto info = x.second;
+        if (info.name == "") continue; // Hack
         rooms.add(ButtonPtr(new Button([=]() mutable {
                         this->room_to_build = get_info(info.type); // TODO we hacve info already?!?
                         this->object_to_build = NULL;
@@ -30,6 +31,7 @@ Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
     ButtonList objects(subx, suby);
     for (auto x : object_info) {
         const auto info = x.second;
+        if (info.name == "") continue; // Hack
         objects.add(ButtonPtr(new Button([=]() mutable {
                         this->object_to_build = get_info(info.type); // TODO we have it??
                         this->room_to_build = NULL;
