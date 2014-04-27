@@ -52,12 +52,14 @@ void World::build(sf::Vector2i wp, RoomType type) {
     auto tpos = world2tile(wp.x, wp.y);
     build(tpos.x, tpos.y, type);
 }
+/*
 void World::remove(sf::Vector2i wp) {
     if (!in_world(wp)) return;
 
     auto tpos = world2tile(wp.x, wp.y);
     remove(tpos.x, tpos.y);
 }
+*/
 
 // Tile positions
 void World::build(int x, int y, RoomType type) {
@@ -80,14 +82,42 @@ void World::build(int x, int y, ObjectType type) {
     if (!is_tile(x, y)) return;
     TilePtr tile = grid[y][x];
 
-    if (!tile->has_object()) {
-        tile->set_object(make_object(type));
+    if (tile->has_object() && type == SellObject) {
+        sell_object(x, y);
     }
+    else if (type != SellObject) {
+        if (!tile->has_object()) {
+            tile->set_object(make_object(type));
+        }
+    }
+
+    // TODO better task assignments!
+    // Assign task to worker
+    /*
+    WorkerPtr worker = choose_free_worker();
+    if (worker) {
+        auto path = pathfind(worker->tile_pos, sf::Vector2i(x, y));
+        worker->set_path(path);
+    }
+    */
+    //tile->set_type(type);
+    //tile->mark();
 }
+
+void World::sell_object(int x, int y) {
+    // TODO money management here
+    if (!is_tile(x, y)) return;
+    TilePtr tile = grid[y][x];
+
+    tile->remove_object();
+}
+
+/*
 void World::remove(int x, int y) {
     TilePtr tile = grid[y][x];
     tile->unmark();
 }
+*/
 
 void World::build(int x1, int y1, int x2, int y2, RoomType type) {
     if (x2 < x1) swap(x1, x2);
@@ -100,6 +130,7 @@ void World::build(int x1, int y1, int x2, int y2, RoomType type) {
         }
     }
 }
+/*
 void World::remove(int x1, int y1, int x2, int y2) {
     if (x2 < x1) swap(x1, x2);
     if (y2 < y1) swap(y1, y2);
@@ -111,6 +142,7 @@ void World::remove(int x1, int y1, int x2, int y2) {
         }
     }
 }
+*/
 
 void World::preview_room_build(int x, int y) {
     if (is_tile(x, y)) {

@@ -31,12 +31,13 @@ public:
     // Tile positions
     void build(int x, int y, RoomType type);
     void build(int x, int y, ObjectType type);
-    void remove(int x, int y);
+    //void remove(int x, int y);
+    void sell_object(int x, int y);
 
     // Build and remove things in a 2x2 area, in tile coordinates.
     void build(int x1, int y1, int x2, int y2, RoomType type);
     void build(int x1, int y1, int x2, int y2, ObjectType type);
-    void remove(int x1, int y1, int x2, int y2);
+    //void remove(int x1, int y1, int x2, int y2);
 
     // Current action
     void preview_room_build(int x, int y);

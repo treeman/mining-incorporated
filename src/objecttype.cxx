@@ -2,6 +2,7 @@
 #include "butler.hxx"
 
 map<int, ObjectInfo> object_info = {
+    { SellObject, { SellObject, "Sell", "nosellobject" } }, // Special :)
     { Elevator, { Elevator, "Elevator", "elevator.png" } },
     { Bed, { Bed, "Bed", "bed.png" } },
 };

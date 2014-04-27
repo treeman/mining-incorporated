@@ -4,6 +4,7 @@
 
 // TODO more!
 enum ObjectType {
+    SellObject, // Special ;)
     Elevator,
     Bed,
 };
