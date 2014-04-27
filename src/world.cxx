@@ -68,11 +68,13 @@ void World::build(int x, int y, BuildType type) {
 
     // TODO better task assignments!
     // Assign task to worker
+    /*
     WorkerPtr worker = choose_free_worker();
     if (worker) {
         auto path = pathfind(worker->tile_pos, sf::Vector2i(x, y));
         worker->set_path(path);
     }
+    */
     tile->set_type(type);
     //tile->mark();
 }

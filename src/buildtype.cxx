@@ -2,10 +2,13 @@
 #include "butler.hxx"
 
 map<int, BuildInfo> build_info = {
-    { Demolish, { Demolish, "Demolish", "stone_tile.png", }, },
-    { Baracks, { Baracks, "Baracks", "marble_tile.png" } },
+    { Demolish, { Demolish, "Demolish", "rock_tile.png", }, },
+    { Corridor, { Corridor, "Corridor", "stone_tile.png" } },
+    { Baracks, { Baracks, "Baracks", "wood_tile.png" } },
     { Office, { Office, "Office", "marble_tile.png" } },
-    { Storage, { Storage, "Storage", "marble_tile.png" } },
+    { Storage, { Storage, "Storage", "store_tile.png" } },
+    { MassHall, { MassHall, "MassHall", "carpet_tile.png" } },
+    { Research, { Research, "Research", "star_tile.png" } },
 };
 
 BuildInfo *get_info(BuildType type) {

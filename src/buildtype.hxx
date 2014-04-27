@@ -6,7 +6,7 @@
 // Shall only build when everything is mined out!!
 // Cannot build on Stone Tiles... Must mine them out first.
 enum BuildType {
-    Demolish,
+    Demolish, // Also serves as unpassable
     Baracks, // So we can hire more workers
     Office,  // Unlock other things?
     Storage, // Store goodies!!
@@ -17,9 +17,9 @@ enum BuildType {
     Research,
 
     // If time
-    Hygien, // only maybe!
-    Deliveries,
-    Garbage,
+    // Hygien, // only maybe!
+    // Deliveries,
+    // Garbage,
 };
 
 struct BuildInfo {
