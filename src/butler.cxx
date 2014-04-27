@@ -28,7 +28,7 @@ TexPtr get_sprite(string path) {
     string realpath = "gfx/" + path;
     if (!tex->loadFromFile(realpath)) {
         printf("Error! Couldn't load texture: %s\n", realpath.c_str());
-        exit(-1);
+        return TexPtr();
     }
     texs.insert(make_pair(path, tex));
     return tex;
@@ -40,7 +40,8 @@ sf::Text create_txt(string path, int size, string txt) {
 }
 
 sf::Sprite create_sprite(string path) {
-    sf::Sprite res(*get_sprite(path));
-    return res;
+    auto tex = get_sprite(path);
+    if (!tex) return sf::Sprite();
+    return sf::Sprite(*tex);
 }
 

@@ -1,9 +1,12 @@
 #include "object.hxx"
 
-Object::Object(ObjectType type) {
+Object::Object(ObjectType _type) : type(_type) {
     spr = create_object_sprite(type);
 }
 
+ObjectType Object::get_type() {
+    return type;
+}
 void Object::set_pos(int x, int y) {
     spr.setPosition(x, y);
 }

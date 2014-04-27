@@ -3,10 +3,18 @@
 #include "help.hxx"
 #include "currentstate.hxx"
 #include "constants.hxx"
+#include "roomtype.hxx"
+
+#include <cstdlib>
+#include <time.h>
 
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(screen_width, screen_height), "Mining Inc.", sf::Style::None);
+
+    // Yes it's happning here!
+    init_rooms();
+    srand(time(NULL));
 
     push_next_state("game", window);
     //push_next_state("help", window);

@@ -4,16 +4,28 @@
 
 Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
     categories(20, 570), room_to_build(NULL), object_to_build(NULL) {
-    // TODO make better
+
+    // A bit hacky, could refactor into gui elements.
     curr_subcategory = -1;
+    show_management = false;
     categories.add(ButtonPtr(new Button([&]() mutable {
             curr_subcategory = 0;
             this->clear_selection();
+            show_management = false;
         }, "Rooms")));
     categories.add(ButtonPtr(new Button([&]() mutable {
             curr_subcategory = 1;
             this->clear_selection();
+            show_management = false;
         }, "Objects")));
+    categories.add(ButtonPtr(new Button([&]() mutable {
+            //curr_subcategory = -1;
+            show_management = true;
+            //curr_subcategory = 1;
+            //this->clear_selection();
+            curr_subcategory = 2;
+            this->clear_selection();
+        }, "Management")));
 
     // Rooms
     const int subx = 20, suby = 530;
@@ -38,8 +50,16 @@ Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
                         this->room_to_build = NULL;
                     }, info.name)));
     }
-    //objects.add(ButtonPtr(new Button([&]() mutable { printf("Bed!\n"); }, "Bed")));
     subcategory.push_back(objects);
+
+    ButtonList management(subx, suby);
+    management.add(ButtonPtr(new ClickButton([=]() mutable{
+                        this->clear_selection();
+                        world->new_worker();
+                    }, "Hire Worker")));
+    subcategory.push_back(management);
+
+    // Management
 
     active_selection = false;
     preview_cost = 0;

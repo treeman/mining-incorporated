@@ -61,9 +61,7 @@ void Tile::unmark() {
     is_marked = false;
 }
 bool Tile::is_walkable() {
-    //return true;
-    //return !is_marked;
-    return room_type != Rock;
+    return get_info(room_type)->is_walkable;
 }
 
 bool Tile::has_object() const {
@@ -76,5 +74,9 @@ void Tile::set_object(ObjectPtr o) {
 }
 void Tile::remove_object() {
     obj.reset();
+}
+
+ObjectPtr Tile::get_object() {
+    return obj;
 }
 

@@ -1,3 +1,7 @@
+#include <cstdlib>
+#include <time.h>
+#include <random>
+
 #include "util.hxx"
 
 sf::Color make_color(int hex) {
@@ -23,4 +27,15 @@ sf::ConvexShape make_rect(const sf::FloatRect &rect) {
     return shape;
 }
 
+// W0000
+typedef std::minstd_rand G;
+G g(time(NULL));
+typedef std::uniform_int_distribution<> D;
+
+int rand_int(int a, int b) {
+    if (a > b) swap(a, b);
+    D d(a, b);
+    return d(g);
+    //return a + (rand() % (int)(b - a + 1));
+}
 

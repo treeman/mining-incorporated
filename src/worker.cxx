@@ -8,6 +8,8 @@ Worker::Worker(int x, int y, World *_world) : pos(x, y), world(_world){
     tile_pos = world->world2tile(x, y);
     current_task.is_done = true;
     txt = create_txt("arial.ttf", 14);
+    has_work_time = false;
+    work_time = 0;
 }
 
 bool Worker::is_free() {
@@ -24,6 +26,7 @@ bool Worker::assign_task(Task task) {
         if (!path.size()) return false;
         current_task = task;
     }
+    has_work_time = false;
     return true;
 }
 
@@ -36,16 +39,48 @@ void Worker::update(const sf::Time &dt) {
         tile_pos = current_task.pos;
         pos = sf::Vector2f(world->tile2world(tile_pos));
 
-        // TODO
-        // Work on task here. Not instant T.T
-        world->task_done(current_task);
-        current_task.is_done = true;
+        // Work on task, it's not instant.
+        if (!has_work_time) {
+            has_work_time = true;
+
+            work_time = 0;
+
+            if (current_task.type == BuildRoom) {
+                // Need to remove current tile
+                RoomType curr_type = world->get_tile_type(tile_pos.x, tile_pos.y);
+                work_time += get_info(curr_type)->remove_time;
+                // Time to build current tile
+                work_time += get_info(current_task.room_type)->build_time;
+            }
+            else if (current_task.type == PlaceObject) {
+                // TODO
+            }
+
+            work_clock.restart();
+            progressbar.set_target_time(work_time);
+            progressbar.reset();
+        }
+
+        float work_done = work_clock.getElapsedTime().asSeconds();
+        progressbar.set_completion(work_done);
+
+        if (work_done >= work_time) {
+            world->task_done(current_task);
+            current_task.is_done = true;
+            has_work_time = false;
+        }
     }
+
+    progressbar.set_position(pos.x, pos.y - 11);
 }
 void Worker::draw(sf::RenderWindow &w) {
     spr.setPosition(pos.x, pos.y);
     w.draw(spr);
+    if (has_work_time && !is_free())
+        progressbar.draw(w);
 
+    // Debug things ^^
+#if 0
     // Draw path
     sf::VertexArray lines(sf::LinesStrip);
     for (auto next : path) {
@@ -57,7 +92,6 @@ void Worker::draw(sf::RenderWindow &w) {
     w.draw(lines);
 
     // Draw information
-#if 0
     int x = pos.x + 25, y = pos.y - 10, dy = 16;
     stringstream ss;
     ss << "pos: " << pos;

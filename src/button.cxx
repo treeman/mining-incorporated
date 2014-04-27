@@ -64,3 +64,8 @@ void Button::draw(sf::RenderWindow &w) {
     w.draw(txt);
 }
 
+ClickButton::ClickButton(function<void()> f, string s) : Button(f, s) {
+
+}
+// Cannot be selected :)
+void ClickButton::select() { selected = false; }

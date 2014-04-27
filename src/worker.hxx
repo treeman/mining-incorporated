@@ -2,6 +2,7 @@
 
 #include "util.hxx"
 #include "task.hxx"
+#include "progressbar.hxx"
 
 class World;
 
@@ -26,6 +27,11 @@ private:
 
     Task current_task;
     sf::Text txt;
+
+    bool has_work_time;
+    sf::Clock work_clock;
+    float work_time;
+    Progressbar progressbar;
 };
 
 typedef shared_ptr<Worker> WorkerPtr;

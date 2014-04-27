@@ -32,7 +32,6 @@ private:
 
     vector<ButtonList> subcategory;
     int curr_subcategory;
-    //ButtonList rooms;
 
     sf::Vector2i selection_start, selection_end;
     bool active_selection;
@@ -44,5 +43,8 @@ private:
 
     sf::Text txt;
     void draw_preview_cost(sf::RenderWindow &w);
+
+    // TODO draw other buttons/economy and things if this is true.
+    bool show_management;
 };
 

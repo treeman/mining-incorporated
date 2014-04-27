@@ -78,6 +78,7 @@ void World::build(int x, int y, RoomType type) {
 
     tasks.push_back(create_room_task(x, y, type));
     tile->set_room_build_pending();
+    resources.money -= get_info(type)->cost;
 }
 void World::build(int x, int y, ObjectType type) {
     if (!is_tile(x, y)) return;
@@ -88,8 +89,15 @@ void World::build(int x, int y, ObjectType type) {
     }
     else if (type != SellObject) {
         if (!tile->has_object()) {
-            tile->set_object_build_pending();
-            tasks.push_back(create_object_task(x, y, type));
+            int cost = get_info(type)->cost;
+            if (cost <= resources.money) {
+                resources.money -= cost;
+                tile->set_object_build_pending();
+                tasks.push_back(create_object_task(x, y, type));
+            }
+            else {
+                // TODO some error when too expensive?
+            }
         }
     }
 }
@@ -112,6 +120,13 @@ void World::remove(int x, int y) {
 void World::build(int x1, int y1, int x2, int y2, RoomType type) {
     if (x2 < x1) swap(x1, x2);
     if (y2 < y1) swap(y1, y2);
+
+    int cost = calculate_build_cost(x1, y1, x2, y2, type);
+    if (cost > resources.money) {
+        // TODO some error?
+        return;
+    }
+
     for (int y = y1; y <= y2; ++y) {
         for (int x = x1; x <= x2; ++x) {
             if (is_tile(x, y)) {
@@ -213,9 +228,13 @@ void World::draw() {
 }
 
 void World::new_worker() {
+    // TODO
+    // Some marker that we can't hire? Or something?
+    if ((int)workers.size() >= resources.max_workers) return;
+
     auto worker = create_worker(0, 0, this);
     workers.push_back(worker);
-    free_workers.push_back(worker);
+    //free_workers.push_back(worker);
 }
 
 // TODO choose based on task and closeness.
@@ -288,8 +307,6 @@ vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t) {
     // Backtrack for path and transform to world coordinates.
     vector<sf::Vector2i> res;
 
-    //printf("Cost %d\n", dist[t.y][t.x]);
-
     // Impossible!
     if (dist[t.y][t.x] == numeric_limits<int>::max())
         return res;
@@ -297,11 +314,9 @@ vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t) {
     sf::Vector2i p(t);
     while (p.x != -1) {
         res.push_back(p);
-        //res.push_back(tile2world(p));
         p = prev[p.y][p.x];
     }
     res.pop_back(); // Temporary workaround, ignore start
-    //reverse(res.begin(), res.end());
     //printf("path:\n");
     //for (auto p : res) printf(" %d,%d\n", p.x, p.y);
     return res;
@@ -310,18 +325,57 @@ vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t) {
 void World::task_done(Task task) {
     // TODO update grid here!
     if (task.type == Dig) {
+        // Currently unused (?)
         TilePtr tile = get_tile(task.pos);
     }
     else if (task.type == BuildRoom) {
         TilePtr tile = get_tile(task.pos);
+
+        // Check for ore mining
+        RoomInfo *info = get_info(tile->get_type());
+        if (info->is_ore) {
+            int ores = rand_int(info->min_ores, info->max_ores);
+            //printf("%d - %d => %d\n", info->min_ores, info->max_ores, ores);
+            resources.money += ores * info->money_per_ore;
+            switch (info->type) {
+                case AluminiumOre:
+                    resources.aluminium += ores;
+                    break;
+                case CoalOre:
+                    resources.coal += ores;
+                    break;
+                case CopperOre:
+                    resources.copper += ores;
+                    break;
+                case DiamondOre:
+                    resources.diamond += ores;
+                    break;
+                case GoldOre:
+                    resources.gold += ores;
+                    break;
+                case IronOre:
+                    resources.iron += ores;
+                    break;
+                default: break;
+            }
+        }
+
+        // Update tile
         tile->set_type(task.room_type);
     }
     else if (task.type == PlaceObject) {
         TilePtr tile = get_tile(task.pos);
         tile->set_object(make_object(task.object_type));
+
+        if (task.object_type == Bed) {
+            resources.max_workers += bed_capacity;
+        }
     }
     else if (task.type == SellTask) {
         TilePtr tile = get_tile(task.pos);
+        if (tile->get_object()->get_type() == Bed) {
+            resources.max_workers -= bed_capacity;
+        }
         tile->remove_object();
     }
     else {
@@ -359,20 +413,24 @@ void World::draw_stats() {
     int xoff = 690;
     int yoff = 10;
 
-    // Custom money prefix!
-    stat_txt.setColor(sf::Color::White);
-    stat_txt.setPosition(xoff, yoff);
-    stat_txt.setString("Money: ");
-    int off = stat_txt.getGlobalBounds().width;
-    w.draw(stat_txt);
-
     stringstream ss;
-    ss << "$" << resources.money;
-    stat_txt.setColor(make_color(0x2F9C3F));
-    stat_txt.setPosition(xoff + off, yoff);
+
+    ss.str("");
+    stat_txt.setColor(sf::Color::White);
+    stat_txt.setPosition(600, yoff);
+    ss << "Workers: " << workers.size() << "/" << resources.max_workers;
     stat_txt.setString(ss.str());
     w.draw(stat_txt);
 
+
+    ss.str("");
+    ss << "$" << resources.money;
+    stat_txt.setColor(make_color(0x2F9C3F));
+    stat_txt.setPosition(740, yoff);
+    stat_txt.setString(ss.str());
+    w.draw(stat_txt);
+
+    // Draw collected resources.
     int h = 16, curr_y = yoff + h + 5;
     draw_stats("Aluminium: ", resources.aluminium, sf::Color::Red, xoff, curr_y);
     curr_y += h;
@@ -386,21 +444,6 @@ void World::draw_stats() {
     curr_y += h;
     draw_stats("Iron: ", resources.iron, sf::Color::Red, xoff, curr_y);
     curr_y += h;
-
-    /*
-    // TODO custom colors for collected things later
-    int h = 16, curry = yoff + h + 5;
-    for (auto x : collected) {
-        txt.setColor(sf::Color::White);
-        txt.setPosition(xoff, curry);
-        stringstream ss;
-        ss << x.first << " " << x.second;
-        txt.setString(ss.str());
-        window.draw(txt);
-
-        curry += h;
-    }
-    */
 }
 
 void World::draw_stats(string pre, int &val, sf::Color color, int x, int y) {
@@ -421,5 +464,9 @@ void World::draw_stats(string pre, int &val, sf::Color color, int x, int y) {
 int World::calculate_build_cost(int x1, int y1, int x2, int y2, RoomType type) {
     int dx = abs(x1 - x2) + 1, dy = abs(y2 - y1) + 1;
     return dx * dy * get_info(type)->cost;
+}
+RoomType World::get_tile_type(int x, int y) {
+    TilePtr tile = get_tile(x, y);
+    return tile->get_type();
 }
 
