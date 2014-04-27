@@ -6,7 +6,7 @@
 #include "roomtype.hxx"
 
 #include <cstdlib>
-#include <time.h>
+#include <ctime>
 
 int main()
 {
@@ -14,7 +14,9 @@ int main()
 
     // Yes it's happning here!
     init_rooms();
-    srand(time(NULL));
+    //srand(time(NULL));
+    //init_rand(time(NULL));
+    set_seed(time(NULL));
 
     push_next_state("game", window);
     //push_next_state("help", window);

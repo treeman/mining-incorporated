@@ -29,7 +29,13 @@ sf::ConvexShape make_rect(const sf::FloatRect &rect) {
 
 // W0000
 typedef std::minstd_rand G;
-G g(time(NULL));
+G g;
+
+void set_seed(time_t t) {
+    g = G(t);
+}
+
+//G g(time(NULL));
 typedef std::uniform_int_distribution<> D;
 
 int rand_int(int a, int b) {
