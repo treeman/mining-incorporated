@@ -40,5 +40,9 @@ private:
     void clear_selection();
     RoomInfo *room_to_build;
     ObjectInfo *object_to_build;
+    int preview_cost;
+
+    sf::Text txt;
+    void draw_preview_cost(sf::RenderWindow &w);
 };
 

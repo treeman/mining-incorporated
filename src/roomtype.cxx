@@ -2,13 +2,13 @@
 #include "butler.hxx"
 
 map<int, RoomInfo> room_info = {
-    { Rock, { Rock, "", "rock_tile.png", }, }, // Special!
-    { Mine, { Mine, "Mine", "stone_tile.png" } },
-    { Baracks, { Baracks, "Baracks", "wood_tile.png" } },
-    { Office, { Office, "Office", "marble_tile.png" } },
-    { Storage, { Storage, "Storage", "store_tile.png" } },
-    { MassHall, { MassHall, "MassHall", "carpet_tile.png" } },
-    { Research, { Research, "Research", "star_tile.png" } },
+    { Rock, { Rock, "", "rock_tile.png", 0, }, }, // Special!
+    { Mine, { Mine, "Mine", "stone_tile.png", 0 } },
+    { Baracks, { Baracks, "Baracks", "wood_tile.png", 5 } },
+    { Office, { Office, "Office", "marble_tile.png", 10 } },
+    { Storage, { Storage, "Storage", "store_tile.png", 10 } },
+    { MassHall, { MassHall, "MassHall", "carpet_tile.png", 10 } },
+    { Research, { Research, "Research", "star_tile.png", 40 } },
 };
 
 RoomInfo *get_info(RoomType type) {

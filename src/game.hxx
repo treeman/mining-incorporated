@@ -17,11 +17,6 @@ private:
     sf::Text txt;
     World world;
 
-    // TODO move away
-    map<string, int> collected;
-    //vector<Button> gui;
-    //vector<Button> rooms;
-
     Gui gui;
 };
 

@@ -57,6 +57,7 @@ void Worker::draw(sf::RenderWindow &w) {
     w.draw(lines);
 
     // Draw information
+#if 0
     int x = pos.x + 25, y = pos.y - 10, dy = 16;
     stringstream ss;
     ss << "pos: " << pos;
@@ -70,6 +71,7 @@ void Worker::draw(sf::RenderWindow &w) {
     txt.setString(ss.str());
     txt.setPosition(x, y);
     w.draw(txt);
+#endif
 }
 
 void Worker::follow_path(const sf::Time &dt) {

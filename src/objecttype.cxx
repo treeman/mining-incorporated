@@ -2,9 +2,9 @@
 #include "butler.hxx"
 
 map<int, ObjectInfo> object_info = {
-    { SellObject, { SellObject, "Sell", "nosellobject" } }, // Special :)
-    { Elevator, { Elevator, "Elevator", "elevator.png" } },
-    { Bed, { Bed, "Bed", "bed.png" } },
+    { SellObject, { SellObject, "Sell", "nosellobject", 0 } }, // Special :)
+    { Elevator, { Elevator, "Elevator", "elevator.png", 10 } },
+    { Bed, { Bed, "Bed", "bed.png", 10 } },
 };
 
 ObjectInfo *get_info(ObjectType type) {

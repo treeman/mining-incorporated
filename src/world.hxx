@@ -6,20 +6,26 @@
 #include "roomtype.hxx"
 #include "objecttype.hxx"
 #include "task.hxx"
+#include "resources.hxx"
 
 class World {
 public:
     World(sf::RenderWindow &w);
 
+    // xD
     sf::Vector2i window2tile(int x, int y);
     sf::Vector2i window2world(int x, int y);
     sf::Vector2i world2tile(int x, int y);
     sf::Vector2i tile2world(int x, int y);
+    sf::Vector2i world2window(int x, int y);
+    sf::Vector2i tile2window(int x, int y);
 
     sf::Vector2i window2tile(sf::Vector2i p) { return window2tile(p.x, p.y); }
     sf::Vector2i window2world(sf::Vector2i p) { return window2world(p.x, p.y); }
     sf::Vector2i world2tile(sf::Vector2i p) { return world2tile(p.x, p.y); }
     sf::Vector2i tile2world(sf::Vector2i p) { return tile2world(p.x, p.y); }
+    sf::Vector2i world2window(sf::Vector2i p) { return world2window(p.x, p.y); }
+    sf::Vector2i tile2window(sf::Vector2i p) { return tile2window(p.x, p.y); }
 
     bool in_world(sf::Vector2i worldpos);
     bool in_world(int x, int y);
@@ -37,7 +43,7 @@ public:
 
     // Build and remove things in a 2x2 area, in tile coordinates.
     void build(int x1, int y1, int x2, int y2, RoomType type);
-    void build(int x1, int y1, int x2, int y2, ObjectType type);
+    //void build(int x1, int y1, int x2, int y2, ObjectType type);
     //void remove(int x1, int y1, int x2, int y2);
 
     // Current action
@@ -57,6 +63,7 @@ public:
     void skip_task(Task task);
     void assign_tasks();
 
+    int calculate_build_cost(int x1, int y1, int x2, int y2, RoomType type);
 private:
     sf::RenderWindow &w;
     sf::View view;
@@ -73,5 +80,11 @@ private:
 
     sf::Text mpos;
     sf::Text txt;
+    sf::Text stat_txt;
+
+    // Count money etc.
+    Resources resources;
+    void draw_stats();
+    void draw_stats(string pre, int &val, sf::Color color, int x, int y);
 };
 

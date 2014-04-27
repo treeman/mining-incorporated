@@ -22,6 +22,7 @@ World::World(sf::RenderWindow &_w) :
     mpos = create_txt("arial.ttf", 14, "0, 0");
     mpos.setPosition(100, 5);
     txt = create_txt("arial.ttf", 14);
+    stat_txt = create_txt("consola.ttf", 14);
 }
 
 sf::Vector2i World::window2tile(int x, int y) {
@@ -35,6 +36,12 @@ sf::Vector2i World::world2tile(int x, int y) {
 }
 sf::Vector2i World::tile2world(int x, int y) {
     return sf::Vector2i(x * tile_width, y * tile_width);
+}
+sf::Vector2i World::world2window(int x, int y) {
+    return sf::Vector2i(x + view_xoff, y + view_yoff);
+}
+sf::Vector2i World::tile2window(int x, int y) {
+    return world2window(tile2world(x, y));
 }
 
 bool World::in_world(sf::Vector2i wp) { return in_world(wp.x, wp.y); }
@@ -201,6 +208,8 @@ void World::draw() {
         w.draw(txt);
         y += dy;
     }
+
+    draw_stats();
 }
 
 void World::new_worker() {
@@ -344,4 +353,73 @@ TilePtr World::get_tile(int x, int y) {
     return grid.at(y).at(x);
 }
 TilePtr World::get_tile(sf::Vector2i pos) { return get_tile(pos.x, pos.y); }
+
+void World::draw_stats() {
+    // Draw current state
+    int xoff = 690;
+    int yoff = 10;
+
+    // Custom money prefix!
+    stat_txt.setColor(sf::Color::White);
+    stat_txt.setPosition(xoff, yoff);
+    stat_txt.setString("Money: ");
+    int off = stat_txt.getGlobalBounds().width;
+    w.draw(stat_txt);
+
+    stringstream ss;
+    ss << "$" << resources.money;
+    stat_txt.setColor(make_color(0x2F9C3F));
+    stat_txt.setPosition(xoff + off, yoff);
+    stat_txt.setString(ss.str());
+    w.draw(stat_txt);
+
+    int h = 16, curr_y = yoff + h + 5;
+    draw_stats("Aluminium: ", resources.aluminium, sf::Color::Red, xoff, curr_y);
+    curr_y += h;
+    draw_stats("Coal: ", resources.coal, sf::Color::Red, xoff, curr_y);
+    curr_y += h;
+    draw_stats("Copper: ", resources.copper, sf::Color::Red, xoff, curr_y);
+    curr_y += h;
+    draw_stats("Diamond: ", resources.diamond, sf::Color::Red, xoff, curr_y);
+    curr_y += h;
+    draw_stats("Gold: ", resources.gold, sf::Color::Red, xoff, curr_y);
+    curr_y += h;
+    draw_stats("Iron: ", resources.iron, sf::Color::Red, xoff, curr_y);
+    curr_y += h;
+
+    /*
+    // TODO custom colors for collected things later
+    int h = 16, curry = yoff + h + 5;
+    for (auto x : collected) {
+        txt.setColor(sf::Color::White);
+        txt.setPosition(xoff, curry);
+        stringstream ss;
+        ss << x.first << " " << x.second;
+        txt.setString(ss.str());
+        window.draw(txt);
+
+        curry += h;
+    }
+    */
+}
+
+void World::draw_stats(string pre, int &val, sf::Color color, int x, int y) {
+    stat_txt.setColor(sf::Color::White);
+    stat_txt.setPosition(x, y);
+    stat_txt.setString(pre);
+    w.draw(stat_txt);
+    int off = stat_txt.getGlobalBounds().width;
+
+    stringstream ss;
+    ss << val;
+    stat_txt.setString(ss.str());
+    stat_txt.setColor(color);
+    stat_txt.setPosition(x + off, y);
+    w.draw(stat_txt);
+}
+
+int World::calculate_build_cost(int x1, int y1, int x2, int y2, RoomType type) {
+    int dx = abs(x1 - x2) + 1, dy = abs(y2 - y1) + 1;
+    return dx * dy * get_info(type)->cost;
+}
 

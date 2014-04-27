@@ -24,10 +24,9 @@ struct RoomInfo {
     RoomType type;
     string name;
     string spr_path;
-
+    int cost;
     // TODO
     // bool walkable;
-    // int build_cost;
 };
 
 // Ease of use, heh.

@@ -1,5 +1,6 @@
 #include "gui.hxx"
 #include "world.hxx"
+#include "butler.hxx"
 
 Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
     categories(20, 570), room_to_build(NULL), object_to_build(NULL) {
@@ -41,6 +42,8 @@ Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
     subcategory.push_back(objects);
 
     active_selection = false;
+    preview_cost = 0;
+    txt = create_txt("consola.ttf", 16);
 }
 
 void Gui::handle_input(const sf::Event &e) {
@@ -75,6 +78,8 @@ void Gui::draw(sf::RenderWindow &w) {
     categories.draw(w);
     if (curr_subcategory != -1)
         subcategory[curr_subcategory].draw(w);
+    if (preview_cost)
+        draw_preview_cost(w);
 }
 
 void Gui::handle_move(int x, int y) {
@@ -100,7 +105,15 @@ void Gui::handle_right_click(int x, int y) {
 void Gui::handle_left_release(int x, int y) {
     selection_end = sf::Vector2i(x, y);
     active_selection = false;
-    build();
+    preview_cost = 0;
+
+    // Can cancel by holding right at release
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+        world->clear_preview();
+    }
+    else {
+        build();
+    }
 }
 void Gui::handle_right_release(int x, int y) {
 
@@ -115,14 +128,15 @@ void Gui::build_room() {
     sf::Vector2i tstart = world->window2tile(selection_start);
     sf::Vector2i tend = world->window2tile(selection_end);
 
-    //world->clear_preview();
     world->build(tstart.x, tstart.y, tend.x, tend.y, room_to_build->type);
+    preview_cost = 0;
 }
 void Gui::build_object() {
     sf::Vector2i pos = world->window2tile(selection_end); // Harr! Selection! Harr!
 
     world->clear_preview();
     world->build(pos.x, pos.y, object_to_build->type);
+    preview_cost = 0;
 }
 
 void Gui::handle_preview(int x, int y) {
@@ -130,11 +144,19 @@ void Gui::handle_preview(int x, int y) {
     if (object_to_build) {
         world->clear_preview();
         world->preview_object_build(curr.x, curr.y);
+        preview_cost = object_to_build->cost;
     }
     else if (active_selection) {
         sf::Vector2i tstart = world->window2tile(selection_start);
 
         world->preview_room_build(tstart.x, tstart.y, curr.x, curr.y);
+        if (room_to_build)
+            preview_cost = world->calculate_build_cost(tstart.x, tstart.y, curr.x, curr.y, room_to_build->type);
+    }
+    else if (room_to_build) {
+        world->clear_preview();
+        world->preview_room_build(curr.x, curr.y);
+        preview_cost = room_to_build->cost;
     }
 }
 
@@ -143,5 +165,30 @@ void Gui::clear_selection() {
     object_to_build = NULL;
     for (auto bl : subcategory)
         bl.deselect_all();
+}
+
+void Gui::draw_preview_cost(sf::RenderWindow &w) {
+    // Draw preview cost
+    // TODO better position
+    auto curr = sf::Mouse::getPosition(w);
+    int x = 0, y = 0;
+    if (object_to_build || (!active_selection && room_to_build)) {
+        x = curr.x + 20;
+        y = curr.y - 30;
+    }
+    else {
+        auto sel = selection_start;
+        //auto sel = world->tile2window(selection_start);
+        //printf("%d,%d -> %d,%d\n", selection_start.x, selection_start.y, sel.x, sel.y);
+        int left = min(sel.x, curr.x);
+        int top = min(sel.y, curr.y);
+        x = left + 20;
+        y = top - 30;
+    }
+    txt.setPosition(x, y);
+    txt.setColor(sf::Color::White);
+    stringstream ss; ss << "$" << preview_cost;
+    txt.setString(ss.str());
+    w.draw(txt);
 }
 

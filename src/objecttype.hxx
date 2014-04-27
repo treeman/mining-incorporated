@@ -13,6 +13,7 @@ struct ObjectInfo {
     ObjectType type;
     string name;
     string spr_path;
+    int cost;
 
     // TODO stuff?
 };
