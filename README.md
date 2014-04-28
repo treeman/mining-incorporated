@@ -15,6 +15,10 @@ Todo
 * General refactoring
 * Prettier worker sprites
 * Simulation and interaction of objects
+* Remove dependencies to `util.hxx`, too many files depend on it?
+* A way to abort application
+* Logging
+* Visal debugging
 
 Ideas
 =====

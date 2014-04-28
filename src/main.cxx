@@ -4,6 +4,7 @@
 #include "currentstate.hxx"
 #include "constants.hxx"
 #include "roomtype.hxx"
+#include "settings.hxx"
 
 #include <cstdlib>
 #include <ctime>
@@ -12,14 +13,15 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(screen_width, screen_height), "Mining Inc.", sf::Style::None);
 
+    // TODO remove/move!
     // Yes it's happning here!
     init_rooms();
-    //srand(time(NULL));
-    //init_rand(time(NULL));
     set_seed(time(NULL));
 
+    Settings settings;
+    settings.load_from_file("settings.lua");
+
     push_next_state("game", window);
-    //push_next_state("help", window);
 
     sf::Text mpos = create_txt("arial.ttf", 14, "0, 0");
     mpos.setPosition(8, 5);

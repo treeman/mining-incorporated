@@ -30,3 +30,5 @@ ostream& operator<< (ostream &o, sf::Vector2<T> &p) {
 
 int rand_int(int a, int b); // Inclusive
 void set_seed(time_t t);
+
+string num2string(int);
