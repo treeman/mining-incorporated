@@ -10,6 +10,9 @@ Todo
 * Refactor RoomType into OreType or similar
 * Multiple levels
 * Use lua for constants and settings
+    Should split into several files. Use same lua instance for them all, to allow interreferential constants.
+    Need to expose the values in c++ in a nice way. Global functions I guess vs pass as reference to everything which needs it.
+    Global is probably nicer here.
 * Create a console where we can set settings and cheat etc.
 * Cleanup readme
 * General refactoring
