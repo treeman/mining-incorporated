@@ -10,8 +10,9 @@ Todo
 * Refactor RoomType into OreType or similar
 * Multiple levels
 * Use lua for constants and settings
-    Should split into several files. Use same lua instance for them all, to allow interreferential constants.
-    Need to expose the values in c++ in a nice way. Global functions I guess vs pass as reference to everything which needs it.
+    Settings is different than constants. Settings can be changed in terminal and are typically flags.
+    Should split into several files.
+    Need to expose the values in c++ in a nice way.
     Global is probably nicer here.
 * Create a console where we can set settings and cheat etc.
 * Cleanup readme
@@ -22,6 +23,7 @@ Todo
 * A way to abort application
 * Logging
 * Visal debugging
+* Remove global state
 
 Ideas
 =====
