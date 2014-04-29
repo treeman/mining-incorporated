@@ -1,5 +1,6 @@
 #include "level.hxx"
 #include "constants.hxx"
+#include "rand.hxx"
 
 string first_level[num_tiles_high] = {
     "sssss.............aa",

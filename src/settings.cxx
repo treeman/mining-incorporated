@@ -1,6 +1,8 @@
 #include <unordered_set>
-#include "settings.hxx"
+#include <cassert>
 
+#include "settings.hxx"
+#include "conversions.hxx"
 #include "util.hxx"
 
 // Predefined keys in lua environment. We don't want to treat them as settings.
@@ -62,39 +64,81 @@ void Settings::load_from_file(string path) {
         string key = lua_tostring(L, 2);
         if (ignored_keys.count(key)) continue;
 
-        printf("key: %s\n", key.c_str());
         if (lua_isnumber(L, -1)) {
-            nums[key] = (double)lua_tonumber(L, -1);
-            printf("  num: %lf\n", nums[key]);
+            nums[key].v = (double)lua_tonumber(L, -1);
         }
         else if (lua_isstring(L, -1)) {
-            strings[key] = lua_tostring(L, -1);
-            printf("  num: %s\n", strings[key].c_str());
+            strings[key].v = lua_tostring(L, -1);
         }
         else if (lua_isboolean(L, -1)) {
-            bools[key] = lua_toboolean(L, -1);
-            printf("  bool: %d\n", bools[key]);
+            bools[key].v = lua_toboolean(L, -1);
         }
-
+        // Skip functions and tables atm.
     }
 }
 
-bool Settings::has_num_setting(string s) {
-    return nums.find(s) != nums.end();
+void Settings::set_num_setting(string s, double val) {
+    auto it = nums.find(s);
+    assert(it != nums.end());
+    it->second.v = val;
+    for (auto cb : it->second.cbs)
+        cb(val);
+    for (auto cb : global_cbs)
+        cb(s, to_string(val));
 }
+void Settings::set_bool_setting(string s, bool val) {
+    auto it = bools.find(s);
+    assert(it != bools.end());
+    it->second.v = val;
+    for (auto cb : it->second.cbs)
+        cb(val);
+    for (auto cb : global_cbs)
+        cb(s, to_string(val));
+}
+void Settings::set_string_setting(string s, string val) {
+    auto it = strings.find(s);
+    assert(it != strings.end());
+    it->second.v = val;
+    for (auto cb : it->second.cbs)
+        cb(val);
+    for (auto cb : global_cbs)
+        cb(s, val);
+}
+
+void Settings::register_global_callback(function<void(string, string)> f) {
+    global_cbs.push_back(f);
+}
+
+// TODO error reporting instead.
+void Settings::register_num_callback(string s, function<void(double)> f) {
+    auto it = nums.find(s);
+    assert(it != nums.end());
+    it->second.cbs.push_back(f);
+}
+void Settings::register_bool_callback(string s, function<void(bool)> f) {
+    auto it = bools.find(s);
+    assert(it != bools.end());
+    it->second.cbs.push_back(f);
+}
+void Settings::register_string_callback(string s, function<void(string)> f) {
+    auto it = strings.find(s);
+    assert(it != strings.end());
+    it->second.cbs.push_back(f);
+}
+
 double Settings::get_num_setting(string s) {
-    return nums.find(s)->second;
-}
-bool Settings::has_bool_setting(string s) {
-    return bools.find(s) != bools.end();
+    auto it = nums.find(s);
+    assert(it != nums.end());
+    return it->second.v;
 }
 bool Settings::get_bool_setting(string s) {
-    return bools.find(s)->second;
-}
-bool Settings::has_string_setting(string s) {
-    return strings.find(s) != strings.end();
+    auto it = bools.find(s);
+    assert(it != bools.end());
+    return it->second.v;
 }
 string Settings::get_string_setting(string s) {
-    return strings.find(s)->second;
+    auto it = strings.find(s);
+    assert(it != strings.end());
+    return it->second.v;
 }
 

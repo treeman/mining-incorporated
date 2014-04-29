@@ -13,7 +13,7 @@ Todo
     Settings is different than constants. Settings can be changed in terminal and are typically flags.
     Should split into several files.
     Need to expose the values in c++ in a nice way.
-    Global is probably nicer here.
+    Global access is probably nicer here??
 * Create a console where we can set settings and cheat etc.
 * Cleanup readme
 * General refactoring
@@ -24,6 +24,9 @@ Todo
 * Logging
 * Visal debugging
 * Remove global state
+* Make independent of screen size!
+* Remove constants.hxx. Move to lua settings file instead.
+* Waterfalling input handling!
 
 Ideas
 =====

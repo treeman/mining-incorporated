@@ -22,13 +22,10 @@ sf::Vector2f normalize(sf::Vector2f v);
 
 sf::ConvexShape make_rect(const sf::FloatRect &rect);
 
+// TODO make our own point type?
 template<typename T>
 ostream& operator<< (ostream &o, sf::Vector2<T> &p) {
     o << p.x << ", " << p.y;
     return o;
 }
 
-int rand_int(int a, int b); // Inclusive
-void set_seed(time_t t);
-
-string num2string(int);

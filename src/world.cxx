@@ -1,4 +1,5 @@
 #include "util.hxx"
+#include "rand.hxx"
 #include "world.hxx"
 #include "constants.hxx"
 #include "butler.hxx"
