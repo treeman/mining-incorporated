@@ -19,7 +19,6 @@ Todo
 * General refactoring
 * Prettier worker sprites
 * Simulation and interaction of objects
-* Remove dependencies to `util.hxx`, too many files depend on it?
 * A way to abort application
 * Logging
 * Visal debugging
@@ -27,6 +26,8 @@ Todo
 * Make independent of screen size!
 * Remove constants.hxx. Move to lua settings file instead.
 * Waterfalling input handling!
+* Scrollable history
+* Inputs for console
 
 Ideas
 =====

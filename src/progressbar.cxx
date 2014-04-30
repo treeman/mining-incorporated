@@ -1,4 +1,5 @@
 #include "progressbar.hxx"
+#include "graphics.hxx"
 
 // ^^
 const int w = 23, h = 4;

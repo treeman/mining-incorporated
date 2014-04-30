@@ -1,8 +1,3 @@
-#include <set>
-#include <sstream>
-using namespace std;
-
-#include "util.hxx"
 #include "game.hxx"
 #include "butler.hxx"
 #include "currentstate.hxx"

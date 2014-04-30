@@ -1,20 +1,19 @@
-#include <cstdlib>
-#include <time.h>
-#include <random>
+#include "graphics.hxx"
 
-#include "util.hxx"
+sf::Color make_color(int a, int r, int g, int alpha) {
+    return sf::Color(a, r, g, alpha);
+}
 
 sf::Color make_color(int hex) {
     return sf::Color(hex >> 16, hex >> 8 & 0xff, hex & 0xff);
 }
 
-float len(sf::Vector2f v) {
-    return hypot(v.x, v.y);
+sf::Color make_color(int hex, int alpha) {
+    return sf::Color(hex >> 16, hex >> 8 & 0xff, hex & 0xff, alpha);
 }
-sf::Vector2f normalize(sf::Vector2f v) {
-    float l = len(v);
-    if (l == 0) return v;
-    return v * (1.0f / l);
+
+sf::Color make_alpha_color(int hex) {
+    return sf::Color(hex >> 16, hex >> 8 & 0xff, hex & 0xff, hex >> 24);
 }
 
 sf::ConvexShape make_rect(const sf::FloatRect &rect) {

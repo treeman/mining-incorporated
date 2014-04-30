@@ -1,6 +1,5 @@
 #pragma once
 
-#include "util.hxx"
 #include "buttonlist.hxx"
 #include "roomtype.hxx"
 #include "objecttype.hxx"

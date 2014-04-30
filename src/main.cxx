@@ -1,4 +1,3 @@
-#include "util.hxx"
 #include "butler.hxx"
 #include "help.hxx"
 #include "currentstate.hxx"
@@ -45,6 +44,7 @@ int main()
 
     sf::Text mpos = create_txt("arial.ttf", 14, "0, 0");
     mpos.setPosition(8, 5);
+    console.activate();
 
     sf::Clock clock;
     while (window.isOpen() && has_state())
@@ -75,11 +75,13 @@ int main()
 
         sf::Time dt = clock.restart();
         state->update(dt);
+        console.update(dt);
 
         // Draw things!
         window.clear();
 
         state->draw();
+        console.draw();
 
         if (settings.get_bool_setting("show_mouse_pos")) {
             auto mp = sf::Mouse::getPosition(window);

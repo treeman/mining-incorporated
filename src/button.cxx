@@ -1,6 +1,7 @@
 #include "button.hxx"
 #include "butler.hxx"
 #include "constants.hxx"
+#include "graphics.hxx"
 
 Button::Button(function<void()> f, string s) : on_click(f) {
     txt = create_txt("consola.ttf", 14);

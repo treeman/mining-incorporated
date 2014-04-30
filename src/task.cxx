@@ -1,4 +1,5 @@
 #include "task.hxx"
+#include "point.hxx"
 
 // Hate this
 string to_str(TaskType type) {

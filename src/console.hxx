@@ -4,6 +4,7 @@
 #include <SFML/Audio.hpp>
 
 #include "settings.hxx"
+#include "historybox.hxx"
 
 class Console {
 public:
@@ -20,5 +21,7 @@ private:
     sf::RenderWindow &window;
     Settings &settings;
     bool is_active;
+
+    HistoryBox history;
 };
 

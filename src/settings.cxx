@@ -1,9 +1,5 @@
-#include <unordered_set>
-#include <cassert>
-
 #include "settings.hxx"
 #include "conversions.hxx"
-#include "util.hxx"
 
 // Predefined keys in lua environment. We don't want to treat them as settings.
 unordered_set<string> ignored_keys = {

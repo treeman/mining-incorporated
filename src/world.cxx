@@ -1,4 +1,4 @@
-#include "util.hxx"
+#include "graphics.hxx"
 #include "rand.hxx"
 #include "world.hxx"
 #include "constants.hxx"
