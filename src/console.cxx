@@ -1,5 +1,6 @@
 #include <iostream>
 #include "console.hxx"
+#include "string.hxx"
 
 Console::Console(sf::RenderWindow &w, Settings &s) : window(w), settings(s), is_active(false),
     history(10, 10, 300, 500), input(10, 520)
@@ -64,6 +65,18 @@ void Console::execute_cmd() {
         // TODO do some things
         history.add_line(cmd);
         input.clear();
+
+        int sp = cmd.find('=');
+        // Single command?
+        if (sp == -1) {
+            printf("cmd: '%s'\n", trim(cmd).c_str());
+        }
+        // Assignment
+        else {
+            string key = trim(cmd.substr(0, sp));
+            string val = trim(cmd.substr(sp + 1));
+            printf("key: '%s' val: '%s'\n", key.c_str(), val.c_str());
+        }
     }
 }
 
