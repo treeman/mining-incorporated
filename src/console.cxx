@@ -2,7 +2,7 @@
 #include "console.hxx"
 
 Console::Console(sf::RenderWindow &w, Settings &s) : window(w), settings(s), is_active(false),
-    history(10, 10, 300, 500)
+    history(10, 10, 300, 500), input(10, 520)
 {
     settings.register_global_callback([=](string key, string val) {
             this->new_setting(key, val);
@@ -27,9 +27,18 @@ bool Console::handle_input(const sf::Event &e) {
                 deactivate();
                 return false;
             }
-            else if (e.key.code == sf::Keyboard::Space) {
-                history.add_line("line");
+            else if (e.key.code == sf::Keyboard::Return) {
+                execute_cmd();
             }
+            else if (e.key.code == sf::Keyboard::BackSpace) {
+                input.del_char();
+            }
+            break;
+        case sf::Event::TextEntered:
+            if (e.text.unicode >= 32) {
+                input.add_char(e.text.unicode);
+            }
+            break;
         default: break;
     }
 
@@ -39,11 +48,22 @@ void Console::update(const sf::Time &dt) {
 
 }
 void Console::draw() {
-    if (is_active)
+    if (is_active) {
         history.draw(window);
+        input.draw(window);
+    }
 }
 
 void Console::new_setting(string key, string val) {
     history.add_line(key + " = " + val);
+}
+
+void Console::execute_cmd() {
+    string cmd = input.get_string();
+    if (!cmd.empty()) {
+        // TODO do some things
+        history.add_line(cmd);
+        input.clear();
+    }
 }
 

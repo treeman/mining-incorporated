@@ -27,7 +27,8 @@ Todo
 * Remove constants.hxx. Move to lua settings file instead.
 * Waterfalling input handling!
 * Scrollable history
-* Inputs for console
+* Suggestions for console
+* Console should function
 
 Ideas
 =====

@@ -5,6 +5,7 @@
 
 #include "settings.hxx"
 #include "historybox.hxx"
+#include "inputbox.hxx"
 
 class Console {
 public:
@@ -23,5 +24,7 @@ private:
     bool is_active;
 
     HistoryBox history;
+    InputBox input;
+    void execute_cmd();
 };
 
