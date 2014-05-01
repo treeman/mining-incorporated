@@ -101,6 +101,19 @@ void Settings::set_string_setting(string s, string val) {
         cb(s, val);
 }
 
+void Settings::register_num_setting(string s, double val) {
+    if (nums.find(s) == nums.end())
+        nums[s].v = val;
+}
+void Settings::register_bool_setting(string s, bool val) {
+    if (bools.find(s) == bools.end())
+        bools[s].v = val;
+}
+void Settings::register_string_setting(string s, string val) {
+    if (strings.find(s) == strings.end())
+        strings[s].v = val;
+}
+
 void Settings::register_global_callback(function<void(string, string)> f) {
     global_cbs.push_back(f);
 }

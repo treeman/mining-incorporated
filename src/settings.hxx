@@ -19,6 +19,11 @@ public:
     void set_bool_setting(string s, bool val);
     void set_string_setting(string s, string val);
 
+    // Only if no existing setting.
+    void register_num_setting(string s, double val);
+    void register_bool_setting(string s, bool val);
+    void register_string_setting(string s, string val);
+
     // When things are changing
     void register_global_callback(function<void(string, string)> f);
     void register_num_callback(string s, function<void(double)> f);

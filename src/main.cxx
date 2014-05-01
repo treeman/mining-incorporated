@@ -13,10 +13,13 @@
 int main()
 {
     Settings settings;
-    settings.load_from_file("settings.lua");
+    // Register some defaults.
+    settings.register_num_setting("screen_width", 800);
+    settings.register_num_setting("screen_height", 600);
+    settings.register_bool_setting("show_fps", false);
+    settings.register_bool_setting("show_mouse_pos", false);
 
-    settings.register_num_callback("x", [](int val) { printf("new val: %d\n", val); });
-    settings.set_num_setting("x", 12);
+    settings.load_from_file("settings.lua");
 
     sf::RenderWindow window(
         sf::VideoMode(
@@ -35,10 +38,6 @@ int main()
 
     // We want a console for everything! =)
     Console console(window, settings);
-    settings.set_num_setting("x", 13);
-    settings.set_num_setting("x", 14);
-    settings.set_bool_setting("show_mouse_pos", false);
-    settings.set_string_setting("y", "meow");
 
     push_next_state("game", window);
 
