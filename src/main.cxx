@@ -6,6 +6,7 @@
 #include "settings.hxx"
 #include "console.hxx"
 #include "rand.hxx"
+#include "inputqueue.hxx"
 
 #include <cstdlib>
 #include <ctime>
@@ -43,7 +44,10 @@ int main()
 
     sf::Text mpos = create_txt("arial.ttf", 14, "0, 0");
     mpos.setPosition(8, 5);
-    console.activate();
+    //console.activate();
+
+    InputQueue input_queue;
+    input_queue.add_handler(&console);
 
     sf::Clock clock;
     while (window.isOpen() && has_state())
@@ -52,7 +56,7 @@ int main()
         sf::Event e;
         while (window.pollEvent(e))
         {
-            bool drop = true;
+            //bool drop = true;
             switch (e.type) {
                 case sf::Event::Closed:
                     window.close();
@@ -67,8 +71,7 @@ int main()
                 default: break;
             }
 
-            drop = console.handle_input(e);
-            if (drop)
+            if (input_queue.handle_input(e))
                 state->handle_input(e);
         }
 

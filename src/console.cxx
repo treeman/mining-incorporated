@@ -43,7 +43,7 @@ bool Console::handle_input(const sf::Event &e) {
         default: break;
     }
 
-    return true;
+    return false;
 }
 void Console::update(const sf::Time &dt) {
 

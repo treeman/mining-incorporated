@@ -6,8 +6,9 @@
 #include "settings.hxx"
 #include "historybox.hxx"
 #include "inputbox.hxx"
+#include "inputhandler.hxx"
 
-class Console {
+class Console : public InputHandler {
 public:
     Console(sf::RenderWindow &w, Settings &settings);
 

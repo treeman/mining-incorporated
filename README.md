@@ -7,6 +7,7 @@ This is a continunation of my unfinished game, [Mining Incorporated](https://git
 Todo
 ====
 
+* Preview building and items, see Prison Architect
 * Refactor RoomType into OreType or similar
 * Multiple levels
 * Use lua for constants and settings
@@ -29,6 +30,8 @@ Todo
 * Scrollable history
 * Suggestions for console
 * Console should function
+* General gui for buttons and buttonlist.  
+    Should be able to replace a buttonlist "management" with a button for example.
 
 Ideas
 =====

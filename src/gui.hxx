@@ -3,14 +3,15 @@
 #include "buttonlist.hxx"
 #include "roomtype.hxx"
 #include "objecttype.hxx"
+#include "inputhandler.hxx"
 
 class World;
 
-class Gui {
+class Gui : public InputHandler {
 public:
     Gui(World *world, sf::RenderWindow &window);
 
-    void handle_input(const sf::Event &e);
+    bool handle_input(const sf::Event &e);
     void update(const sf::Time &dt);
     void draw(sf::RenderWindow &w);
 private:
@@ -45,5 +46,10 @@ private:
 
     // TODO draw other buttons/economy and things if this is true.
     bool show_management;
+
+    // Selection pointer. Can select workers and objects.
+    void want_to_select();
+    bool want_select;
+    void try_select(int x, int y);
 };
 

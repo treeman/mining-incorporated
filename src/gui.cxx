@@ -52,21 +52,27 @@ Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
     }
     subcategory.push_back(objects);
 
+    // Management
+    // TODO move away
     ButtonList management(subx, suby);
     management.add(ButtonPtr(new ClickButton([=]() mutable{
+                        this->want_to_select();
+                    }, "Select")));
+    management.add(ButtonPtr(new Button([=]() mutable{
                         this->clear_selection();
                         world->new_worker();
                     }, "Hire Worker")));
     subcategory.push_back(management);
 
-    // Management
 
     active_selection = false;
     preview_cost = 0;
     txt = create_txt("consola.ttf", 16);
+    want_select = false;
 }
 
-void Gui::handle_input(const sf::Event &e) {
+// TODO block on interactions
+bool Gui::handle_input(const sf::Event &e) {
     switch (e.type) {
         case sf::Event::MouseMoved:
             handle_move(e.mouseMove.x, e.mouseMove.y);
@@ -88,6 +94,7 @@ void Gui::handle_input(const sf::Event &e) {
             }
         default: break;
     }
+    return true;
 }
 void Gui::update(const sf::Time &dt) {
     categories.update(dt);
@@ -116,8 +123,14 @@ void Gui::handle_left_click(int x, int y) {
     if (curr_subcategory != -1)
         subcategory[curr_subcategory].check_click(p);
 
-    selection_start = sf::Vector2i(x, y);
-    active_selection = true;
+    if (want_select) {
+        try_select(x, y);
+    }
+    else {
+        // TODO refactor
+        selection_start = sf::Vector2i(x, y);
+        active_selection = true;
+    }
 }
 void Gui::handle_right_click(int x, int y) {
 
@@ -180,11 +193,13 @@ void Gui::handle_preview(int x, int y) {
     }
 }
 
+// Clear everything.
 void Gui::clear_selection() {
     room_to_build = NULL;
     object_to_build = NULL;
     for (auto bl : subcategory)
         bl.deselect_all();
+    want_select = false;
 }
 
 void Gui::draw_preview_cost(sf::RenderWindow &w) {
@@ -210,5 +225,14 @@ void Gui::draw_preview_cost(sf::RenderWindow &w) {
     stringstream ss; ss << "$" << preview_cost;
     txt.setString(ss.str());
     w.draw(txt);
+}
+
+void Gui::want_to_select() {
+    clear_selection();
+    want_select = true;
+}
+
+void Gui::try_select(int x, int y) {
+    printf("Trying to select %d,%d\n", x, y);
 }
 
