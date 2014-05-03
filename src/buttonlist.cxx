@@ -23,15 +23,15 @@ void ButtonList::deselect_all() {
 }
 
 void ButtonList::check_hover(sf::Vector2i pos) {
-    for (auto b : buttons) b->check_hover(pos);
+    //for (auto b : buttons) b->check_hover(pos);
 }
 void ButtonList::check_click(sf::Vector2i pos) {
     ButtonPtr click;
     for (auto b : buttons) {
-        if (b->check_click(pos)) {
-            click = b;
-            break;
-        }
+        //if (b->check_click(pos)) {
+            //click = b;
+            //break;
+        //}
     }
     if (click) {
         click->select();
@@ -40,6 +40,28 @@ void ButtonList::check_click(sf::Vector2i pos) {
         }
     }
 }
+// TODO nope nope nope
+bool ButtonList::is_over(int x, int y) {
+    for (auto b : buttons)
+        if (b->is_over(x, y)) return true;
+    return false;
+}
+void ButtonList::handle_hover() {
+    for (auto b : buttons)
+        b->handle_hover();
+}
+void ButtonList::handle_nonhover() {
+    for (auto b : buttons)
+        b->handle_nonhover();
+}
+void ButtonList::handle_click(int button) {
+    for (auto b : buttons)
+        b->handle_nonhover();
+}
+void ButtonList::handle_release(int button) {
+
+}
+
 void ButtonList::update(const sf::Time &dt) {
     for (auto b : buttons) b->update(dt);
 }

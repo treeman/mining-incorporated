@@ -35,6 +35,7 @@ void Button::deselect() {
     selected = false;
 }
 
+/*
 void Button::check_hover(sf::Vector2i pos) {
     hover = bound.contains(sf::Vector2f(pos));
 }
@@ -44,6 +45,14 @@ bool Button::check_click(sf::Vector2i pos) {
         return true;
     }
     return false;
+}
+*/
+void Button::handle_hover() { hover = true; }
+void Button::handle_nonhover() { hover = false; }
+void Button::handle_click(int button) { on_click(); }
+
+bool Button::is_over(int x, int y) {
+    return bound.contains(sf::Vector2f(x, y));
 }
 void Button::update(const sf::Time &dt) {
 

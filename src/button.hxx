@@ -1,8 +1,9 @@
 #pragma once
 
 #include "basicincludes.hxx"
+#include "guiobject.hxx"
 
-class Button {
+class Button : public GuiObject {
 public:
     Button(function<void()> f, string s);
     virtual ~Button() { }
@@ -13,8 +14,15 @@ public:
     virtual void select();
     virtual void deselect();
 
-    void check_hover(sf::Vector2i pos);
-    bool check_click(sf::Vector2i pos);
+    //void check_hover(sf::Vector2i pos);
+    //bool check_click(sf::Vector2i pos);
+
+    void handle_hover();
+    void handle_nonhover();
+    void handle_click(int button);
+
+    bool is_over(int x, int y);
+
     void update(const sf::Time &dt);
     void draw(sf::RenderWindow &w);
 protected:

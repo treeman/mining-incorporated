@@ -7,6 +7,7 @@ This is a continunation of my unfinished game, [Mining Incorporated](https://git
 Todo
 ====
 
+* Fix compile errors and finish ButtonList and do some gui refactoring.
 * Preview building and items, see Prison Architect
 * Refactor RoomType into OreType or similar
 * Multiple levels
