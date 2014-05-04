@@ -31,6 +31,8 @@ Todo
 * Console should function
 * General gui for buttons and buttonlist.  
     Should be able to replace a buttonlist "management" with a button for example.
+    Need to handle events in a nicer way.
+    Need to be able to style all buttons.
 * Cool pixelated graphics.
 
 Ideas
