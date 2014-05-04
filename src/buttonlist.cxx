@@ -10,18 +10,24 @@ void ButtonList::add(shared_ptr<Button> b) {
         b->set_pos(x, y);
     }
     else {
-        auto last_bound = buttons.back()->get_bounds();
+        auto last_bound = buttons.back()->bounds();
         int next_x = last_bound.left + last_bound.width + 2 * button_pad + button_space;
         b->set_pos(next_x, y);
     }
     buttons.push_back(b);
 }
 
-void ButtonList::deselect_all() {
+void ButtonList::deselect() {
     for (auto b : buttons)
         b->deselect();
 }
 
+void ButtonList::set_pos(int x, int y) {
+    printf("nope\n");
+}
+
+sf::FloatRect ButtonList::bounds() const { return sf::FloatRect(0, 0, 1, 1); }
+/*
 void ButtonList::check_hover(sf::Vector2i pos) {
     //for (auto b : buttons) b->check_hover(pos);
 }
@@ -40,12 +46,15 @@ void ButtonList::check_click(sf::Vector2i pos) {
         }
     }
 }
+*/
 // TODO nope nope nope
+/*
 bool ButtonList::is_over(int x, int y) {
     for (auto b : buttons)
         if (b->is_over(x, y)) return true;
     return false;
 }
+*/
 void ButtonList::handle_hover() {
     for (auto b : buttons)
         b->handle_hover();

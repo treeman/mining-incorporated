@@ -1,5 +1,6 @@
 #pragma once
 
+#include "guilist.hxx"
 #include "buttonlist.hxx"
 #include "roomtype.hxx"
 #include "objecttype.hxx"
@@ -28,9 +29,9 @@ private:
     World *world;
     sf::RenderWindow &window;
 
-    ButtonList categories;
+    GuiList categories;
 
-    vector<ButtonList> subcategory;
+    vector<GuiList> subcategory;
     int curr_subcategory;
 
     sf::Vector2i selection_start, selection_end;

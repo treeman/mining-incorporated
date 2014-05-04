@@ -10,9 +10,12 @@ public:
     virtual void select() { }
     virtual void deselect() { }
 
-    virtual bool is_over(sf::Vector2i pos) { return is_over(pos.x, pos.y); }
-    virtual bool is_over(int x, int y) = 0;
-    bool handle_input(const sf::Event &e);
+    virtual sf::FloatRect bounds() const = 0;
+    bool is_over(int x, int y) const;
+
+    virtual void set_pos(int x, int y) = 0;
+
+    virtual bool handle_input(const sf::Event &e);
 
     // Will get called by handle_input
     virtual void handle_hover() { }

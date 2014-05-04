@@ -29,7 +29,7 @@ Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
 
     // Rooms
     const int subx = 20, suby = 530;
-    ButtonList rooms(subx, suby);
+    GuiList rooms(subx, suby);
     for (auto x : room_info) {
         const auto info = x.second;
         if (info.name == "") continue; // Hack
@@ -41,7 +41,7 @@ Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
     subcategory.push_back(rooms);
 
     // Objects
-    ButtonList objects(subx, suby);
+    GuiList objects(subx, suby);
     for (auto x : object_info) {
         const auto info = x.second;
         if (info.name == "") continue; // Hack
@@ -54,7 +54,7 @@ Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
 
     // Management
     // TODO move away
-    ButtonList management(subx, suby);
+    GuiList management(subx, suby);
     management.add(ButtonPtr(new ClickButton([=]() mutable{
                         this->want_to_select();
                     }, "Select")));
@@ -73,6 +73,10 @@ Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
 
 // TODO block on interactions
 bool Gui::handle_input(const sf::Event &e) {
+    categories.handle_input(e);
+    if (curr_subcategory != -1)
+        subcategory[curr_subcategory].handle_input(e);
+
     switch (e.type) {
         case sf::Event::MouseMoved:
             handle_move(e.mouseMove.x, e.mouseMove.y);
@@ -111,17 +115,17 @@ void Gui::draw(sf::RenderWindow &w) {
 
 void Gui::handle_move(int x, int y) {
     sf::Vector2i p(x, y);
-    categories.check_hover(p);
-    if (curr_subcategory != -1)
-        subcategory[curr_subcategory].check_hover(p);
+    //categories.check_hover(p);
+    //if (curr_subcategory != -1)
+        //subcategory[curr_subcategory].check_hover(p);
 
     handle_preview(x, y);
 }
 void Gui::handle_left_click(int x, int y) {
     sf::Vector2i p(x, y);
-    categories.check_click(p);
-    if (curr_subcategory != -1)
-        subcategory[curr_subcategory].check_click(p);
+    //categories.check_click(p);
+    //if (curr_subcategory != -1)
+        //subcategory[curr_subcategory].check_click(p);
 
     if (want_select) {
         try_select(x, y);
@@ -198,7 +202,7 @@ void Gui::clear_selection() {
     room_to_build = NULL;
     object_to_build = NULL;
     for (auto bl : subcategory)
-        bl.deselect_all();
+        bl.deselect();
     want_select = false;
 }
 

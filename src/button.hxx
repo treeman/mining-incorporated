@@ -9,7 +9,7 @@ public:
     virtual ~Button() { }
 
     void set_pos(int x, int y);
-    sf::FloatRect get_bounds() const { return bound; }
+    sf::FloatRect bounds() const { return bound; }
 
     virtual void select();
     virtual void deselect();

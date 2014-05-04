@@ -1,5 +1,9 @@
 #include "guiobject.hxx"
 
+bool GuiObject::is_over(int x, int y) const {
+    return bounds().contains(sf::Vector2f(x, y));
+}
+
 bool GuiObject::handle_input(const sf::Event &e) {
     switch (e.type) {
         case sf::Event::MouseMoved:

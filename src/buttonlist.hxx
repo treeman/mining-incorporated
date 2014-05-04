@@ -12,7 +12,10 @@ public:
 
     void deselect();
 
-    bool is_over(int x, int y);
+    sf::FloatRect bounds() const;
+    //bool handle_input(const sf::Event &e);
+
+    void set_pos(int x, int y);
 
     void handle_hover();
     void handle_nonhover();
