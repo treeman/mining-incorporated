@@ -1,3 +1,5 @@
+// TODO
+// move to lua!
 
 // Define constants here I guess
 const int tile_width = 20;
@@ -13,3 +15,5 @@ const int button_pad = 5;
 const int button_space = 5;
 
 const int bed_capacity = 1;
+
+const double min_select_dist = 20;

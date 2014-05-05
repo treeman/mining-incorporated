@@ -10,6 +10,8 @@ class GuiList : public GuiObject {
 public:
     GuiList(int x, int y);
 
+    void deselect();
+
     void add(shared_ptr<GuiObject> o);
 
     sf::FloatRect bounds() const;

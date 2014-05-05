@@ -10,6 +10,10 @@ class Worker {
 public:
     Worker(int x, int y, World *world);
 
+    // TODO
+    // change to our own positions
+    sf::Vector2f get_pos() const { return pos; }
+
     bool is_free();
     bool assign_task(Task task);
 

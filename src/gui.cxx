@@ -1,6 +1,7 @@
 #include "gui.hxx"
 #include "world.hxx"
 #include "butler.hxx"
+#include "constants.hxx"
 
 Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
     categories(20, 570), room_to_build(NULL), object_to_build(NULL) {
@@ -55,11 +56,11 @@ Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
     // Management
     // TODO move away
     GuiList management(subx, suby);
-    management.add(ButtonPtr(new ClickButton([=]() mutable{
+    management.add(ButtonPtr(new Button([=]() mutable{
                         this->want_to_select();
                     }, "Select")));
-    management.add(ButtonPtr(new Button([=]() mutable{
-                        this->clear_selection();
+    management.add(ButtonPtr(new ClickButton([=]() mutable{
+                        this->clear_selection(); // TODO this will deselect this one T.T
                         world->new_worker();
                     }, "Hire Worker")));
     subcategory.push_back(management);
@@ -237,6 +238,17 @@ void Gui::want_to_select() {
 }
 
 void Gui::try_select(int x, int y) {
-    printf("Trying to select %d,%d\n", x, y);
+    sf::Vector2i pos = world->window2world(x, y);
+    WorkerPtr worker = world->select_closest_worker(pos.x, pos.y);
+    if (worker) {
+        // TODO better points...
+        // TODO select distance from center of worker
+        auto p = worker->get_pos();
+        double d = hypot((double)pos.x - p.x, (double)pos.y - p.y);
+        if (d <= min_select_dist) {
+            // TODO store as weak_ptr
+            printf("Worker at %lf %lf dist %lf\n", p.x, p.y, d);
+        }
+    }
 }
 

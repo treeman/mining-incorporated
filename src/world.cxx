@@ -463,6 +463,20 @@ void World::draw_stats(string pre, int &val, sf::Color color, int x, int y) {
     w.draw(stat_txt);
 }
 
+WorkerPtr World::select_closest_worker(int x, int y) {
+    WorkerPtr res = nullptr;
+    double closest = numeric_limits<double>::infinity();
+    for (auto w : workers) {
+        auto p = w->get_pos();
+        double d = hypot((double)x - p.x, (double)y - p.y);
+        if (d < closest) {
+            closest = d;
+            res = w;
+        }
+    }
+    return res;
+}
+
 int World::calculate_build_cost(int x1, int y1, int x2, int y2, RoomType type) {
     int dx = abs(x1 - x2) + 1, dy = abs(y2 - y1) + 1;
     return dx * dy * get_info(type)->cost;

@@ -5,6 +5,11 @@ GuiList::GuiList(int _x, int _y) : x(_x), y(_y), space(button_space) {
 
 }
 
+void GuiList::deselect() {
+    for (auto o : objects) {
+        o->deselect();
+    }
+}
 void GuiList::add(shared_ptr<GuiObject> o) {
     if (objects.empty()) {
         o->set_pos(x, y);
@@ -32,17 +37,22 @@ bool GuiList::handle_input(const sf::Event &e) {
         case sf::Event::MouseMoved:
             for (auto o : objects) {
                 if (o->is_over(e.mouseMove.x, e.mouseMove.y)) {
-                    if (!o->handle_input(e)) return false;
+                    o->handle_hover();
                 }
                 else {
+                    o->handle_nonhover();
                 }
             }
         case sf::Event::MouseButtonPressed:
-        case sf::Event::MouseButtonReleased:
+            if (is_over(e.mouseButton.x, e.mouseButton.y))
+                deselect();
+
             for (auto o : objects) {
-                if (o->is_over(e.mouseButton.x, e.mouseButton.y))
-                    if (!o->handle_input(e)) return false;
+                if (o->is_over(e.mouseButton.x, e.mouseButton.y)) {
+                    o->handle_click(e.mouseButton.button);
+                }
             }
+        case sf::Event::MouseButtonReleased:
         default: break;
     }
     return true;

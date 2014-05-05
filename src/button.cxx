@@ -49,7 +49,10 @@ bool Button::check_click(sf::Vector2i pos) {
 */
 void Button::handle_hover() { hover = true; }
 void Button::handle_nonhover() { hover = false; }
-void Button::handle_click(int button) { on_click(); }
+void Button::handle_click(int button) {
+    selected = true;
+    on_click();
+}
 
 bool Button::is_over(int x, int y) {
     return bound.contains(sf::Vector2f(x, y));

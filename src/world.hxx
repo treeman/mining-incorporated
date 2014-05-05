@@ -63,6 +63,8 @@ public:
     void skip_task(Task task);
     void assign_tasks();
 
+    WorkerPtr select_closest_worker(int x, int y);
+
     int calculate_build_cost(int x1, int y1, int x2, int y2, RoomType type);
     RoomType get_tile_type(int x, int y);
 private:
