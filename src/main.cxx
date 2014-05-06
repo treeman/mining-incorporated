@@ -7,14 +7,18 @@
 #include "console.hxx"
 #include "rand.hxx"
 #include "inputqueue.hxx"
+#include "locator.hxx"
 
 #include <cstdlib>
 #include <ctime>
 
 int main()
 {
-    Settings settings;
+    // Init global functions.
+    Locator::init();
+
     // Register some defaults.
+    Settings &settings = Locator::get_settings();
     settings.register_num_setting("screen_width", 800);
     settings.register_num_setting("screen_height", 600);
     settings.register_bool_setting("show_fps", false);
@@ -38,7 +42,7 @@ int main()
     set_seed(time(NULL));
 
     // We want a console for everything! =)
-    Console console(window, settings);
+    Console console(window);
 
     push_next_state("game", window);
 

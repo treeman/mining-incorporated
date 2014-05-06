@@ -1,5 +1,6 @@
 #pragma once
 
+// TODO load from lua
 struct Resources {
     Resources() :
         money(100),

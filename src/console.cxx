@@ -1,11 +1,13 @@
 #include <iostream>
 #include "console.hxx"
+#include "locator.hxx"
 #include "string.hxx"
 
-Console::Console(sf::RenderWindow &w, Settings &s) : window(w), settings(s), is_active(false),
+Console::Console(sf::RenderWindow &w) : window(w), is_active(false),
     history(10, 10, 300, 500), input(10, 520)
 {
-    settings.register_global_callback([=](string key, string val) {
+    Settings &settings = Locator::get_settings();
+    settings.register_global_callback([this](string key, string val) {
             this->new_setting(key, val);
         });
 }

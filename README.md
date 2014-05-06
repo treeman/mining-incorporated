@@ -11,11 +11,8 @@ Todo
 * Preview building and items, see Prison Architect
 * Refactor RoomType into OreType or similar
 * Multiple levels
-* Use lua for constants and settings
-    Settings is different than constants. Settings can be changed in terminal and are typically flags.
-    Should split into several files.
-    Need to expose the values in c++ in a nice way.
-    Global access is probably nicer here??
+* Use lua for constants and definitions
+    Would be cool to be able to change some things via console (colors etc?)
 * Create a console where we can set settings and cheat etc.
 * General refactoring
 * Prettier worker sprites
@@ -23,7 +20,10 @@ Todo
 * A way to abort application
 * Logging
 * Visal debugging
-* Remove global state
+* Move global state to Locator
+    * Butler
+    * Log
+    * Visual debugging
 * Make independent of screen size!
 * Remove constants.hxx. Move to lua settings file instead.
 * Scrollable history

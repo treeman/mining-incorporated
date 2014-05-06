@@ -10,7 +10,7 @@
 
 class Console : public InputHandler {
 public:
-    Console(sf::RenderWindow &w, Settings &settings);
+    Console(sf::RenderWindow &w);
 
     void activate();
     void deactivate();
@@ -21,7 +21,6 @@ public:
 private:
     void new_setting(string key, string val);
     sf::RenderWindow &window;
-    Settings &settings;
     bool is_active;
 
     HistoryBox history;
