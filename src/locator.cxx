@@ -13,5 +13,14 @@ Settings &Locator::get_settings() {
     return *settings;
 }
 
+Logger &Locator::get_logger() {
+    assert(logger != nullptr);
+    return *logger;
+}
+void Locator::provide_logger(unique_ptr<Logger> next) {
+    logger.swap(next);
+}
+
 unique_ptr<Settings> Locator::settings{ nullptr };
+unique_ptr<Logger> Locator::logger{ nullptr };
 

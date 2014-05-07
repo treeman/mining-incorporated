@@ -8,6 +8,7 @@
 #include "rand.hxx"
 #include "inputqueue.hxx"
 #include "locator.hxx"
+#include "consolelogger.hxx"
 
 #include <cstdlib>
 #include <ctime>
@@ -16,6 +17,13 @@ int main()
 {
     // Init global functions.
     Locator::init();
+
+    // Log to console atm
+    Locator::provide_logger(unique_ptr<Logger>(new ConsoleLogger()));
+
+    L_ << "Hello!\n";
+    L_("answer to life: %d\n", 42);
+    L_("hbl\n");
 
     // Register some defaults.
     Settings &settings = Locator::get_settings();
