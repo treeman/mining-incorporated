@@ -54,9 +54,6 @@ void Button::handle_click(int button) {
     on_click();
 }
 
-bool Button::is_over(int x, int y) {
-    return bound.contains(sf::Vector2f(x, y));
-}
 void Button::update(const sf::Time &dt) {
 
 }

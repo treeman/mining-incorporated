@@ -1,8 +1,8 @@
 #include "guilist.hxx"
 #include "constants.hxx"
+#include "locator.hxx"
 
 GuiList::GuiList(int _x, int _y) : x(_x), y(_y), space(button_space) {
-
 }
 
 void GuiList::deselect() {

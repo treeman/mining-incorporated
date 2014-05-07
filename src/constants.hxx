@@ -12,7 +12,7 @@ const int screen_width = 800;
 const int screen_height = 600;
 
 const int button_pad = 5;
-const int button_space = 5;
+const int button_space = 15;
 
 const int bed_capacity = 1;
 

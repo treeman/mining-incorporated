@@ -1,7 +1,6 @@
 #pragma once
 
 #include "guilist.hxx"
-#include "buttonlist.hxx"
 #include "roomtype.hxx"
 #include "objecttype.hxx"
 #include "inputhandler.hxx"

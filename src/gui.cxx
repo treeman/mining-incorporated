@@ -2,6 +2,7 @@
 #include "world.hxx"
 #include "butler.hxx"
 #include "constants.hxx"
+#include "button.hxx"
 
 Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
     categories(20, 570), room_to_build(NULL), object_to_build(NULL) {

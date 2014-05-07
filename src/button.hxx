@@ -8,23 +8,22 @@ public:
     Button(function<void()> f, string s);
     virtual ~Button() { }
 
-    void set_pos(int x, int y);
-    sf::FloatRect bounds() const { return bound; }
+    virtual void select() override;
+    virtual void deselect() override;
 
-    virtual void select();
-    virtual void deselect();
+    sf::FloatRect bounds() const override { return bound; }
+
+    void set_pos(int x, int y) override;
 
     //void check_hover(sf::Vector2i pos);
     //bool check_click(sf::Vector2i pos);
 
-    void handle_hover();
-    void handle_nonhover();
-    void handle_click(int button);
+    void handle_hover() override;
+    void handle_nonhover() override;
+    void handle_click(int button) override;
 
-    bool is_over(int x, int y);
-
-    void update(const sf::Time &dt);
-    void draw(sf::RenderWindow &w);
+    void update(const sf::Time &dt) override;
+    void draw(sf::RenderWindow &w) override;
 protected:
     sf::Text txt;
     sf::FloatRect bound;
