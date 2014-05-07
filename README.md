@@ -7,7 +7,6 @@ This is a continunation of my unfinished game, [Mining Incorporated](https://git
 Todo
 ====
 
-* Fix compile errors and finish ButtonList and do some gui refactoring.
 * Preview building and items, see Prison Architect
 * Refactor RoomType into OreType or similar
 * Multiple levels
@@ -18,12 +17,10 @@ Todo
 * Prettier worker sprites
 * Simulation and interaction of objects
 * A way to abort application
-* Logging
-* Visal debugging
+* Logging  
+    * Cannot `<< endl` to it
 * Move global state to Locator
     * Butler
-    * Log
-    * Visual debugging
 * Make independent of screen size!
 * Remove constants.hxx. Move to lua settings file instead.
 * Scrollable history
@@ -34,6 +31,7 @@ Todo
     Need to handle events in a nicer way.
     Need to be able to style all buttons.
 * Cool pixelated graphics.
+* Fix buttonlist and buttons proper positioning
 
 Ideas
 =====
