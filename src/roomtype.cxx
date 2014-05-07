@@ -47,6 +47,8 @@ void init_rooms() {
     //rock.remove_time = 0.2;
     room_info.insert(make_pair(Rock, rock));
 
+    // TODO
+    // read from lua!
     add_buildable_room(Mine, "Mine", "stone_tile.png", 0);
     add_buildable_room(Baracks, "Baracks", "wood_tile.png", 10);
     add_buildable_room(Office, "Office", "marble_tile.png", 10);
@@ -67,7 +69,7 @@ RoomInfo *get_info(RoomType type) {
     auto it = room_info.find(type);
     if (it == room_info.end()) {
         printf("Error! Could not find RoomType %d!\n", type);
-        return NULL;
+        return nullptr;
     }
     return &it->second;
 }

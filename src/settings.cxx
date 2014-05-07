@@ -72,6 +72,7 @@ void Settings::load_from_file(string path) {
         }
         // Skip functions and tables atm.
     }
+    lua_pop(L, 1);
 }
 
 void Settings::set_num(string s, double val) {

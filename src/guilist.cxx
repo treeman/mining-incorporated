@@ -2,7 +2,9 @@
 #include "constants.hxx"
 #include "locator.hxx"
 
-GuiList::GuiList(int _x, int _y) : x(_x), y(_y), space(button_space) {
+GuiList::GuiList(int _x, int _y) : x(_x), y(_y),
+    space(Locator::get_settings().get_num("button_space")) // TODO make this general
+{
 }
 
 void GuiList::deselect() {

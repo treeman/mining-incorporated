@@ -30,6 +30,9 @@ int main()
     settings.register_bool("show_mouse_pos", false);
 
     settings.load_from_file("settings.lua");
+    // TODO make something more general?
+    // Should all be settings?
+    settings.load_from_file("gui.lua");
 
     sf::RenderWindow window(
         sf::VideoMode(
@@ -47,7 +50,7 @@ int main()
     // TODO remove/move!
     // Yes it's happning here!
     init_rooms();
-    set_seed(time(NULL));
+    set_seed(time(0));
 
     // We want a console for everything! =)
     Console console(window);
@@ -91,16 +94,17 @@ int main()
         window.clear();
 
         state->draw();
-        console.draw();
 
         if (settings.get_bool("show_mouse_pos")) {
             auto mp = sf::Mouse::getPosition(window);
-            stringstream ss; ss << mp.x << ", " << mp.y;
-            D_.tmp("mpos: " + ss.str());
+            D_.tmp("mpos: " + to_string(mp.x) + ", " + to_string(mp.y));
         }
 
         // Debugger logs and possibly draws last.
         Locator::get_debug().update();
+
+        // Well console is last, heh!
+        console.draw();
 
         window.display();
     }

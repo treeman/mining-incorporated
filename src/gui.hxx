@@ -28,9 +28,9 @@ private:
     World *world;
     sf::RenderWindow &window;
 
-    GuiList categories;
+    unique_ptr<GuiList> categories;
 
-    vector<GuiList> subcategory;
+    vector<unique_ptr<GuiList>> subcategory;
     int curr_subcategory;
 
     sf::Vector2i selection_start, selection_end;

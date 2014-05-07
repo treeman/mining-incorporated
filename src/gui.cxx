@@ -5,22 +5,24 @@
 #include "button.hxx"
 
 Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
-    categories(20, 570), room_to_build(NULL), object_to_build(NULL) {
+    room_to_build(nullptr), object_to_build(nullptr)
+{
+    unique_ptr<GuiList>(new GuiList(20, 570)).swap(categories);
 
     // A bit hacky, could refactor into gui elements.
     curr_subcategory = -1;
     show_management = false;
-    categories.add(ButtonPtr(new Button([&]() mutable {
+    categories->add(ButtonPtr(new Button([&]() mutable {
             curr_subcategory = 0;
             this->clear_selection();
             show_management = false;
         }, "Rooms")));
-    categories.add(ButtonPtr(new Button([&]() mutable {
+    categories->add(ButtonPtr(new Button([&]() mutable {
             curr_subcategory = 1;
             this->clear_selection();
             show_management = false;
         }, "Objects")));
-    categories.add(ButtonPtr(new Button([&]() mutable {
+    categories->add(ButtonPtr(new Button([&]() mutable {
             //curr_subcategory = -1;
             show_management = true;
             //curr_subcategory = 1;
@@ -31,41 +33,40 @@ Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
 
     // Rooms
     const int subx = 20, suby = 530;
-    GuiList rooms(subx, suby);
+    unique_ptr<GuiList> rooms(new GuiList(subx, suby));
     for (auto x : room_info) {
-        const auto info = x.second;
+        auto &info = x.second;
         if (info.name == "") continue; // Hack
-        rooms.add(ButtonPtr(new Button([=]() mutable {
-                        this->room_to_build = get_info(info.type); // TODO we hacve info already?!?
-                        this->object_to_build = NULL;
+        rooms->add(ButtonPtr(new Button([=]() mutable {
+                        this->room_to_build = &info;
+                        this->object_to_build = nullptr;
                     }, info.name)));
     }
-    subcategory.push_back(rooms);
+    subcategory.push_back(move(rooms));
 
     // Objects
-    GuiList objects(subx, suby);
+    unique_ptr<GuiList> objects(new GuiList(subx, suby));
     for (auto x : object_info) {
-        const auto info = x.second;
+        auto &info = x.second;
         if (info.name == "") continue; // Hack
-        objects.add(ButtonPtr(new Button([=]() mutable {
-                        this->object_to_build = get_info(info.type); // TODO we have it??
-                        this->room_to_build = NULL;
+        objects->add(ButtonPtr(new Button([=]() mutable {
+                        this->object_to_build = &info;
+                        this->room_to_build = nullptr;
                     }, info.name)));
     }
-    subcategory.push_back(objects);
+    subcategory.push_back(move(objects));
 
     // Management
     // TODO move away
-    GuiList management(subx, suby);
-    management.add(ButtonPtr(new Button([=]() mutable{
+    unique_ptr<GuiList> management(new GuiList(subx, suby));
+    management->add(ButtonPtr(new Button([=]() mutable{
                         this->want_to_select();
                     }, "Select")));
-    management.add(ButtonPtr(new ClickButton([=]() mutable{
+    management->add(ButtonPtr(new ClickButton([=]() mutable{
                         this->clear_selection(); // TODO this will deselect this one T.T
                         world->new_worker();
                     }, "Hire Worker")));
-    subcategory.push_back(management);
-
+    subcategory.push_back(move(management));
 
     active_selection = false;
     preview_cost = 0;
@@ -75,9 +76,9 @@ Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
 
 // TODO block on interactions
 bool Gui::handle_input(const sf::Event &e) {
-    categories.handle_input(e);
+    categories->handle_input(e);
     if (curr_subcategory != -1)
-        subcategory[curr_subcategory].handle_input(e);
+        subcategory[curr_subcategory]->handle_input(e);
 
     switch (e.type) {
         case sf::Event::MouseMoved:
@@ -103,14 +104,14 @@ bool Gui::handle_input(const sf::Event &e) {
     return true;
 }
 void Gui::update(const sf::Time &dt) {
-    categories.update(dt);
+    categories->update(dt);
     if (curr_subcategory != -1)
-        subcategory[curr_subcategory].update(dt);
+        subcategory[curr_subcategory]->update(dt);
 }
 void Gui::draw(sf::RenderWindow &w) {
-    categories.draw(w);
+    categories->draw(w);
     if (curr_subcategory != -1)
-        subcategory[curr_subcategory].draw(w);
+        subcategory[curr_subcategory]->draw(w);
     if (preview_cost)
         draw_preview_cost(w);
 }
@@ -201,10 +202,10 @@ void Gui::handle_preview(int x, int y) {
 
 // Clear everything.
 void Gui::clear_selection() {
-    room_to_build = NULL;
-    object_to_build = NULL;
-    for (auto bl : subcategory)
-        bl.deselect();
+    room_to_build = nullptr;
+    object_to_build = nullptr;
+    for (auto &bl : subcategory)
+        bl->deselect();
     want_select = false;
 }
 
