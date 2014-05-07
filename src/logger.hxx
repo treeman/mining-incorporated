@@ -61,6 +61,8 @@ class Logger {
 public:
     virtual ~Logger() { }
 
+    // TODO
+    // cannot chain << endl!
     // c++ style
     template<typename T>
     Logger &operator << (T v) {

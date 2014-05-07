@@ -11,7 +11,9 @@ void ButtonList::add(shared_ptr<Button> b) {
     }
     else {
         auto last_bound = buttons.back()->bounds();
-        int next_x = last_bound.left + last_bound.width + 2 * button_pad + button_space;
+        // TODO this doesn't do anything!
+        //int next_x = last_bound.left + last_bound.width + 2 * button_pad + button_space;
+        int next_x = 0;
         b->set_pos(next_x, y);
     }
     buttons.push_back(b);

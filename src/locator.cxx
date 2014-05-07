@@ -21,6 +21,24 @@ void Locator::provide_logger(unique_ptr<Logger> next) {
     logger.swap(next);
 }
 
+Debug &Locator::get_debug() {
+    assert(debug != nullptr);
+    return *debug;
+}
+void Locator::provide_debug(unique_ptr<Debug> d) {
+    debug.swap(d);
+}
+
+sf::RenderWindow &Locator::get_window() {
+    assert(window != nullptr);
+    return *window;
+}
+void Locator::provide_window(sf::RenderWindow *w) {
+    window = w;
+}
+
 unique_ptr<Settings> Locator::settings{ nullptr };
 unique_ptr<Logger> Locator::logger{ nullptr };
+unique_ptr<Debug> Locator::debug{ nullptr };
+sf::RenderWindow *Locator::window{ nullptr };
 

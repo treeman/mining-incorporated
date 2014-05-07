@@ -1,5 +1,6 @@
 #include "settings.hxx"
 #include "string.hxx"
+#include "locator.hxx"
 
 // Predefined keys in lua environment. We don't want to treat them as settings.
 unordered_set<string> ignored_keys = {
@@ -73,7 +74,7 @@ void Settings::load_from_file(string path) {
     }
 }
 
-void Settings::set_num_setting(string s, double val) {
+void Settings::set_num(string s, double val) {
     auto it = nums.find(s);
     assert(it != nums.end());
     it->second.v = val;
@@ -82,7 +83,7 @@ void Settings::set_num_setting(string s, double val) {
     for (auto cb : global_cbs)
         cb(s, to_string(val));
 }
-void Settings::set_bool_setting(string s, bool val) {
+void Settings::set_bool(string s, bool val) {
     auto it = bools.find(s);
     assert(it != bools.end());
     it->second.v = val;
@@ -91,7 +92,7 @@ void Settings::set_bool_setting(string s, bool val) {
     for (auto cb : global_cbs)
         cb(s, to_string(val));
 }
-void Settings::set_string_setting(string s, string val) {
+void Settings::set_string(string s, string val) {
     auto it = strings.find(s);
     assert(it != strings.end());
     it->second.v = val;
@@ -101,15 +102,15 @@ void Settings::set_string_setting(string s, string val) {
         cb(s, val);
 }
 
-void Settings::register_num_setting(string s, double val) {
+void Settings::register_num(string s, double val) {
     if (nums.find(s) == nums.end())
         nums[s].v = val;
 }
-void Settings::register_bool_setting(string s, bool val) {
+void Settings::register_bool(string s, bool val) {
     if (bools.find(s) == bools.end())
         bools[s].v = val;
 }
-void Settings::register_string_setting(string s, string val) {
+void Settings::register_string(string s, string val) {
     if (strings.find(s) == strings.end())
         strings[s].v = val;
 }
@@ -135,17 +136,17 @@ void Settings::register_string_callback(string s, function<void(string)> f) {
     it->second.cbs.push_back(f);
 }
 
-double Settings::get_num_setting(string s) {
+double Settings::get_num(string s) {
     auto it = nums.find(s);
     assert(it != nums.end());
     return it->second.v;
 }
-bool Settings::get_bool_setting(string s) {
+bool Settings::get_bool(string s) {
     auto it = bools.find(s);
     assert(it != bools.end());
     return it->second.v;
 }
-string Settings::get_string_setting(string s) {
+string Settings::get_string(string s) {
     auto it = strings.find(s);
     assert(it != strings.end());
     return it->second.v;

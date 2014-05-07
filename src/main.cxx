@@ -9,6 +9,7 @@
 #include "inputqueue.hxx"
 #include "locator.hxx"
 #include "consolelogger.hxx"
+#include "visualdebug.hxx"
 
 #include <cstdlib>
 #include <ctime>
@@ -21,28 +22,27 @@ int main()
     // Log to console atm
     Locator::provide_logger(unique_ptr<Logger>(new ConsoleLogger()));
 
-    L_ << "Hello!\n";
-    L_("answer to life: %d\n", 42);
-    L_("hbl\n");
-
     // Register some defaults.
     Settings &settings = Locator::get_settings();
-    settings.register_num_setting("screen_width", 800);
-    settings.register_num_setting("screen_height", 600);
-    settings.register_bool_setting("show_fps", false);
-    settings.register_bool_setting("show_mouse_pos", false);
+    settings.register_num("screen_width", 800);
+    settings.register_num("screen_height", 600);
+    settings.register_bool("show_fps", false);
+    settings.register_bool("show_mouse_pos", false);
 
     settings.load_from_file("settings.lua");
 
     sf::RenderWindow window(
         sf::VideoMode(
             // TODO cannot handle different settings here, will bork aspect ratio of tiles.
-            (int)settings.get_num_setting("screen_width"),
-            (int)settings.get_num_setting("screen_height")
+            (int)settings.get_num("screen_width"),
+            (int)settings.get_num("screen_height")
         ),
         "Mining Inc.",
         sf::Style::None
     );
+
+    Locator::provide_window(&window);
+    Locator::provide_debug(unique_ptr<VisualDebug>(new VisualDebug()));
 
     // TODO remove/move!
     // Yes it's happning here!
@@ -53,10 +53,6 @@ int main()
     Console console(window);
 
     push_next_state("game", window);
-
-    sf::Text mpos = create_txt("arial.ttf", 14, "0, 0");
-    mpos.setPosition(8, 5);
-    //console.activate();
 
     InputQueue input_queue;
     input_queue.add_handler(&console);
@@ -97,12 +93,14 @@ int main()
         state->draw();
         console.draw();
 
-        if (settings.get_bool_setting("show_mouse_pos")) {
+        if (settings.get_bool("show_mouse_pos")) {
             auto mp = sf::Mouse::getPosition(window);
             stringstream ss; ss << mp.x << ", " << mp.y;
-            mpos.setString(ss.str());
-            window.draw(mpos);
+            D_.tmp("mpos: " + ss.str());
         }
+
+        // Debugger logs and possibly draws last.
+        Locator::get_debug().update();
 
         window.display();
     }

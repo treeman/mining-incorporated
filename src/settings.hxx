@@ -11,18 +11,18 @@ public:
     void load_from_file(string path);
 
     // TODO something prettier?
-    double get_num_setting(string s);
-    bool get_bool_setting(string s);
-    string get_string_setting(string s);
+    double get_num(string s);
+    bool get_bool(string s);
+    string get_string(string s);
 
-    void set_num_setting(string s, double val);
-    void set_bool_setting(string s, bool val);
-    void set_string_setting(string s, string val);
+    void set_num(string s, double val);
+    void set_bool(string s, bool val);
+    void set_string(string s, string val);
 
     // Only if no existing setting.
-    void register_num_setting(string s, double val);
-    void register_bool_setting(string s, bool val);
-    void register_string_setting(string s, string val);
+    void register_num(string s, double val);
+    void register_bool(string s, bool val);
+    void register_string(string s, string val);
 
     // When things are changing
     void register_global_callback(function<void(string, string)> f);
