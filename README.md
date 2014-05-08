@@ -7,10 +7,6 @@ This is a continunation of my unfinished game, [Mining Incorporated](https://git
 Todo
 ====
 
-* Create a fmt function which formats strings like printf
-    But with improvements:
-    1. Type safe via variable arg templates
-    2. Can do fmt("one: %s", s) with a c++ string s
 * Finalize loading ground types from ground.lua
     * Then use those as references
     * Continue in the same fashion with ores and rooms
@@ -26,7 +22,6 @@ Todo
 * General refactoring
 * Prettier worker sprites
 * Simulation and interaction of objects
-* A way to abort application
 * Logging  
     * Cannot `<< endl` to it, but maybe that's ok?
 * Move global state to Locator
@@ -39,6 +34,7 @@ Todo
 * Develop guiobjects and collections
     Need to be able to style everything in collection
 * Cool pixelated graphics.
+* Extend fmt to allow precision and long types, possibly.
 
 * Consider Command pattern with actors to handle input
 * Flyweight pattern for tile handling?
