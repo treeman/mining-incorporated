@@ -11,18 +11,15 @@ bool is_predefined_lua_key(string key);
 // RAII for lua object
 class LuaState {
 public:
-    LuaState() : L( lua_open() ) {
-        luaL_openlibs( L );
-    }
+    LuaState();
+    ~LuaState();
 
-    ~LuaState() {
-        lua_close( L );
-    }
-    //implicitly act as a lua_State pointer
-    inline operator lua_State*() {
-        return L;
-    }
+    // Implicitly act as a lua_State pointer
+    operator lua_State*() { return L; }
 
+
+    void dump_stack();
+    int stack_size() const;
 protected:
     lua_State *L;
 };
