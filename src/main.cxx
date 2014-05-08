@@ -10,6 +10,7 @@
 #include "locator.hxx"
 #include "consolelogger.hxx"
 #include "visualdebug.hxx"
+#include "ground.hxx"
 
 #include <cstdlib>
 #include <ctime>
@@ -21,6 +22,9 @@ int main()
 
     // Log to console atm
     Locator::provide_logger(unique_ptr<Logger>(new ConsoleLogger()));
+
+    // Some tests
+    load_ground_definitions("ground.lua");
 
     // Register some defaults.
     Settings &settings = Locator::get_settings();

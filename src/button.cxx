@@ -2,6 +2,7 @@
 #include "butler.hxx"
 #include "constants.hxx"
 #include "graphics.hxx"
+#include "locator.hxx"
 
 Button::Button(function<void()> f, string s) : on_click(f) {
     txt = create_txt("consola.ttf", 14);
@@ -15,6 +16,7 @@ void Button::set_pos(int x, int y) {
 
     auto txt_box = txt.getGlobalBounds();
 
+    const int button_pad = (int)Locator::get_settings().get_num("button_pad");
     bound.left = txt_box.left - button_pad;
     bound.top = txt_box.top - button_pad;
     bound.width = txt_box.width + 2 * button_pad;

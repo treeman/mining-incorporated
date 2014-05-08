@@ -2,49 +2,6 @@
 #include "string.hxx"
 #include "locator.hxx"
 
-// Predefined keys in lua environment. We don't want to treat them as settings.
-unordered_set<string> ignored_keys = {
-    "string",
-    "xpcall",
-    "package",
-    "tostring",
-    "print",
-    "os",
-    "unpack",
-    "require",
-    "getfenv",
-    "setmetatable",
-    "next",
-    "assert",
-    "tonumber",
-    "io",
-    "rawequal",
-    "collectgarbage",
-    "getmetatable",
-    "module",
-    "rawset",
-    "math",
-    "debug",
-    "pcall",
-    "table",
-    "newproxy",
-    "type",
-    "coroutine",
-    "_G",
-    "select",
-    "gcinfo",
-    "pairs",
-    "rawget",
-    "loadstring",
-    "ipairs",
-    "_VERSION",
-    "dofile",
-    "setfenv",
-    "load",
-    "error",
-    "loadfile",
-};
-
 Settings::Settings() {
 }
 
@@ -59,7 +16,7 @@ void Settings::load_from_file(string path) {
     lua_getglobal(L, "_G");
     for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
         string key = lua_tostring(L, 2);
-        if (ignored_keys.count(key)) continue;
+        if (is_predefined_lua_key(key)) continue;
 
         if (lua_isnumber(L, -1)) {
             nums[key].v = (double)lua_tonumber(L, -1);

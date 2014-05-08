@@ -18,7 +18,7 @@ Todo
 * Simulation and interaction of objects
 * A way to abort application
 * Logging  
-    * Cannot `<< endl` to it
+    * Cannot `<< endl` to it, but maybe that's ok?
 * Move global state to Locator
     * Butler
 * Make independent of screen size!
@@ -29,7 +29,11 @@ Todo
 * Develop guiobjects and collections
     Need to be able to style everything in collection
 * Cool pixelated graphics.
-* Fix buttonlist and buttons proper positioning
+
+* Consider Command pattern with actors to handle input
+* Flyweight pattern for tile handling?
+* Tiles as data, load from lua
+* Prototypes in lua ("mixins" from tables)
 
 Ideas
 =====
@@ -55,6 +59,11 @@ Inspiration taken from Evil Genius, Theme Hospital, Rollercoaster Tycoon, Prison
 * Art Style
     Everything ordinary in Black/White
     Ores and things produced by ores are the only things with color.
+
+Ground
+------
+
+* Unmined rock terrain
 
 Rooms
 -----
