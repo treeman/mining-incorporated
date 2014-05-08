@@ -30,7 +30,7 @@ public:
     void register_bool_callback(string s, function<void(bool)> f);
     void register_string_callback(string s, function<void(string)> f);
 private:
-    LuaState L;
+    //LuaState L;
 
     template<typename T>
     struct Type {

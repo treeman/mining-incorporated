@@ -7,6 +7,14 @@ This is a continunation of my unfinished game, [Mining Incorporated](https://git
 Todo
 ====
 
+* Create a fmt function which formats strings like printf
+    But with improvements:
+    1. Type safe via variable arg templates
+    2. Can do fmt("one: %s", s) with a c++ string s
+* Finalize loading ground types from ground.lua
+    * Then use those as references
+    * Continue in the same fashion with ores and rooms
+
 * Preview building and items, see Prison Architect
 * Refactor RoomType into OreType or similar
 * Multiple levels
@@ -34,6 +42,7 @@ Todo
 * Flyweight pattern for tile handling?
 * Tiles as data, load from lua
 * Prototypes in lua ("mixins" from tables)
+* State for worker handling
 
 Ideas
 =====

@@ -6,6 +6,9 @@ Settings::Settings() {
 }
 
 void Settings::load_from_file(string path) {
+    LuaState L;
+
+    L_("Loading settings from file %s\n", path.c_str());
     if (luaL_dofile(L, path.c_str())) {
         const char *err = lua_tostring(L, -1);
         printf("Lua error: %s\n", err);
@@ -20,17 +23,21 @@ void Settings::load_from_file(string path) {
 
         if (lua_isnumber(L, -1)) {
             nums[key].v = (double)lua_tonumber(L, -1);
+            L_("  %s = %g\n", key.c_str(), nums[key].v);
         }
         else if (lua_isstring(L, -1)) {
             strings[key].v = lua_tostring(L, -1);
+            L_("  %s = %s\n", key.c_str(), strings[key].v.c_str());
         }
         else if (lua_isboolean(L, -1)) {
             bools[key].v = lua_toboolean(L, -1);
+            L_("  %s = %s\n", key.c_str(), bools[key].v ? "true" : "false");
         }
         // Skip functions and tables atm.
     }
     lua_pop(L, 1);
     assert(L.stack_size() == 0);
+    L_("load done\n");
 }
 
 void Settings::set_num(string s, double val) {

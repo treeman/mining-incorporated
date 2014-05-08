@@ -29,6 +29,9 @@ void Locator::provide_debug(unique_ptr<Debug> d) {
     debug.swap(d);
 }
 
+bool Locator::has_window() {
+    return window != nullptr;
+}
 sf::RenderWindow &Locator::get_window() {
     assert(window != nullptr);
     return *window;

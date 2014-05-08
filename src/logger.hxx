@@ -6,57 +6,8 @@
 #include <string>
 using namespace std;
 
-// TODO
-// Poke with this with updated gcc.
-// http://stackoverflow.com/questions/17671772/c11-variadic-printf-performance
-/*
-const char *normalizeArg(const string& arg) {
-   return arg.c_str();
-}
-*/
+#include "safe_printf.hxx"
 
-/*
-template <class T>
-typename enable_if<is_integral<T>::value, long>::type
-normalizeArg(T arg)
-{
-    return arg;
-}
-*/
-/*
-template <class T>
-typename enable_if<is_floating_point<T>::value, double>::type
-normalizeArg(T arg) { return arg; }
-
-template <class T>
-typename enable_if<is_pointer<T>::value, T>::type
-normalizeArg(T arg) { return arg; }
-*/
-
-/*
-void check_printf(const char *f) {
-    for (; *f; ++f) {
-        if (*f != '%' || *++f == '%') continue;
-        //throw exception;
-        printf("failed format!\n");
-    }
-}
-template<class T, typename... Ts>
-void check_printf(const char *f, const T &t, const Ts&... ts) {
-    for (; *f; ++f) {
-        if (*f != '%' || *++f == '%') continue;
-        switch (*f) {
-            case 'f':
-            case 'g':
-                assert(is_floating_point<T>::value);
-                break;
-            default: printf("failed format!\n");
-        }
-        return check_printf(++f, ts...);
-    }
-    printf("too few argument specifiers.\n");
-}
-*/
 class Logger {
 public:
     virtual ~Logger() { }
@@ -78,9 +29,10 @@ public:
         // TODO make type safe later.
         //check_printf(f, normalizeArg(ts)...);
 
-        char buf[4048];
-        snprintf(buf, 4048, f, ts...);
-        write(buf);
+        safe_printf(f, ts...);
+        //char buf[4048];
+        //snprintf(buf, 4048, f, ts...);
+        //write(buf);
     }
 private:
     virtual void write(string s) = 0;

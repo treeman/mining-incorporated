@@ -1,8 +1,7 @@
 #include "roomtype.hxx"
 #include "butler.hxx"
+#include "locator.hxx"
 
-    float remove_time;
-    float build_time;
 RoomInfo::RoomInfo(RoomType t) : type(t), cost(0), can_build(false), is_ore(false),
     remove_time(0), build_time(0), min_ores(0), max_ores(0), money_per_ore(0)
 { }
@@ -16,9 +15,10 @@ void add_buildable_room(RoomType type, string name, string spr, int cost) {
     info.cost = cost;
     info.can_build = true;
     info.is_walkable = true;
-    // TODO fix.
-    //info.build_time = 0.5;
-    info.build_time = 0.1;
+    if (Locator::get_settings().get_bool("build_fast"))
+        info.build_time = 0.1;
+    else
+        info.build_time = 0.5;
 
     room_info.insert(make_pair(type, info));
 }
@@ -32,8 +32,10 @@ void add_ore(RoomType type, string spr, float mining_time, int least, int most, 
     info.max_ores = most;
     info.money_per_ore = val;
     info.remove_time = mining_time;
-    // TODO fix. Just for checking
-    //info.remove_time = mining_time / 20;
+
+    // TODO fix? Just for checking
+    if (Locator::get_settings().get_bool("build_fast"))
+        info.remove_time = 0.1;
 
     room_info.insert(make_pair(type, info));
 }
