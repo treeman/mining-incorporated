@@ -15,6 +15,8 @@ Todo
     * Then use those as references
     * Continue in the same fashion with ores and rooms
 
+* unit tests
+    for fmt at least
 * Preview building and items, see Prison Architect
 * Refactor RoomType into OreType or similar
 * Multiple levels

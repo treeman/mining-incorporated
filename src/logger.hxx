@@ -6,14 +6,12 @@
 #include <string>
 using namespace std;
 
-#include "safe_printf.hxx"
+#include "fmt.hxx"
 
 class Logger {
 public:
     virtual ~Logger() { }
 
-    // TODO
-    // cannot chain << endl!
     // c++ style
     template<typename T>
     Logger &operator << (T v) {
@@ -23,16 +21,11 @@ public:
         return *this;
     }
 
+    // printf with type checking.
     template<typename... Ts>
     void operator()(const char *f, const Ts&... ts)
     {
-        // TODO make type safe later.
-        //check_printf(f, normalizeArg(ts)...);
-
-        safe_printf(f, ts...);
-        //char buf[4048];
-        //snprintf(buf, 4048, f, ts...);
-        //write(buf);
+        write(fmt(f, ts...));
     }
 private:
     virtual void write(string s) = 0;
