@@ -62,7 +62,7 @@ namespace safe_fmt {
         // Cannot handle arbitrary length, but it's fine for me.
         const int MAX_SIZE = 4048;
         static char buf[MAX_SIZE];
-        snprintf(buf, 4048, f, ts...);
+        snprintf(buf, 4048, f, normalize(ts)...);
         return string(buf);
     }
 }
