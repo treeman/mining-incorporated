@@ -199,3 +199,6 @@ Things
 ------
 
 * When you cave deeper, monsters and things will come alive and hurt you.
+* FOV
+* Prospecting to locate ores (?)
+
