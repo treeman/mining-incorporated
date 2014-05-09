@@ -11,6 +11,7 @@ Todo
     * Then use those as references
     * Continue in the same fashion with ores and rooms
 
+* remove typedef shared ptrs
 * unit tests
     for fmt at least
 * Preview building and items, see Prison Architect
@@ -41,6 +42,8 @@ Todo
 * Tiles as data, load from lua
 * Prototypes in lua ("mixins" from tables)
 * State for worker handling
+* Type Object for ground, rooms, ores
+    Tile *rock->create_tile(...)
 
 Ideas
 =====

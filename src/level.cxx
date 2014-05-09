@@ -1,6 +1,7 @@
 #include "level.hxx"
 #include "constants.hxx"
 #include "rand.hxx"
+#include "ground.hxx"
 
 string first_level[num_tiles_high] = {
     "sssss.............aa",
@@ -129,10 +130,12 @@ vector<vector<TilePtr>> make_random_level(int level) {
         }
     }
 
+    auto rock = get_ground("rock");
     for (int i = 0; i < num_tiles_high; ++i) {
         for (int j = 0; j < num_tiles_wide; ++j) {
-            if (!grid[i][j])
-                grid[i][j] = create_tile(Rock, j * tile_width, i * tile_width);
+            if (!grid[i][j]) {
+                grid[i][j] = rock->create_tile(j * tile_width, i * tile_width);
+            }
         }
     }
     return grid;

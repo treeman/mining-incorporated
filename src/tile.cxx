@@ -25,9 +25,11 @@ void Tile::draw(sf::RenderWindow &w) {
         spr.setColor(sf::Color(240, 0, 100));
     else
         spr.setColor(sf::Color::White);
+    spr.setPosition(pos.x, pos.y);
     w.draw(spr);
 
     if (room_preview || room_build_pending) {
+        room_preview_spr.setPosition(pos.x, pos.y);
         w.draw(room_preview_spr);
     }
 
@@ -35,6 +37,7 @@ void Tile::draw(sf::RenderWindow &w) {
         obj->draw(w);
     }
     else if (object_preview || object_build_pending) {
+        object_preview_spr.setPosition(pos.x, pos.y);
         w.draw(object_preview_spr);
     }
 }

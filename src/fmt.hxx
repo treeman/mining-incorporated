@@ -10,8 +10,8 @@ namespace safe_fmt {
 
     class fmt_error : public logic_error {
     public:
-        fmt_error(const char *s) : logic_error(s) { }
-        fmt_error(const string &s) : logic_error(s) { }
+        fmt_error(const char *s) noexcept : logic_error(s) { }
+        fmt_error(const string &s) noexcept : logic_error(s) { }
     };
 
     // TODO better error reporting? Or something?

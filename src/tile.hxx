@@ -36,6 +36,8 @@ private:
     ObjectPtr obj;
     RoomType room_type;
     bool room_build_pending, object_build_pending;
+
+    friend class Ground;
 };
 
 typedef shared_ptr<Tile> TilePtr;

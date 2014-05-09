@@ -4,52 +4,30 @@
 #include "lua.hxx"
 #include "abort.hxx"
 
-// TODO cannot handle plain arrays
-// table entries without keys fails.
-void print_table(LuaState &L) {
-    //L.dump_stack();
-    for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-        // If array of numbers, not sure how to treat it.
-        if (lua_isnumber(L, -2)) {
-            //L_ << "skipping\n";
-            //L.dump_stack();
-            continue;
-        }
+Ground::Ground() : is_walkable(false), remove_time(0), build_time(0)
+{ }
 
-        string key = lua_tostring(L, -2);
-        if (is_predefined_lua_key(key)) continue;
-
-        L.dump_stack();
-
-        if (lua_isnumber(L, -1)) {
-            L_ << key << ": " << (double)lua_tonumber(L, -1) << '\n';
-        }
-        else if (lua_isstring(L, -1)) {
-            L_ << key << ": " << lua_tostring(L, -1) << '\n';
-        }
-        else if (lua_isboolean(L, -1)) {
-            L_ << key << ": " << lua_toboolean(L, -1) << '\n';
-        }
-        else if (lua_istable(L, -1)) {
-            //L_ << "going through table " << key << '\n';
-            print_table(L);
-        }
-        else {
-            L_ << "unknown\n";
-        }
-        // Skip functions and tables atm.
-    }
+unique_ptr<Tile> Ground::create_tile(int x, int y) const {
+    // TODO refactor Tile
+    unique_ptr<Tile> tile(new Tile(Office, x, y));
+    tile->spr = create_sprite(spr);
+    return move(tile);
 }
 
+// TODO maybe some checks?
+bool Ground::is_valid() { return true; }
+
+
+map<string, shared_ptr<Ground const>> grounds;
+
 void load_ground_definitions(string path) {
-    L_("Loading ground file %s\n", path.c_str());
+    L_("Loading ground file %s\n", path);
 
     LuaState L;
 
     if (luaL_dofile(L, path.c_str())) {
         const char *err = lua_tostring(L, -1);
-        printf("Lua error: %s\n", err);
-        return; // TODO fail
+        throw lua_parse_error(path, err);
     }
 
     // Go through global table
@@ -60,23 +38,71 @@ void load_ground_definitions(string path) {
     // Find definitions inside 'ground' table.
     lua_getglobal(L, "ground");
     for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-        string key = lua_tostring(L, -2);
-        L_ << key << '\n';
-        //L.dump_stack();
-        if (!lua_istable(L, -1)) abort_game(key);
+        shared_ptr<Ground> ground(new Ground());
 
-        lua_pushstring(L, "sprite");
+        string key = lua_tostring(L, -2);
+        //L_ << key << '\n';
         //L.dump_stack();
+        if (!lua_istable(L, -1))
+            throw lua_parse_error(path, "ground element not a table.");
+
+        // TODO create functions for these?
+        // or just use these raw?
+        lua_pushstring(L, "sprite");
         lua_gettable(L, -2);
         if (!lua_isstring(L, -1)) {
-            abort_game("doh");
+            throw lua_parse_error(path, fmt("%s missing sprite.", key));
         }
-        string spr = lua_tostring(L, -1);
-        L_ << "  sprite: " << spr << '\n';
+        ground->spr = lua_tostring(L, -1);
+        //L_ << "  sprite: " << ground->spr << '\n';
         lua_pop(L, 1);
+
+        lua_pushstring(L, "remove_time");
+        lua_gettable(L, -2);
+        if (lua_isnumber(L, -1)) {
+            ground->remove_time = (float)lua_tonumber(L, -1);
+            //L_("  remove_time: %f\n", ground->remove_time);
+        }
+        lua_pop(L, 1);
+
+        lua_pushstring(L, "build_time");
+        lua_gettable(L, -2);
+        if (lua_isnumber(L, -1)) {
+            ground->build_time = (float)lua_tonumber(L, -1);
+            //L_("  build_time: %f\n", ground->build_time);
+        }
+        lua_pop(L, 1);
+
+        lua_pushstring(L, "walkable");
+        lua_gettable(L, -2);
+        if (lua_isboolean(L, -1)) {
+            ground->is_walkable = lua_toboolean(L, -1);
+            //L_("  walkable: %s\n", to_string(ground->is_walkable));
+        }
+        lua_pop(L, 1);
+
+        if (ground->is_valid()) {
+            grounds.insert({key, shared_ptr<Ground const>(move(ground))});
+        }
+        else {
+            // TODO exception
+        }
     }
     lua_pop(L, 1);
 
     assert(L.stack_size() == 0);
+
+    L_("found %d grounds\n", grounds.size());
+    for (auto &x : grounds) {
+        L_("  %s\n", x.first);
+    }
+}
+
+shared_ptr<Ground const> get_ground(string key) {
+    auto it = grounds.find(key);
+    if (it == grounds.end()) {
+        throw lua_parse_error(fmt("Could not find ground definition for '%s'", key));
+    }
+    return it->second;
 }
 
