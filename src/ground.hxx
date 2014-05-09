@@ -15,13 +15,12 @@ public:
     bool is_walkable;
     float remove_time;
     float build_time;
+    string spr;
 private:
     Ground();
     bool is_valid();
     friend void load_ground_definitions(string);
-
-    string spr;
 };
 
-shared_ptr<Ground const> get_ground(string key);
+shared_ptr<const Ground> get_ground(string key);
 

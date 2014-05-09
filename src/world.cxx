@@ -74,16 +74,18 @@ void World::remove(sf::Vector2i wp) {
 void World::build(int x, int y, RoomType type) {
     if (!is_tile(x, y)) return;
 
-    TilePtr tile = get_tile(x, y);
+    /*
+    shared_ptr<Tile> tile = get_tile(x, y);
     if (tile->get_type() == type) return;
 
     tasks.push_back(create_room_task(x, y, type));
     tile->set_room_build_pending();
     resources.money -= get_info(type)->cost;
+    */
 }
 void World::build(int x, int y, ObjectType type) {
     if (!is_tile(x, y)) return;
-    TilePtr tile = grid[y][x];
+    shared_ptr<Tile> tile = grid[y][x];
 
     if (tile->has_object() && type == SellObject) {
         tasks.push_back(create_sell_task(x, y));
@@ -106,14 +108,14 @@ void World::build(int x, int y, ObjectType type) {
 void World::sell_object(int x, int y) {
     // TODO money management here
     if (!is_tile(x, y)) return;
-    TilePtr tile = grid[y][x];
+    shared_ptr<Tile> tile = grid[y][x];
 
     tile->remove_object();
 }
 
 /*
 void World::remove(int x, int y) {
-    TilePtr tile = grid[y][x];
+    shared_ptr<Tile> tile = grid[y][x];
     tile->unmark();
 }
 */
@@ -328,11 +330,12 @@ void World::task_done(Task task) {
     // TODO update grid here!
     if (task.type == Dig) {
         // Currently unused (?)
-        TilePtr tile = get_tile(task.pos);
+        shared_ptr<Tile> tile = get_tile(task.pos);
     }
     else if (task.type == BuildRoom) {
-        TilePtr tile = get_tile(task.pos);
+        shared_ptr<Tile> tile = get_tile(task.pos);
 
+        /*
         // Check for ore mining
         RoomInfo *info = get_info(tile->get_type());
         if (info->is_ore) {
@@ -362,11 +365,13 @@ void World::task_done(Task task) {
             }
         }
 
+
         // Update tile
         tile->set_type(task.room_type);
+        */
     }
     else if (task.type == PlaceObject) {
-        TilePtr tile = get_tile(task.pos);
+        shared_ptr<Tile> tile = get_tile(task.pos);
         tile->set_object(make_object(task.object_type));
 
         if (task.object_type == Bed) {
@@ -374,7 +379,7 @@ void World::task_done(Task task) {
         }
     }
     else if (task.type == SellTask) {
-        TilePtr tile = get_tile(task.pos);
+        shared_ptr<Tile> tile = get_tile(task.pos);
         if (tile->get_object()->get_type() == Bed) {
             resources.max_workers -= bed_capacity;
         }
@@ -405,10 +410,10 @@ void World::assign_tasks() {
     tasks.swap(unfinished);
 }
 
-TilePtr World::get_tile(int x, int y) {
+shared_ptr<Tile> World::get_tile(int x, int y) {
     return grid.at(y).at(x);
 }
-TilePtr World::get_tile(sf::Vector2i pos) { return get_tile(pos.x, pos.y); }
+shared_ptr<Tile> World::get_tile(sf::Vector2i pos) { return get_tile(pos.x, pos.y); }
 
 void World::draw_stats() {
     // Draw current state
@@ -482,7 +487,8 @@ int World::calculate_build_cost(int x1, int y1, int x2, int y2, RoomType type) {
     return dx * dy * get_info(type)->cost;
 }
 RoomType World::get_tile_type(int x, int y) {
-    TilePtr tile = get_tile(x, y);
-    return tile->get_type();
+    //shared_ptr<Tile> tile = get_tile(x, y);
+    //return tile->get_type();
+    return Rock;
 }
 

@@ -22,8 +22,8 @@ string first_level[num_tiles_high] = {
     ".....i..............",
 };
 
-vector<vector<TilePtr>> make_first_level() {
-    vector<vector<TilePtr>> grid(num_tiles_high, vector<TilePtr>(num_tiles_wide));
+vector<vector<shared_ptr<Tile>>> make_first_level() {
+    vector<vector<shared_ptr<Tile>>> grid(num_tiles_high, vector<shared_ptr<Tile>>(num_tiles_wide));
     for (int i = 0; i < num_tiles_high; ++i) {
         for (int j = 0; j < num_tiles_wide; ++j) {
             RoomType type;
@@ -45,7 +45,7 @@ vector<vector<TilePtr>> make_first_level() {
                 default:
                     type = Rock;
             }
-            grid[i][j] = create_tile(type, j * tile_width, i * tile_width);
+            //grid[i][j] = create_tile(type, j * tile_width, i * tile_width);
         }
     }
     return grid;
@@ -83,8 +83,8 @@ RoomType randomize_ore_type(int) {
 const int dr[4] = { 0, 1, 0, -1 };
 const int dc[4] = { 1, 0, -1, 0 };
 
-vector<vector<TilePtr>> make_random_level(int level) {
-    vector<vector<TilePtr>> grid(num_tiles_high, vector<TilePtr>(num_tiles_wide));
+vector<vector<shared_ptr<Tile>>> make_random_level(int level) {
+    vector<vector<shared_ptr<Tile>>> grid(num_tiles_high, vector<shared_ptr<Tile>>(num_tiles_wide));
 
     // TODO better randomization, with things more common at different levels
     // Randomize some ore strips
@@ -117,7 +117,8 @@ vector<vector<TilePtr>> make_random_level(int level) {
             ++placed;
             seen[r][c] = 1;
             // Place ore here!
-            grid[r][c] = create_tile(type, c * tile_width, r * tile_width);
+            // TODO
+            //grid[r][c] = create_tile(type, c * tile_width, r * tile_width);
 
             for (int d = 0; d < 4; ++d) {
                 int nr = r + dr[d];
@@ -141,7 +142,7 @@ vector<vector<TilePtr>> make_random_level(int level) {
     return grid;
 }
 
-vector<vector<TilePtr>> make_level(int level) {
+vector<vector<shared_ptr<Tile>>> make_level(int level) {
     //if (level == 1) return make_first_level();
     return make_random_level(level);
 }

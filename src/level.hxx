@@ -2,4 +2,4 @@
 
 #include "tile.hxx"
 
-vector<vector<TilePtr>> make_level(int level);
+vector<vector<shared_ptr<Tile>>> make_level(int level);

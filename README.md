@@ -45,6 +45,14 @@ Todo
 * Type Object for ground, rooms, ores
     Tile *rock->create_tile(...)
 
+Refactor
+========
+
+* Tile, cut up into components
+* World, cut up into components
+* Levels, not as a simple array of array of shared pointers to tiles
+* Ores. How to handle?
+
 Ideas
 =====
 

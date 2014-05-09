@@ -9,8 +9,8 @@ Ground::Ground() : is_walkable(false), remove_time(0), build_time(0)
 
 unique_ptr<Tile> Ground::create_tile(int x, int y) const {
     // TODO refactor Tile
-    unique_ptr<Tile> tile(new Tile(Office, x, y));
-    tile->spr = create_sprite(spr);
+    unique_ptr<Tile> tile(new Tile(this));
+    tile->set_pos(x, y);
     return move(tile);
 }
 
@@ -18,7 +18,7 @@ unique_ptr<Tile> Ground::create_tile(int x, int y) const {
 bool Ground::is_valid() { return true; }
 
 
-map<string, shared_ptr<Ground const>> grounds;
+map<string, shared_ptr<const Ground>> grounds;
 
 void load_ground_definitions(string path) {
     L_("Loading ground file %s\n", path);
@@ -98,7 +98,7 @@ void load_ground_definitions(string path) {
     }
 }
 
-shared_ptr<Ground const> get_ground(string key) {
+shared_ptr<const Ground> get_ground(string key) {
     auto it = grounds.find(key);
     if (it == grounds.end()) {
         throw lua_parse_error(fmt("Could not find ground definition for '%s'", key));

@@ -3,9 +3,11 @@
 #include "roomtype.hxx"
 #include "object.hxx"
 
+class Ground;
+
 class Tile {
 public:
-    Tile(RoomType type, int x, int y);
+    void set_pos(int x, int y);
 
     void draw(sf::RenderWindow &w);
 
@@ -16,12 +18,6 @@ public:
     void set_room_build_pending();
     void set_object_build_pending();
 
-    void set_type(RoomType type);
-    RoomType get_type();
-
-    void set_sprite(sf::Sprite spr);
-    void mark(); // TODO remove
-    void unmark();
     bool is_walkable();
 
     bool has_object() const;
@@ -31,15 +27,16 @@ public:
 private:
     sf::Sprite spr;
     sf::Vector2i pos;
-    bool is_marked, room_preview, object_preview;
+    bool room_preview, object_preview;
     sf::Sprite room_preview_spr, object_preview_spr;
     ObjectPtr obj;
     RoomType room_type;
     bool room_build_pending, object_build_pending;
 
+    // TODO should be able to change ground
+    Tile(const Ground *ground);
+    const Ground *ground;
+
     friend class Ground;
 };
-
-typedef shared_ptr<Tile> TilePtr;
-TilePtr create_tile(RoomType type, int x, int y);
 

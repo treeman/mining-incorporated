@@ -72,10 +72,10 @@ private:
     sf::View view;
 
     // TODO multiple levels
-    TilePtr get_tile(int x, int y);
-    TilePtr get_tile(sf::Vector2i pos);
+    shared_ptr<Tile> get_tile(int x, int y);
+    shared_ptr<Tile> get_tile(sf::Vector2i pos);
 
-    vector<vector<TilePtr>> grid;
+    vector<vector<shared_ptr<Tile>>> grid;
     vector<WorkerPtr> workers;
 
     //deque<WorkerPtr> free_workers;
