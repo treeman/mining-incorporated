@@ -22,6 +22,7 @@ string first_level[num_tiles_high] = {
     ".....i..............",
 };
 
+/*
 vector<vector<shared_ptr<Tile>>> make_first_level() {
     vector<vector<shared_ptr<Tile>>> grid(num_tiles_high, vector<shared_ptr<Tile>>(num_tiles_wide));
     for (int i = 0; i < num_tiles_high; ++i) {
@@ -50,34 +51,29 @@ vector<vector<shared_ptr<Tile>>> make_first_level() {
     }
     return grid;
 }
+*/
 
-RoomType randomize_ore_type(int) {
-    //return DiamondOre;
-
-    // AluminiumOre,
-    // CoalOre,
-    // CopperOre,
-    // DiamondOre,
-    // GoldOre,
-    // IronOre,
-    // In procent xD
-    vector<int> ratio = {
-        20,
-        30,
-        20,
-        5,
-        10,
-        15,
+string randomize_ore_type(int) {
+    // TODO take from lua
+    // TODO specify vein size as well
+    // TODO make something more clever...
+    map<string,  int> ratio = {
+        { "aluminium", 20 },
+        { "coal", 30 },
+        { "copper", 20 },
+        { "diamond", 5 },
+        { "gold", 10 },
+        { "iron", 15 },
     };
     int r = rand_int(0, 100);
     int sum = 0;
-    for (int type = 0; type < (int)ratio.size(); ++type) {
-        sum += ratio[type];
+    for (auto &x : ratio) {
+        sum += x.second;
         if (r <= sum) {
-            return static_cast<RoomType>(type + 7);
+            return x.first;
         }
     }
-    return Rock; // fallback?
+    return "rock"; // fallback?
 }
 
 const int dr[4] = { 0, 1, 0, -1 };
@@ -92,7 +88,9 @@ vector<vector<shared_ptr<Tile>>> make_random_level(int level) {
     //printf("doing %d strips\n", num_strips);
 
     for (int k = 0; k < num_strips; ++k) {
-        RoomType type = randomize_ore_type(level);
+        //RoomType type = randomize_ore_type(level);
+        string type = randomize_ore_type(level);
+        auto ground = get_ground(type);
         int num_ores = rand_int(3, 8);
 
         // Floodfill with randomization to place ores xD
@@ -119,6 +117,7 @@ vector<vector<shared_ptr<Tile>>> make_random_level(int level) {
             // Place ore here!
             // TODO
             //grid[r][c] = create_tile(type, c * tile_width, r * tile_width);
+            grid[r][c] = ground->create_tile(c * tile_width, r * tile_width);
 
             for (int d = 0; d < 4; ++d) {
                 int nr = r + dr[d];

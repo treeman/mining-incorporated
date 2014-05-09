@@ -35,5 +35,32 @@ ground = {
         walkable = true,
         build_time = 2,
     },
+    -- TODO separate ores from gound?
+    -- they could be objects?
+    -- hmmm
+    aluminium = {
+        sprite = "aluminium_ore.png",
+        walkable = false,
+    },
+    coal = {
+        sprite = "coal_ore.png",
+        walkable = false,
+    },
+    copper = {
+        sprite = "copper_ore.png",
+        walkable = false,
+    },
+    diamond = {
+        sprite = "diamond_ore.png",
+        walkable = false,
+    },
+    gold = {
+        sprite = "gold_ore.png",
+        walkable = false,
+    },
+    iron = {
+        sprite = "iron_ore.png",
+        walkable = false,
+    },
 }
 

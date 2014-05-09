@@ -36,6 +36,9 @@ Todo
     Need to be able to style everything in collection
 * Cool pixelated graphics.
 * Extend fmt to allow precision and long types, possibly.
+* Smarter level generation
+    Better algorithm
+    Use levels and specify vein size for each ores etc..
 
 * Consider Command pattern with actors to handle input
 * Flyweight pattern for tile handling?
@@ -192,3 +195,7 @@ Can sell the enhancement. Golden ingots, diamond jewelry or similar (expensive).
 3. Refine      ore -> ingot
 4. Enhance (?) diamonds -> jewelry
 
+Things
+------
+
+* When you cave deeper, monsters and things will come alive and hurt you.
