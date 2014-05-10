@@ -1,5 +1,5 @@
 #include "settings.hxx"
-#include "string.hxx"
+#include "util/string.hxx"
 #include "locator.hxx"
 
 Settings::Settings() {

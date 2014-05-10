@@ -1,6 +1,6 @@
 #pragma once
 
-#include "inputhandler.hxx"
+#include "input/inputhandler.hxx"
 
 // Base class for gui things
 class GuiObject : public InputHandler {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "point.hxx"
+#include "pos/point.hxx"
 
 // Would like to declare an actual new type, but...
 typedef Point<int> TilePos;

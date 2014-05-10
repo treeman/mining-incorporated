@@ -1,5 +1,5 @@
-#include "graphics.hxx"
-#include "rand.hxx"
+#include "util/graphics.hxx"
+#include "util/rand.hxx"
 #include "world.hxx"
 #include "constants.hxx"
 #include "butler.hxx"

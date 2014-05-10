@@ -1,16 +1,16 @@
-#include "help.hxx"
-#include "currentstate.hxx"
+#include "state/help.hxx"
+#include "state/currentstate.hxx"
 #include "constants.hxx"
 #include "roomtype.hxx"
 #include "settings.hxx"
 #include "console.hxx"
-#include "rand.hxx"
-#include "inputqueue.hxx"
+#include "util/rand.hxx"
+#include "input/inputqueue.hxx"
 #include "locator.hxx"
-#include "consolelogger.hxx"
+#include "stdoutlogger.hxx"
 #include "visualdebug.hxx"
-#include "ground.hxx"
-#include "ore.hxx"
+#include "world/ore.hxx"
+#include "world/ground.hxx"
 
 #include <cstdlib>
 #include <ctime>
@@ -21,7 +21,7 @@ int main()
     Locator::init();
 
     // Log to console atm
-    Locator::provide_logger(unique_ptr<Logger>(new ConsoleLogger()));
+    Locator::provide_logger(unique_ptr<Logger>(new StdoutLogger()));
 
     load_ground_definitions("ground.lua");
     load_ore_definitions("ore.lua");

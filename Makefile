@@ -8,8 +8,8 @@ export LIBS = -lX11 -lGL -lXrandr -lfreetype -lopenal -lpthread -lsfml-graphics 
 export CFLAGS = -std=gnu++0x -Wall -I$(SRCDIR)
 
 # All buildable source files
-SRC = $(wildcard $(SRCDIR)/*cxx)
-HEADERS = $(wildcard $(SRCDIR)/*hxx)
+SRC = $(wildcard $(SRCDIR)/*cxx) $(wildcard $(SRCDIR)/**/*cxx)
+HEADERS = $(wildcard $(SRCDIR)/*hxx) $(wildcard $(SRCDIR)/**/*hxx)
 
 # Place object files in an object dir
 OBJ = $(patsubst %,$(OBJDIR)/%,$(SRC:.cxx=.o))

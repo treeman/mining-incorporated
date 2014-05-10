@@ -1,6 +1,6 @@
 #include "level.hxx"
 #include "constants.hxx"
-#include "rand.hxx"
+#include "util/rand.hxx"
 #include "ore.hxx"
 
 /*

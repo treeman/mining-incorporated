@@ -1,7 +1,7 @@
 #include <iostream>
 #include "console.hxx"
 #include "locator.hxx"
-#include "string.hxx"
+#include "util/string.hxx"
 
 Console::Console(sf::RenderWindow &w) : window(w), is_active(false),
     history(10, 10, 300, 500), input(10, 520)

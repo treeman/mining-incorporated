@@ -4,9 +4,9 @@
 #include <SFML/Audio.hpp>
 
 #include "settings.hxx"
-#include "historybox.hxx"
-#include "inputbox.hxx"
-#include "inputhandler.hxx"
+#include "gui/historybox.hxx"
+#include "gui/inputbox.hxx"
+#include "input/inputhandler.hxx"
 
 class Console : public InputHandler {
 public:

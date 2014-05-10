@@ -1,8 +1,8 @@
 #pragma once
 
 #include "state.hxx"
-#include "world.hxx"
-#include "gui.hxx"
+#include "world/world.hxx"
+#include "gui/gui.hxx"
 
 class GameState : public State {
 public:

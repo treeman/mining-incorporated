@@ -2,7 +2,7 @@
 
 #include "roomtype.hxx"
 #include "objecttype.hxx"
-#include "point.hxx"
+#include "pos.hxx"
 
 // TODO
 // rework

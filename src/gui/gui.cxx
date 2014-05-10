@@ -1,5 +1,5 @@
 #include "gui.hxx"
-#include "world.hxx"
+#include "world/world.hxx"
 #include "butler.hxx"
 #include "constants.hxx"
 #include "button.hxx"

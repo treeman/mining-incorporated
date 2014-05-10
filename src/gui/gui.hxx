@@ -3,7 +3,7 @@
 #include "guilist.hxx"
 #include "roomtype.hxx"
 #include "objecttype.hxx"
-#include "inputhandler.hxx"
+#include "input/inputhandler.hxx"
 #include "pos.hxx"
 
 class World;

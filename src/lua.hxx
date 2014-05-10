@@ -6,7 +6,7 @@
 using namespace std;
 
 #include <lua.hpp>
-#include "fmt.hxx"
+#include "util/fmt.hxx"
 
 // Predefined keys in lua environment. We don't want to treat them as settings.
 bool is_predefined_lua_key(string key);

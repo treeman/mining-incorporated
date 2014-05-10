@@ -2,7 +2,6 @@
 #include "butler.hxx"
 #include "world.hxx"
 #include "constants.hxx"
-#include "point.hxx"
 
 Worker::Worker(int x, int y, World *_world) : pos(x, y), world(_world){
     spr = create_sprite("worker.png");

@@ -3,7 +3,7 @@
 #include <string>
 using namespace std;
 
-#include "fmt.hxx"
+#include "util/fmt.hxx"
 
 // Critical errors etc.
 // Use instead of using exceptions when we know we don't want to continue.

@@ -6,7 +6,7 @@
 #include <string>
 using namespace std;
 
-#include "fmt.hxx"
+#include "util/fmt.hxx"
 
 class Logger {
 public:
