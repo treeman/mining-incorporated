@@ -1,5 +1,4 @@
 #include "task.hxx"
-#include "point.hxx"
 
 // Hate this
 string to_str(TaskType type) {
@@ -39,14 +38,14 @@ string Task::to_str() {
 Task create_dig_task(int x, int y) {
     Task task;
     task.type = Dig;
-    task.pos = sf::Vector2i(x, y);
+    task.pos = IPoint(x, y);
 
     return task;
 }
 Task create_room_task(int x, int y, RoomType type) {
     Task task;
     task.type = BuildRoom;
-    task.pos = sf::Vector2i(x, y);
+    task.pos = IPoint(x, y);
     task.room_type = type;
 
     return task;
@@ -54,7 +53,7 @@ Task create_room_task(int x, int y, RoomType type) {
 Task create_object_task(int x, int y, ObjectType type) {
     Task task;
     task.type = PlaceObject;
-    task.pos = sf::Vector2i(x, y);
+    task.pos = IPoint(x, y);
     task.object_type = type;
 
     return task;
@@ -62,7 +61,7 @@ Task create_object_task(int x, int y, ObjectType type) {
 Task create_sell_task(int x, int y) {
     Task task;
     task.type = SellTask;
-    task.pos = sf::Vector2i(x, y);
+    task.pos = IPoint(x, y);
 
     return task;
 }

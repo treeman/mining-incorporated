@@ -1,9 +1,11 @@
 #pragma once
 
 #include "roomtype.hxx"
-#include "roomtype.hxx"
 #include "objecttype.hxx"
+#include "point.hxx"
 
+// TODO
+// rework
 enum TaskType {
     Dig,
     BuildRoom,
@@ -18,7 +20,7 @@ public:
 
     string to_str();
 
-    sf::Vector2i pos;
+    IPoint pos;
     bool is_done;
     RoomType room_type;
     ObjectType object_type;

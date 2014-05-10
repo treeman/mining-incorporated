@@ -26,12 +26,12 @@ World::World(sf::RenderWindow &_w) :
     stat_txt = create_txt("consola.ttf", 14);
 }
 
-sf::Vector2i World::window2tile(int x, int y) {
-    return world2tile(window2world(x, y));
-}
-sf::Vector2i World::window2world(int x, int y) {
-    return sf::Vector2i(x - view_xoff, y - view_yoff);
-}
+//sf::Vector2i World::window2tile(int x, int y) {
+    //return world2tile(window2world(x, y));
+//}
+//sf::Vector2i World::window2world(int x, int y) {
+    //return sf::Vector2i(x - view_xoff, y - view_yoff);
+//}
 sf::Vector2i World::world2tile(int x, int y) {
     return sf::Vector2i(x / tile_width, y / tile_width);
 }
@@ -43,6 +43,27 @@ sf::Vector2i World::world2window(int x, int y) {
 }
 sf::Vector2i World::tile2window(int x, int y) {
     return world2window(tile2world(x, y));
+}
+
+bool World::in_world(const WindowPos &p) const {
+    const WorldPos wp(p.x  - view_xoff, p.y - view_yoff, curr_lvl);
+    return in_world(wp);
+}
+bool World::in_world(const WorldPos &p) const {
+    return 0 <= p.pos.x && p.pos.x <= world_width
+        && 0 <= p.pos.y && p.pos.y <= world_height;
+}
+WorldPos World::window2world(const WindowPos &p) const {
+    const WorldPos res(p.x  - view_xoff, p.y - view_yoff, curr_lvl);
+    assert(in_world(res));
+    return res;
+}
+DimensionPos World::window2dimension(const WindowPos &p) const {
+    return world2dimension(window2world(p));
+}
+DimensionPos World::world2dimension(const WorldPos &p) const {
+    assert(in_world(p));
+    return DimensionPos(p.pos.x / tile_width, p.pos.y / tile_width, p.lvl);
 }
 
 bool World::in_world(sf::Vector2i wp) { return in_world(wp.x, wp.y); }

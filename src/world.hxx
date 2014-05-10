@@ -15,20 +15,27 @@ public:
 
     // TODO remove/move
     // xD
-    sf::Vector2i window2tile(int x, int y);
-    sf::Vector2i window2world(int x, int y);
+    //sf::Vector2i window2tile(int x, int y);
+    //sf::Vector2i window2world(int x, int y);
     sf::Vector2i world2tile(int x, int y);
     sf::Vector2i tile2world(int x, int y);
     sf::Vector2i world2window(int x, int y);
     sf::Vector2i tile2window(int x, int y);
 
-    sf::Vector2i window2tile(sf::Vector2i p) { return window2tile(p.x, p.y); }
-    sf::Vector2i window2world(sf::Vector2i p) { return window2world(p.x, p.y); }
+    //sf::Vector2i window2tile(sf::Vector2i p) { return window2tile(p.x, p.y); }
+    //sf::Vector2i window2world(sf::Vector2i p) { return window2world(p.x, p.y); }
     sf::Vector2i world2tile(sf::Vector2i p) { return world2tile(p.x, p.y); }
     sf::Vector2i tile2world(sf::Vector2i p) { return tile2world(p.x, p.y); }
     sf::Vector2i world2window(sf::Vector2i p) { return world2window(p.x, p.y); }
     sf::Vector2i tile2window(sf::Vector2i p) { return tile2window(p.x, p.y); }
 
+    bool in_world(const WindowPos &p) const;
+    bool in_world(const WorldPos &p) const;
+    WorldPos window2world(const WindowPos &p) const;
+    DimensionPos window2dimension(const WindowPos &p) const;
+    DimensionPos world2dimension(const WorldPos &p) const;
+
+    // TODO remove
     bool in_world(sf::Vector2i worldpos);
     bool in_world(int x, int y);
     bool is_tile(int x, int y);
@@ -37,6 +44,7 @@ public:
     void set_curr_level(int lvl);
     int get_curr_level() const;
 
+    // TODO move to commands
     // World positions
     void build(sf::Vector2i worldpos, RoomType type);
     void remove(sf::Vector2i worldpos);
@@ -63,6 +71,7 @@ public:
     void update(const sf::Time &dt);
     void draw();
 
+    // TODO move to commands/events
     void new_worker();
     WorkerPtr choose_free_worker();
     vector<sf::Vector2i> pathfind(sf::Vector2i s, sf::Vector2i t);

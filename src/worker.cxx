@@ -6,7 +6,7 @@
 
 Worker::Worker(int x, int y, World *_world) : pos(x, y), world(_world){
     spr = create_sprite("worker.png");
-    tile_pos = world->world2tile(x, y);
+    tile_pos = IPoint(world->world2tile(x, y));
     current_task.is_done = true;
     txt = create_txt("arial.ttf", 14);
     has_work_time = false;
@@ -38,7 +38,7 @@ void Worker::update(const sf::Time &dt) {
     if (path.empty() && !is_free()) {
         // Align!
         tile_pos = current_task.pos;
-        pos = sf::Vector2f(world->tile2world(tile_pos));
+        pos = FPoint(world->tile2world(tile_pos));
 
         // Work on task, it's not instant.
         if (!has_work_time) {
@@ -111,19 +111,19 @@ void Worker::draw(sf::RenderWindow &w) {
 
 void Worker::follow_path(const sf::Time &dt) {
     // Check for finish
-    sf::Vector2f a(pos), b(world->tile2world(path.back()));
-    if (len(b - a) < 0.05) {
+    FPoint a(pos), b(world->tile2world(path.back()));
+    if ((b - a).len() < 0.05) {
         path.pop_back();
         //printf("now path of length: %d\n", (int)path.size());
         //for (auto p : path) printf(" %d,%d\n", p.x, p.y);
     }
     if (path.empty()) return;
 
-    sf::Vector2f from(pos), to(world->tile2world(path.back()));
-    auto norm = normalize((to - from));
+    FPoint from(pos), to(world->tile2world(path.back()));
+    auto norm = (to - from).normalize();
     auto diff = norm * dt.asSeconds() * 100.0f;
     pos = pos + diff;
-    tile_pos = world->world2tile(sf::Vector2i(pos));
+    tile_pos = IPoint(world->world2tile(sf::Vector2i(pos.x, pos.y)));
 }
 
 WorkerPtr create_worker(int x, int y, World *world) {

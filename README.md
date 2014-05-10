@@ -11,9 +11,11 @@ Todo
     * Offload things to Dimension/Level
     * Pathfinding inside dimension
     * Separate types for different positions
+        Take from base class Point (int or float)
         1. Tile position (x, y)
-        2. World position (x, y, lvl)
-        3. Window position (x, y)
+        2. Dimension position (TilePos, lvl)
+        3. Window position (Point<float>)
+        4. World position (Point<float>, lvl)
 
 * Finalize loading ground types from ground.lua
     * Then use those as references

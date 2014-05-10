@@ -4,7 +4,7 @@
 #include "constants.hxx"
 #include "button.hxx"
 
-Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win),
+Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win), selection_start(-1), selection_end(-1),
     room_to_build(nullptr), object_to_build(nullptr)
 {
     unique_ptr<GuiList>(new GuiList(20, 570)).swap(categories);
@@ -82,27 +82,27 @@ bool Gui::handle_input(const sf::Event &e) {
 
     switch (e.type) {
         case sf::Event::MouseMoved:
-            handle_move(e.mouseMove.x, e.mouseMove.y);
+            handle_move(WindowPos(e.mouseMove.x, e.mouseMove.y));
             break;
         case sf::Event::MouseButtonPressed:
             if (e.mouseButton.button == sf::Mouse::Button::Left) {
-                handle_left_click(e.mouseButton.x, e.mouseButton.y);
+                handle_left_click(WindowPos(e.mouseButton.x, e.mouseButton.y));
             }
             else if (e.mouseButton.button == sf::Mouse::Button::Right) {
-                handle_right_click(e.mouseButton.x, e.mouseButton.y);
+                handle_right_click(WindowPos(e.mouseButton.x, e.mouseButton.y));
             }
             break;
         case sf::Event::MouseButtonReleased:
             if (e.mouseButton.button == sf::Mouse::Button::Left) {
-                handle_left_release(e.mouseButton.x, e.mouseButton.y);
+                handle_left_release(WindowPos(e.mouseButton.x, e.mouseButton.y));
             }
             else if (e.mouseButton.button == sf::Mouse::Button::Right) {
-                handle_right_release(e.mouseButton.x, e.mouseButton.y);
+                handle_right_release(WindowPos(e.mouseButton.x, e.mouseButton.y));
             }
             break;
         case sf::Event::TextEntered:
-            if ('0' <= e.text.unicode && e.text.unicode <= '9') {
-                set_level(e.text.unicode - '0');
+            if ('1' <= e.text.unicode && e.text.unicode <= '9') {
+                set_level(e.text.unicode - '1');
             }
             break;
         default: break;
@@ -123,34 +123,38 @@ void Gui::draw(sf::RenderWindow &w) {
         draw_preview_cost();
 }
 
-void Gui::handle_move(int x, int y) {
-    sf::Vector2i p(x, y);
+void Gui::handle_move(const WindowPos &p) {
+    //sf::Vector2i p(x, y);
     //categories.check_hover(p);
     //if (curr_subcategory != -1)
         //subcategory[curr_subcategory].check_hover(p);
 
-    handle_preview(x, y);
+    handle_preview(p);
 }
-void Gui::handle_left_click(int x, int y) {
-    sf::Vector2i p(x, y);
+void Gui::handle_left_click(const WindowPos &p) {
+    //sf::Vector2i p(x, y);
     //categories.check_click(p);
     //if (curr_subcategory != -1)
         //subcategory[curr_subcategory].check_click(p);
 
+    if (!world->in_world(p)) return;
+
     if (want_select) {
-        try_select(x, y);
+        try_select(p);
     }
     else {
         // TODO refactor
-        selection_start = sf::Vector2i(x, y);
+        selection_start = world->window2world(p);
         active_selection = true;
     }
 }
-void Gui::handle_right_click(int x, int y) {
+void Gui::handle_right_click(const WindowPos &p) {
 
 }
-void Gui::handle_left_release(int x, int y) {
-    selection_end = sf::Vector2i(x, y);
+void Gui::handle_left_release(const WindowPos &p) {
+    if (!world->in_world(p)) return;
+
+    selection_end = world->window2world(p);
     active_selection = false;
     preview_cost = 0;
 
@@ -162,7 +166,7 @@ void Gui::handle_left_release(int x, int y) {
         build();
     }
 }
-void Gui::handle_right_release(int x, int y) {
+void Gui::handle_right_release(const WindowPos &p) {
 
 }
 void Gui::build() {
@@ -172,29 +176,36 @@ void Gui::build() {
 void Gui::build_room() {
     if (!room_to_build) return;
 
-    sf::Vector2i tstart = world->window2tile(selection_start);
-    sf::Vector2i tend = world->window2tile(selection_end);
+    // TODO fix
+    //sf::Vector2i tstart = world->window2tile(selection_start);
+    //sf::Vector2i tend = world->window2tile(selection_end);
 
-    world->build(tstart.x, tstart.y, tend.x, tend.y, room_to_build->type);
+    //world->build(tstart.x, tstart.y, tend.x, tend.y, room_to_build->type);
     preview_cost = 0;
 }
 void Gui::build_object() {
-    sf::Vector2i pos = world->window2tile(selection_end); // Harr! Selection! Harr!
+    //sf::Vector2i pos = world->window2tile(selection_end); // Harr! Selection! Harr!
+    WorldPos pos = selection_end;
 
+    // TODO better
     world->clear_preview();
-    world->build(pos.x, pos.y, object_to_build->type);
+    world->build(pos.pos.x, pos.pos.y, object_to_build->type);
     preview_cost = 0;
 }
 
-void Gui::handle_preview(int x, int y) {
-    auto curr = world->window2tile(sf::Mouse::getPosition(window));
+void Gui::handle_preview(const WindowPos &p) {
+    WindowPos wp(sf::Mouse::getPosition(window));
+    if (!world->in_world(wp)) return;
+
+    auto curr = world->window2dimension(wp).pos;
     if (object_to_build) {
         world->clear_preview();
         world->preview_object_build(curr.x, curr.y);
         preview_cost = object_to_build->cost;
     }
     else if (active_selection) {
-        sf::Vector2i tstart = world->window2tile(selection_start);
+        // TODO cleanup
+        auto tstart = selection_start.pos;
 
         world->preview_room_build(tstart.x, tstart.y, curr.x, curr.y);
         if (room_to_build)
@@ -219,18 +230,21 @@ void Gui::clear_selection() {
 void Gui::draw_preview_cost() {
     // Draw preview cost
     // TODO better position
-    auto curr = sf::Mouse::getPosition(window);
+    WindowPos wp(sf::Mouse::getPosition(window));
+    if (!world->in_world(wp)) return;
+
+    auto curr = world->window2world(wp).pos;
     int x = 0, y = 0;
     if (object_to_build || (!active_selection && room_to_build)) {
         x = curr.x + 20;
         y = curr.y - 30;
     }
     else {
-        auto sel = selection_start;
+        auto sel = selection_start.pos;
         //auto sel = world->tile2window(selection_start);
         //printf("%d,%d -> %d,%d\n", selection_start.x, selection_start.y, sel.x, sel.y);
-        int left = min(sel.x, curr.x);
-        int top = min(sel.y, curr.y);
+        int left = min((int)sel.x, (int)curr.x);
+        int top = min((int)sel.y, (int)curr.y);
         x = left + 20;
         y = top - 30;
     }
@@ -246,14 +260,17 @@ void Gui::want_to_select() {
     want_select = true;
 }
 
-void Gui::try_select(int x, int y) {
-    sf::Vector2i pos = world->window2world(x, y);
-    WorkerPtr worker = world->select_closest_worker(pos.x, pos.y);
+void Gui::try_select(const WindowPos &p) {
+    if (!world->in_world(p)) return;
+
+    WorldPos pos = world->window2world(p);
+    WorkerPtr worker = world->select_closest_worker(pos.pos.x, pos.pos.y);
     if (worker) {
         // TODO better points...
         // TODO select distance from center of worker
         auto p = worker->get_pos();
-        double d = hypot((double)pos.x - p.x, (double)pos.y - p.y);
+        //double d = hypot((double)pos.x - p.x, (double)pos.y - p.y);
+        float d = pos.pos.dist(FPoint(p));
         if (d <= min_select_dist) {
             // TODO store as weak_ptr
             printf("Worker at %lf %lf dist %lf\n", p.x, p.y, d);

@@ -4,6 +4,7 @@
 #include "roomtype.hxx"
 #include "objecttype.hxx"
 #include "inputhandler.hxx"
+#include "pos.hxx"
 
 class World;
 
@@ -15,25 +16,28 @@ public:
     void update(const sf::Time &dt);
     void draw(sf::RenderWindow &w);
 private:
-    void handle_move(int x, int y);
-    void handle_left_click(int x, int y);
-    void handle_right_click(int x, int y);
-    void handle_left_release(int x, int y);
-    void handle_right_release(int x, int y);
+    // TODO state transitions
+    void handle_move(const WindowPos &p);
+    void handle_left_click(const WindowPos &p);
+    void handle_right_click(const WindowPos &p);
+    void handle_left_release(const WindowPos &p);
+    void handle_right_release(const WindowPos &p);
     void build();
     void build_room();
     void build_object();
-    void handle_preview(int x, int y);
+    void handle_preview(const WindowPos &p);
 
     World *world;
     sf::RenderWindow &window;
 
     unique_ptr<GuiList> categories;
 
+    // TODO subcategory class
     vector<unique_ptr<GuiList>> subcategory;
     int curr_subcategory;
 
-    sf::Vector2i selection_start, selection_end;
+    // TODO selection class
+    WorldPos selection_start, selection_end;
     bool active_selection;
 
     void clear_selection();
@@ -50,7 +54,7 @@ private:
     // Selection pointer. Can select workers and objects.
     void want_to_select();
     bool want_select;
-    void try_select(int x, int y);
+    void try_select(const WindowPos &p);
 
     void draw_level_selection();
     void set_level(int lvl);
