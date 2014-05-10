@@ -3,6 +3,7 @@
 #include "butler.hxx"
 #include "constants.hxx"
 #include "button.hxx"
+#include "util/ext.hxx"
 
 Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win), selection_start(-1), selection_end(-1),
     room_to_build(nullptr), object_to_build(nullptr)
@@ -194,7 +195,7 @@ void Gui::build_object() {
 }
 
 void Gui::handle_preview(const WindowPos &p) {
-    WindowPos wp(sf::Mouse::getPosition(window));
+    WindowPos wp(get_mpos());
     if (!world->in_world(wp)) return;
 
     auto curr = world->window2dimension(wp).pos;
@@ -230,7 +231,7 @@ void Gui::clear_selection() {
 void Gui::draw_preview_cost() {
     // Draw preview cost
     // TODO better position
-    WindowPos wp(sf::Mouse::getPosition(window));
+    WindowPos wp(get_mpos());
     if (!world->in_world(wp)) return;
 
     auto curr = world->window2world(wp).pos;

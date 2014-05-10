@@ -1,7 +1,7 @@
 #include "button.hxx"
 #include "butler.hxx"
 #include "constants.hxx"
-#include "util/graphics.hxx"
+#include "util/ext.hxx"
 #include "locator.hxx"
 
 Button::Button(function<void()> f, string s) : on_click(f) {

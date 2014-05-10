@@ -1,4 +1,5 @@
-#include "graphics.hxx"
+#include "ext.hxx"
+#include "locator.hxx"
 
 sf::Color make_color(int a, int r, int g, int alpha) {
     return sf::Color(a, r, g, alpha);
@@ -24,5 +25,9 @@ sf::ConvexShape make_rect(const sf::FloatRect &rect) {
     shape.setPoint(2, sf::Vector2f(rect.left + rect.width, rect.top + rect.height));
     shape.setPoint(3, sf::Vector2f(rect.left + rect.width, rect.top));
     return shape;
+}
+
+WindowPos get_mpos() {
+    return WindowPos(sf::Mouse::getPosition(Locator::get_window()));
 }
 

@@ -1,4 +1,4 @@
-#include "util/graphics.hxx"
+#include "util/ext.hxx"
 #include "util/rand.hxx"
 #include "world.hxx"
 #include "constants.hxx"
@@ -228,8 +228,10 @@ void World::update(const sf::Time &dt) {
     for (auto worker : workers) {
         worker->update(dt);
     }
+
+    // Add in debug info
     if (Locator::get_settings().get_bool("debug_positions")) {
-        WindowPos mp(sf::Mouse::getPosition(w));
+        WindowPos mp(get_mpos());
         if (in_world(mp)) {
             WorldPos wpos(window2world(mp));
             DimensionPos dpos(world2dimension(wpos));
@@ -242,7 +244,6 @@ void World::update(const sf::Time &dt) {
         }
     }
 
-    // Add in debug info
     if (Locator::get_settings().get_bool("debug_tasks")) {
         D_.tmp("pending tasks: " + to_string(pending_tasks.size()));
         for (auto &t : pending_tasks) {
