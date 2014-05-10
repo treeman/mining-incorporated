@@ -1,8 +1,9 @@
 #include "level.hxx"
 #include "constants.hxx"
 #include "rand.hxx"
-#include "ground.hxx"
+#include "ore.hxx"
 
+/*
 string first_level[num_tiles_high] = {
     "sssss.............aa",
     "sssss............aa.",
@@ -22,7 +23,6 @@ string first_level[num_tiles_high] = {
     ".....i..............",
 };
 
-/*
 vector<vector<shared_ptr<Tile>>> make_first_level() {
     vector<vector<shared_ptr<Tile>>> grid(num_tiles_high, vector<shared_ptr<Tile>>(num_tiles_wide));
     for (int i = 0; i < num_tiles_high; ++i) {
@@ -79,8 +79,9 @@ string randomize_ore_type(int) {
 const int dr[4] = { 0, 1, 0, -1 };
 const int dc[4] = { 1, 0, -1, 0 };
 
-vector<vector<shared_ptr<Tile>>> make_random_level(int level) {
-    vector<vector<shared_ptr<Tile>>> grid(num_tiles_high, vector<shared_ptr<Tile>>(num_tiles_wide));
+shared_ptr<Level> make_random_level(int lvl) {
+    shared_ptr<Level> level(new Level());
+    level->grid.assign(num_tiles_high, vector<shared_ptr<Tile>>(num_tiles_wide));
 
     // TODO better randomization, with things more common at different levels
     // Randomize some ore strips
@@ -88,15 +89,13 @@ vector<vector<shared_ptr<Tile>>> make_random_level(int level) {
     //printf("doing %d strips\n", num_strips);
 
     for (int k = 0; k < num_strips; ++k) {
-        //RoomType type = randomize_ore_type(level);
-        string type = randomize_ore_type(level);
-        auto ground = get_ground(type);
+        string type = randomize_ore_type(lvl);
+        auto ore = get_ore(type);
         int num_ores = rand_int(3, 8);
 
         // Floodfill with randomization to place ores xD
         int r = rand_int(0, num_tiles_high - 1);
         int c = rand_int(0, num_tiles_wide - 1);
-        //printf("floodfill from %d, %d\n", r, c);
 
         vector<vector<int>> seen(num_tiles_high, vector<int>(num_tiles_wide, 0));
         vector<pair<int, int>> q;
@@ -117,7 +116,7 @@ vector<vector<shared_ptr<Tile>>> make_random_level(int level) {
             // Place ore here!
             // TODO
             //grid[r][c] = create_tile(type, c * tile_width, r * tile_width);
-            grid[r][c] = ground->create_tile(c * tile_width, r * tile_width);
+            level->grid[r][c] = ore->create_tile(c * tile_width, r * tile_width);
 
             for (int d = 0; d < 4; ++d) {
                 int nr = r + dr[d];
@@ -133,16 +132,43 @@ vector<vector<shared_ptr<Tile>>> make_random_level(int level) {
     auto rock = get_ground("rock");
     for (int i = 0; i < num_tiles_high; ++i) {
         for (int j = 0; j < num_tiles_wide; ++j) {
-            if (!grid[i][j]) {
-                grid[i][j] = rock->create_tile(j * tile_width, i * tile_width);
+            if (!level->grid[i][j]) {
+                level->grid[i][j] = rock->create_tile(j * tile_width, i * tile_width);
             }
         }
     }
-    return grid;
+    return level;
 }
 
-vector<vector<shared_ptr<Tile>>> make_level(int level) {
+shared_ptr<Level> make_level(int level) {
     //if (level == 1) return make_first_level();
     return make_random_level(level);
+}
+
+shared_ptr<Tile> Level::tile(int x, int y) {
+    assert(0 <= y && y <= (int)grid.size());
+    assert(0 <= x && x <= (int)grid[0].size());
+    return grid[y][x];
+}
+
+void Level::update(const sf::Time &dt) {
+    for (int y = 0; y < (int)grid.size(); ++y) {
+        for (int x = 0; x < (int)grid[y].size(); ++x) {
+            // TODO
+            //grid[y][x]->update(dt);
+        }
+    }
+}
+
+void Level::draw(sf::RenderWindow &w) {
+    for (int y = 0; y < (int)grid.size(); ++y) {
+        for (int x = 0; x < (int)grid[y].size(); ++x) {
+            grid[y][x]->draw(w);
+        }
+    }
+}
+
+Level::Level() {
+
 }
 

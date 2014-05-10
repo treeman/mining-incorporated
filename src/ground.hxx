@@ -10,15 +10,15 @@ void load_ground_definitions(string lua_file);
 
 class Ground {
 public:
-    unique_ptr<Tile> create_tile(int x, int y) const;
+    virtual ~Ground() { }
+    virtual unique_ptr<Tile> create_tile(int x, int y) const;
 
     bool is_walkable;
     float remove_time;
     float build_time;
     string spr;
-private:
+protected:
     Ground();
-    bool is_valid();
     friend void load_ground_definitions(string);
 };
 

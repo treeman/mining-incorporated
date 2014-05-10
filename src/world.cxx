@@ -16,7 +16,9 @@ World::World(sf::RenderWindow &_w) :
     view.move(-view_xoff, -view_yoff);
 
     // TODO multiple levels
-    grid = make_level(1);
+    //level = make_level(1);
+    curr_lvl = 0;
+    dimension = make_dimension();
 
     new_worker();
 
@@ -50,9 +52,10 @@ bool World::in_world(int x, int y) {
     return 0 <= x && x <= world_width && 0 <= y && y <= world_height;
 }
 
+// TODO move to level
 bool World::is_tile(int x, int y) {
-    return 0 <= x && x < (int)grid[0].size()
-        && 0 <= y && y < (int)grid.size();
+    return 0 <= x && x < (int)dimension->level(curr_lvl)->grid[0].size()
+        && 0 <= y && y < (int)dimension->level(curr_lvl)->grid.size();
 }
 
 void World::build(sf::Vector2i wp, RoomType type) {
@@ -83,9 +86,10 @@ void World::build(int x, int y, RoomType type) {
     resources.money -= get_info(type)->cost;
     */
 }
+// TODO move to level
 void World::build(int x, int y, ObjectType type) {
     if (!is_tile(x, y)) return;
-    shared_ptr<Tile> tile = grid[y][x];
+    shared_ptr<Tile> tile = dimension->level(curr_lvl)->grid[y][x];
 
     if (tile->has_object() && type == SellObject) {
         tasks.push_back(create_sell_task(x, y));
@@ -108,7 +112,7 @@ void World::build(int x, int y, ObjectType type) {
 void World::sell_object(int x, int y) {
     // TODO money management here
     if (!is_tile(x, y)) return;
-    shared_ptr<Tile> tile = grid[y][x];
+    shared_ptr<Tile> tile = dimension->level(curr_lvl)->grid[y][x];
 
     tile->remove_object();
 }
@@ -154,7 +158,7 @@ void World::remove(int x1, int y1, int x2, int y2) {
 
 void World::preview_room_build(int x, int y) {
     if (is_tile(x, y)) {
-        grid[y][x]->set_room_preview();
+        dimension->level(curr_lvl)->grid[y][x]->set_room_preview();
     }
 }
 
@@ -173,21 +177,34 @@ void World::preview_room_build(int x1, int y1, int x2, int y2) {
 }
 void World::preview_object_build(int x, int y) {
     if (is_tile(x, y)) {
-        grid[y][x]->set_object_preview();
+        dimension->level(curr_lvl)->grid[y][x]->set_object_preview();
     }
 }
 void World::clear_preview() {
-    for (auto row : grid) {
+    for (auto row : dimension->level(curr_lvl)->grid) {
         for (auto t : row) {
             t->clear_preview();
         }
     }
 }
 
-void World::handle_input(const sf::Event &e) { }
+void World::handle_input(const sf::Event &e) {
+    switch (e.type) {
+        case sf::Event::KeyPressed:
+            if (e.key.code == sf::Keyboard::A) {
+                ++curr_lvl;
+            }
+            if (e.key.code == sf::Keyboard::S) {
+                --curr_lvl;
+            }
+            break;
+        default: break;
+    }
+}
 void World::update(const sf::Time &dt) {
     assign_tasks();
 
+    dimension->update(dt);
     for (auto worker : workers) {
         worker->update(dt);
     }
@@ -196,13 +213,9 @@ void World::draw() {
     sf::View curr = w.getView();
     w.setView(view);
 
-    for (int i = 0; i < num_tiles_high; ++i) {
-        for (int j = 0; j < num_tiles_wide; ++j) {
-            grid[i][j]->draw(w);
-        }
-    }
+    dimension->draw(w, curr_lvl);
 
-    for (auto worker : workers) {
+    for (auto &worker : workers) {
         worker->draw(w);
     }
 
@@ -255,7 +268,7 @@ int manhattan(int x1, int y1, int x2, int y2) {
 
 // TODO levels??`
 vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t) {
-    const int rows = grid.size(), cols = grid[0].size();
+    const int rows = dimension->level(curr_lvl)->grid.size(), cols = dimension->level(curr_lvl)->grid[0].size();
 
     //printf("Pathfinding %d,%d -> %d,%d\n", s.x, s.y, t.x, t.y);
 
@@ -294,7 +307,7 @@ vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t) {
             int nx = s.x + dx[d], ny = s.y + dy[d];
             if (nx < 0 || nx >= cols || ny < 0 || ny >= rows) continue;
             bool is_goal = nx == t.x && ny == t.y;
-            if (!grid.at(ny).at(nx)->is_walkable() && !is_goal) {
+            if (!dimension->level(curr_lvl)->grid.at(ny).at(nx)->is_walkable() && !is_goal) {
                 //printf("skip %d %d\n", nx, ny);
                 continue;
             }
@@ -411,7 +424,7 @@ void World::assign_tasks() {
 }
 
 shared_ptr<Tile> World::get_tile(int x, int y) {
-    return grid.at(y).at(x);
+    return dimension->tile(x, y, curr_lvl);
 }
 shared_ptr<Tile> World::get_tile(sf::Vector2i pos) { return get_tile(pos.x, pos.y); }
 

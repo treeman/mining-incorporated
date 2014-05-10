@@ -38,5 +38,6 @@ private:
     const Ground *ground;
 
     friend class Ground;
+    friend class Ore;
 };
 

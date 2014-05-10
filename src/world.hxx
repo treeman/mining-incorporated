@@ -7,11 +7,13 @@
 #include "objecttype.hxx"
 #include "task.hxx"
 #include "resources.hxx"
+#include "dimension.hxx"
 
 class World {
 public:
     World(sf::RenderWindow &w);
 
+    // TODO remove/move
     // xD
     sf::Vector2i window2tile(int x, int y);
     sf::Vector2i window2world(int x, int y);
@@ -46,6 +48,7 @@ public:
     //void build(int x1, int y1, int x2, int y2, ObjectType type);
     //void remove(int x1, int y1, int x2, int y2);
 
+    // TODO move to commands
     // Current action
     void preview_room_build(int x, int y);
     void preview_room_build(int x1, int y1, int x2, int y2);
@@ -75,7 +78,10 @@ private:
     shared_ptr<Tile> get_tile(int x, int y);
     shared_ptr<Tile> get_tile(sf::Vector2i pos);
 
-    vector<vector<shared_ptr<Tile>>> grid;
+    //vector<vector<shared_ptr<Tile>>> grid;
+    //shared_ptr<Level> level;
+    int curr_lvl;
+    shared_ptr<Dimension> dimension;
     vector<WorkerPtr> workers;
 
     //deque<WorkerPtr> free_workers;
