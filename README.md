@@ -7,6 +7,14 @@ This is a continunation of my unfinished game, [Mining Incorporated](https://git
 Todo
 ====
 
+* Refactor world!!!
+    * Offload things to Dimension/Level
+    * Pathfinding inside dimension
+    * Separate types for different positions
+        1. Tile position (x, y)
+        2. World position (x, y, lvl)
+        3. Window position (x, y)
+
 * Finalize loading ground types from ground.lua
     * Then use those as references
     * Continue in the same fashion with ores and rooms
