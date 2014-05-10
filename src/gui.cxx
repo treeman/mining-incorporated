@@ -99,6 +99,12 @@ bool Gui::handle_input(const sf::Event &e) {
             else if (e.mouseButton.button == sf::Mouse::Button::Right) {
                 handle_right_release(e.mouseButton.x, e.mouseButton.y);
             }
+            break;
+        case sf::Event::TextEntered:
+            if ('0' <= e.text.unicode && e.text.unicode <= '9') {
+                set_level(e.text.unicode - '0');
+            }
+            break;
         default: break;
     }
     return true;
@@ -112,8 +118,9 @@ void Gui::draw(sf::RenderWindow &w) {
     categories->draw(w);
     if (curr_subcategory != -1)
         subcategory[curr_subcategory]->draw(w);
+    draw_level_selection();
     if (preview_cost)
-        draw_preview_cost(w);
+        draw_preview_cost();
 }
 
 void Gui::handle_move(int x, int y) {
@@ -209,10 +216,10 @@ void Gui::clear_selection() {
     want_select = false;
 }
 
-void Gui::draw_preview_cost(sf::RenderWindow &w) {
+void Gui::draw_preview_cost() {
     // Draw preview cost
     // TODO better position
-    auto curr = sf::Mouse::getPosition(w);
+    auto curr = sf::Mouse::getPosition(window);
     int x = 0, y = 0;
     if (object_to_build || (!active_selection && room_to_build)) {
         x = curr.x + 20;
@@ -231,7 +238,7 @@ void Gui::draw_preview_cost(sf::RenderWindow &w) {
     txt.setColor(sf::Color::White);
     stringstream ss; ss << "$" << preview_cost;
     txt.setString(ss.str());
-    w.draw(txt);
+    window.draw(txt);
 }
 
 void Gui::want_to_select() {
@@ -251,6 +258,20 @@ void Gui::try_select(int x, int y) {
             // TODO store as weak_ptr
             printf("Worker at %lf %lf dist %lf\n", p.x, p.y, d);
         }
+    }
+}
+
+void Gui::draw_level_selection() {
+    const int lvl = world->get_curr_level();
+    txt.setString("level: " + to_string(lvl));
+    txt.setPosition(10, 40);
+    txt.setColor(sf::Color::White);
+    window.draw(txt);
+}
+
+void Gui::set_level(int lvl) {
+    if (0 <= lvl && lvl < world->num_levels()) {
+        world->set_curr_level(lvl);
     }
 }
 

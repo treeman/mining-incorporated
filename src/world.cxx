@@ -15,10 +15,8 @@ World::World(sf::RenderWindow &_w) :
 {
     view.move(-view_xoff, -view_yoff);
 
-    // TODO multiple levels
-    //level = make_level(1);
-    curr_lvl = 0;
     dimension = make_dimension();
+    set_curr_level(0);
 
     new_worker();
 
@@ -57,6 +55,15 @@ bool World::is_tile(int x, int y) {
     return 0 <= x && x < (int)dimension->level(curr_lvl)->grid[0].size()
         && 0 <= y && y < (int)dimension->level(curr_lvl)->grid.size();
 }
+
+int World::num_levels() const {
+    return dimension->num_levels();
+}
+void World::set_curr_level(int lvl) {
+    assert(0 <= lvl && lvl < num_levels());
+    curr_lvl = lvl;
+}
+int World::get_curr_level() const { return curr_lvl; }
 
 void World::build(sf::Vector2i wp, RoomType type) {
     if (!in_world(wp)) return;
@@ -188,19 +195,7 @@ void World::clear_preview() {
     }
 }
 
-void World::handle_input(const sf::Event &e) {
-    switch (e.type) {
-        case sf::Event::KeyPressed:
-            if (e.key.code == sf::Keyboard::A) {
-                ++curr_lvl;
-            }
-            if (e.key.code == sf::Keyboard::S) {
-                --curr_lvl;
-            }
-            break;
-        default: break;
-    }
-}
+void World::handle_input(const sf::Event &e) { }
 void World::update(const sf::Time &dt) {
     assign_tasks();
 

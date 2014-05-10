@@ -8,13 +8,15 @@ shared_ptr<Dimension> make_dimension() {
     return res;
 }
 
-shared_ptr<Tile> Dimension::tile(int x, int y, int lvl) {
+shared_ptr<Tile> Dimension::tile(int x, int y, int lvl) const {
     return level(lvl)->tile(x, y);
 }
-shared_ptr<Level> Dimension::level(int lvl) {
+shared_ptr<Level> Dimension::level(int lvl) const {
     assert(0 <= lvl && lvl < (int)levels.size());
     return levels[lvl];
 }
+
+int Dimension::num_levels() const { return levels.size(); }
 
 void Dimension::update(const sf::Time &dt) {
     for (auto &x : levels)

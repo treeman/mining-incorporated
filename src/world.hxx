@@ -33,6 +33,10 @@ public:
     bool in_world(int x, int y);
     bool is_tile(int x, int y);
 
+    int num_levels() const;
+    void set_curr_level(int lvl);
+    int get_curr_level() const;
+
     // World positions
     void build(sf::Vector2i worldpos, RoomType type);
     void remove(sf::Vector2i worldpos);

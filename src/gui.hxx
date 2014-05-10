@@ -42,7 +42,7 @@ private:
     int preview_cost;
 
     sf::Text txt;
-    void draw_preview_cost(sf::RenderWindow &w);
+    void draw_preview_cost();
 
     // TODO draw other buttons/economy and things if this is true.
     bool show_management;
@@ -51,5 +51,8 @@ private:
     void want_to_select();
     bool want_select;
     void try_select(int x, int y);
+
+    void draw_level_selection();
+    void set_level(int lvl);
 };
 
