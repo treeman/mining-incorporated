@@ -7,6 +7,20 @@ This is a continunation of my unfinished game, [Mining Incorporated](https://git
 Todo
 ====
 
+Next steps:
+1. Refactor gui to use state transitions.
+2. Make gui issue tasks/commands to world.
+3. Refactor world task handling.
+3. Make a wide & flat task class hierarchy
+    Dig
+    Mine
+    Place object
+    Fetch object
+    ...
+4. Refactor world.
+    Pathfinding in level/dimension.
+    Remove unneeded things (point conversions, task handling)
+
 * Refactor world!!!
     * Offload things to Dimension/Level
     * Pathfinding inside dimension
