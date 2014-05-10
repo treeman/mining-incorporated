@@ -43,7 +43,10 @@ public:
     int num_levels() const;
     void set_curr_level(int lvl);
     int get_curr_level() const;
+private:
+    int curr_lvl;
 
+public:
     // TODO move to commands
     // World positions
     void build(sf::Vector2i worldpos, RoomType type);
@@ -93,10 +96,15 @@ private:
 
     //vector<vector<shared_ptr<Tile>>> grid;
     //shared_ptr<Level> level;
-    int curr_lvl;
     shared_ptr<Dimension> dimension;
     vector<WorkerPtr> workers;
 
+public:
+    void add_task(unique_ptr<Task> task);
+private:
+    deque<unique_ptr<Task>> pending_tasks;
+
+    // TODO delete, old
     //deque<WorkerPtr> free_workers;
     deque<Task> tasks;
 

@@ -42,7 +42,8 @@ void Settings::load_from_file(string path) {
 
 void Settings::set_num(string s, double val) {
     auto it = nums.find(s);
-    assert(it != nums.end());
+    if (it == nums.end())
+        throw setting_missing_error(s);
     it->second.v = val;
     for (auto cb : it->second.cbs)
         cb(val);
@@ -51,7 +52,8 @@ void Settings::set_num(string s, double val) {
 }
 void Settings::set_bool(string s, bool val) {
     auto it = bools.find(s);
-    assert(it != bools.end());
+    if (it == bools.end())
+        throw setting_missing_error(s);
     it->second.v = val;
     for (auto cb : it->second.cbs)
         cb(val);
@@ -60,7 +62,8 @@ void Settings::set_bool(string s, bool val) {
 }
 void Settings::set_string(string s, string val) {
     auto it = strings.find(s);
-    assert(it != strings.end());
+    if (it == strings.end())
+        throw setting_missing_error(s);
     it->second.v = val;
     for (auto cb : it->second.cbs)
         cb(val);
@@ -88,33 +91,39 @@ void Settings::register_global_callback(function<void(string, string)> f) {
 // TODO error reporting instead.
 void Settings::register_num_callback(string s, function<void(double)> f) {
     auto it = nums.find(s);
-    assert(it != nums.end());
+    if (it == nums.end())
+        throw setting_missing_error(s);
     it->second.cbs.push_back(f);
 }
 void Settings::register_bool_callback(string s, function<void(bool)> f) {
     auto it = bools.find(s);
-    assert(it != bools.end());
+    if (it == bools.end())
+        throw setting_missing_error(s);
     it->second.cbs.push_back(f);
 }
 void Settings::register_string_callback(string s, function<void(string)> f) {
     auto it = strings.find(s);
-    assert(it != strings.end());
+    if (it == strings.end())
+        throw setting_missing_error(s);
     it->second.cbs.push_back(f);
 }
 
 double Settings::get_num(string s) {
     auto it = nums.find(s);
-    assert(it != nums.end());
+    if (it == nums.end())
+        throw setting_missing_error(s);
     return it->second.v;
 }
 bool Settings::get_bool(string s) {
     auto it = bools.find(s);
-    assert(it != bools.end());
+    if (it == bools.end())
+        throw setting_missing_error(s);
     return it->second.v;
 }
 string Settings::get_string(string s) {
     auto it = strings.find(s);
-    assert(it != strings.end());
+    if (it == strings.end())
+        throw setting_missing_error(s);
     return it->second.v;
 }
 

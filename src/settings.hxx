@@ -45,3 +45,9 @@ private:
     vector<function<void(string, string)>> global_cbs;
 };
 
+class setting_missing_error : public logic_error {
+public:
+    setting_missing_error(const char *s) noexcept : logic_error(s) { }
+    setting_missing_error(const string &s) noexcept : logic_error(s) { }
+};
+

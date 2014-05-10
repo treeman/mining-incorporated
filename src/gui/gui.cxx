@@ -270,7 +270,7 @@ void Gui::try_select(const WindowPos &p) {
         // TODO select distance from center of worker
         auto p = worker->get_pos();
         //double d = hypot((double)pos.x - p.x, (double)pos.y - p.y);
-        float d = pos.pos.dist(FPoint(p));
+        float d = pos.pos.dist(IPoint(p));
         if (d <= min_select_dist) {
             // TODO store as weak_ptr
             printf("Worker at %lf %lf dist %lf\n", p.x, p.y, d);
@@ -281,7 +281,7 @@ void Gui::try_select(const WindowPos &p) {
 void Gui::draw_level_selection() {
     const int lvl = world->get_curr_level();
     txt.setString("level: " + to_string(lvl));
-    txt.setPosition(10, 40);
+    txt.setPosition(155, 15);
     txt.setColor(sf::Color::White);
     window.draw(txt);
 }

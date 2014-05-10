@@ -18,7 +18,7 @@ public:
     Task();
     TaskType type;
 
-    string to_str();
+    string to_string() const;
 
     IPoint pos;
     bool is_done;

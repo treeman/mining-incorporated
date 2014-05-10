@@ -15,7 +15,7 @@ Task::Task() : is_done(false) {
 
 }
 
-string Task::to_str() {
+string Task::to_string() const {
     stringstream ss;
     if (type == Dig) {
         ss << "Dig " << pos;

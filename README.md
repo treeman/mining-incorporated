@@ -17,6 +17,9 @@ Todo
         3. Window position (Point<float>)
         4. World position (Point<float>, lvl)
 
+* Refactor gui!!!
+    * Refactor into states
+
 * Finalize loading ground types from ground.lua
     * Then use those as references
     * Continue in the same fashion with ores and rooms

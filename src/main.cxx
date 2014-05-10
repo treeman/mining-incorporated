@@ -91,18 +91,20 @@ int main()
         }
 
         sf::Time dt = clock.restart();
+
         state->update(dt);
         console.update(dt);
+
+        // Debug mouse position here
+        if (settings.get_bool("show_mouse_pos")) {
+            auto mp = sf::Mouse::getPosition(window);
+            D_.set_key("mpos", to_string(mp.x) + ", " + to_string(mp.y));
+        }
 
         // Draw things!
         window.clear();
 
         state->draw();
-
-        if (settings.get_bool("show_mouse_pos")) {
-            auto mp = sf::Mouse::getPosition(window);
-            D_.tmp("mpos: " + to_string(mp.x) + ", " + to_string(mp.y));
-        }
 
         // Debugger logs and possibly draws last.
         Locator::get_debug().update();

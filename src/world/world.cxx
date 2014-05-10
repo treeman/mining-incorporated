@@ -5,6 +5,7 @@
 #include "butler.hxx"
 #include "assert.h"
 #include "level.hxx"
+#include "locator.hxx"
 
 const int view_xoff = (screen_width - world_width) / 2;
 const int view_yoff = (screen_height - world_height) / 2;
@@ -24,6 +25,9 @@ World::World(sf::RenderWindow &_w) :
     mpos.setPosition(100, 5);
     txt = create_txt("arial.ttf", 14);
     stat_txt = create_txt("consola.ttf", 14);
+
+    Locator::get_settings().register_bool("debug_tasks", false);
+    Locator::get_settings().register_bool("debug_positions", false);
 }
 
 //sf::Vector2i World::window2tile(int x, int y) {
@@ -224,6 +228,27 @@ void World::update(const sf::Time &dt) {
     for (auto worker : workers) {
         worker->update(dt);
     }
+    if (Locator::get_settings().get_bool("debug_positions")) {
+        WindowPos mp(sf::Mouse::getPosition(w));
+        if (in_world(mp)) {
+            WorldPos wpos(window2world(mp));
+            DimensionPos dpos(world2dimension(wpos));
+            D_.set_key("wpos", wpos.to_string());
+            D_.set_key("dpos", dpos.to_string());
+        }
+        else {
+            D_.set_key("wpos", "invalid");
+            D_.set_key("dpos", "invalid");
+        }
+    }
+
+    // Add in debug info
+    if (Locator::get_settings().get_bool("debug_tasks")) {
+        D_.tmp("pending tasks: " + to_string(pending_tasks.size()));
+        for (auto &t : pending_tasks) {
+            D_.tmp(t->to_string());
+        }
+    }
 }
 void World::draw() {
     sf::View curr = w.getView();
@@ -394,7 +419,6 @@ void World::task_done(Task task) {
             }
         }
 
-
         // Update tile
         tile->set_type(task.room_type);
         */
@@ -519,5 +543,9 @@ RoomType World::get_tile_type(int x, int y) {
     //shared_ptr<Tile> tile = get_tile(x, y);
     //return tile->get_type();
     return Rock;
+}
+
+void World::add_task(unique_ptr<Task> task) {
+    pending_tasks.push_back(move(task));
 }
 
