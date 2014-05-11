@@ -1,10 +1,12 @@
-#include "guiobject.hxx"
+#include "gui/object.hxx"
 
-bool GuiObject::is_over(int x, int y) const {
+namespace Gui {
+
+bool Object::is_over(int x, int y) const {
     return bounds().contains(sf::Vector2f(x, y));
 }
 
-bool GuiObject::handle_input(const sf::Event &e) {
+bool Object::handle_input(const sf::Event &e) {
     switch (e.type) {
         case sf::Event::MouseMoved:
             if (!is_over(e.mouseMove.x, e.mouseMove.y)) {
@@ -26,5 +28,7 @@ bool GuiObject::handle_input(const sf::Event &e) {
     }
 
     return false;
+}
+
 }
 

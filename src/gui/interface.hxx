@@ -1,16 +1,18 @@
 #pragma once
 
-#include "guilist.hxx"
 #include "roomtype.hxx"
 #include "objecttype.hxx"
-#include "input/inputhandler.hxx"
 #include "pos.hxx"
+#include "input/inputhandler.hxx"
+#include "gui/list.hxx"
 
 class World;
 
-class Gui : public InputHandler {
+namespace Gui {
+
+class Interface : public InputHandler {
 public:
-    Gui(World *world, sf::RenderWindow &window);
+    Interface(World *world, sf::RenderWindow &window);
 
     bool handle_input(const sf::Event &e);
     void update(const sf::Time &dt);
@@ -30,10 +32,10 @@ private:
     World *world;
     sf::RenderWindow &window;
 
-    unique_ptr<GuiList> categories;
+    unique_ptr<List> categories;
 
     // TODO subcategory class
-    vector<unique_ptr<GuiList>> subcategory;
+    vector<unique_ptr<List>> subcategory;
     int curr_subcategory;
 
     // TODO selection class
@@ -59,4 +61,6 @@ private:
     void draw_level_selection();
     void set_level(int lvl);
 };
+
+}
 

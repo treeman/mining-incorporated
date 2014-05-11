@@ -1,5 +1,5 @@
-#include "inputbox.hxx"
 #include "butler.hxx"
+#include "gui/inputbox.hxx"
 
 InputBox::InputBox(int x, int y) {
     txt = create_txt("arial.ttf", 10);

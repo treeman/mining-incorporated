@@ -1,5 +1,5 @@
-#include "progressbar.hxx"
 #include "util/ext.hxx"
+#include "gui/progressbar.hxx"
 
 // ^^
 const int w = 23, h = 4;

@@ -1,29 +1,31 @@
-#include "gui.hxx"
-#include "world/world.hxx"
 #include "butler.hxx"
 #include "constants.hxx"
-#include "button.hxx"
 #include "util/ext.hxx"
+#include "world/world.hxx"
+#include "gui/interface.hxx"
+#include "gui/button.hxx"
 
-Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win), selection_start(-1), selection_end(-1),
+namespace Gui {
+
+Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win), selection_start(-1), selection_end(-1),
     room_to_build(nullptr), object_to_build(nullptr)
 {
-    unique_ptr<GuiList>(new GuiList(20, 570)).swap(categories);
+    unique_ptr<List>(new List(20, 570)).swap(categories);
 
     // A bit hacky, could refactor into gui elements.
     curr_subcategory = -1;
     show_management = false;
-    categories->add(ButtonPtr(new Button([&]() mutable {
+    categories->add(shared_ptr<Button>(new Button([&]() mutable {
             curr_subcategory = 0;
             this->clear_selection();
             show_management = false;
         }, "Rooms")));
-    categories->add(ButtonPtr(new Button([&]() mutable {
+    categories->add(shared_ptr<Button>(new Button([&]() mutable {
             curr_subcategory = 1;
             this->clear_selection();
             show_management = false;
         }, "Objects")));
-    categories->add(ButtonPtr(new Button([&]() mutable {
+    categories->add(shared_ptr<Button>(new Button([&]() mutable {
             //curr_subcategory = -1;
             show_management = true;
             //curr_subcategory = 1;
@@ -34,11 +36,11 @@ Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win), selection_sta
 
     // Rooms
     const int subx = 20, suby = 530;
-    unique_ptr<GuiList> rooms(new GuiList(subx, suby));
+    unique_ptr<List> rooms(new List(subx, suby));
     for (auto x : room_info) {
         auto &info = x.second;
         if (info.name == "") continue; // Hack
-        rooms->add(ButtonPtr(new Button([=]() mutable {
+        rooms->add(shared_ptr<Button>(new Button([=]() mutable {
                         this->room_to_build = &info;
                         this->object_to_build = nullptr;
                     }, info.name)));
@@ -46,11 +48,11 @@ Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win), selection_sta
     subcategory.push_back(move(rooms));
 
     // Objects
-    unique_ptr<GuiList> objects(new GuiList(subx, suby));
+    unique_ptr<List> objects(new List(subx, suby));
     for (auto x : object_info) {
         auto &info = x.second;
         if (info.name == "") continue; // Hack
-        objects->add(ButtonPtr(new Button([=]() mutable {
+        objects->add(shared_ptr<Button>(new Button([=]() mutable {
                         this->object_to_build = &info;
                         this->room_to_build = nullptr;
                     }, info.name)));
@@ -59,11 +61,11 @@ Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win), selection_sta
 
     // Management
     // TODO move away
-    unique_ptr<GuiList> management(new GuiList(subx, suby));
-    management->add(ButtonPtr(new Button([=]() mutable{
+    unique_ptr<List> management(new List(subx, suby));
+    management->add(shared_ptr<Button>(new Button([=]() mutable{
                         this->want_to_select();
                     }, "Select")));
-    management->add(ButtonPtr(new ClickButton([=]() mutable{
+    management->add(shared_ptr<Button>(new ClickButton([=]() mutable{
                         this->clear_selection(); // TODO this will deselect this one T.T
                         world->new_worker();
                     }, "Hire Worker")));
@@ -76,7 +78,7 @@ Gui::Gui(World *w, sf::RenderWindow &win) : world(w), window(win), selection_sta
 }
 
 // TODO block on interactions
-bool Gui::handle_input(const sf::Event &e) {
+bool Interface::handle_input(const sf::Event &e) {
     categories->handle_input(e);
     if (curr_subcategory != -1)
         subcategory[curr_subcategory]->handle_input(e);
@@ -110,12 +112,12 @@ bool Gui::handle_input(const sf::Event &e) {
     }
     return true;
 }
-void Gui::update(const sf::Time &dt) {
+void Interface::update(const sf::Time &dt) {
     categories->update(dt);
     if (curr_subcategory != -1)
         subcategory[curr_subcategory]->update(dt);
 }
-void Gui::draw(sf::RenderWindow &w) {
+void Interface::draw(sf::RenderWindow &w) {
     categories->draw(w);
     if (curr_subcategory != -1)
         subcategory[curr_subcategory]->draw(w);
@@ -124,7 +126,7 @@ void Gui::draw(sf::RenderWindow &w) {
         draw_preview_cost();
 }
 
-void Gui::handle_move(const WindowPos &p) {
+void Interface::handle_move(const WindowPos &p) {
     //sf::Vector2i p(x, y);
     //categories.check_hover(p);
     //if (curr_subcategory != -1)
@@ -132,7 +134,7 @@ void Gui::handle_move(const WindowPos &p) {
 
     handle_preview(p);
 }
-void Gui::handle_left_click(const WindowPos &p) {
+void Interface::handle_left_click(const WindowPos &p) {
     //sf::Vector2i p(x, y);
     //categories.check_click(p);
     //if (curr_subcategory != -1)
@@ -149,10 +151,10 @@ void Gui::handle_left_click(const WindowPos &p) {
         active_selection = true;
     }
 }
-void Gui::handle_right_click(const WindowPos &p) {
+void Interface::handle_right_click(const WindowPos &p) {
 
 }
-void Gui::handle_left_release(const WindowPos &p) {
+void Interface::handle_left_release(const WindowPos &p) {
     if (!world->in_world(p)) return;
 
     selection_end = world->window2world(p);
@@ -167,14 +169,14 @@ void Gui::handle_left_release(const WindowPos &p) {
         build();
     }
 }
-void Gui::handle_right_release(const WindowPos &p) {
+void Interface::handle_right_release(const WindowPos &p) {
 
 }
-void Gui::build() {
+void Interface::build() {
     if (room_to_build) build_room();
     else if (object_to_build) build_object();
 }
-void Gui::build_room() {
+void Interface::build_room() {
     if (!room_to_build) return;
 
     // TODO fix
@@ -184,7 +186,7 @@ void Gui::build_room() {
     //world->build(tstart.x, tstart.y, tend.x, tend.y, room_to_build->type);
     preview_cost = 0;
 }
-void Gui::build_object() {
+void Interface::build_object() {
     //sf::Vector2i pos = world->window2tile(selection_end); // Harr! Selection! Harr!
     WorldPos pos = selection_end;
 
@@ -194,7 +196,7 @@ void Gui::build_object() {
     preview_cost = 0;
 }
 
-void Gui::handle_preview(const WindowPos &p) {
+void Interface::handle_preview(const WindowPos &p) {
     WindowPos wp(get_mpos());
     if (!world->in_world(wp)) return;
 
@@ -220,7 +222,7 @@ void Gui::handle_preview(const WindowPos &p) {
 }
 
 // Clear everything.
-void Gui::clear_selection() {
+void Interface::clear_selection() {
     room_to_build = nullptr;
     object_to_build = nullptr;
     for (auto &bl : subcategory)
@@ -228,7 +230,7 @@ void Gui::clear_selection() {
     want_select = false;
 }
 
-void Gui::draw_preview_cost() {
+void Interface::draw_preview_cost() {
     // Draw preview cost
     // TODO better position
     WindowPos wp(get_mpos());
@@ -256,12 +258,12 @@ void Gui::draw_preview_cost() {
     window.draw(txt);
 }
 
-void Gui::want_to_select() {
+void Interface::want_to_select() {
     clear_selection();
     want_select = true;
 }
 
-void Gui::try_select(const WindowPos &p) {
+void Interface::try_select(const WindowPos &p) {
     if (!world->in_world(p)) return;
 
     WorldPos pos = world->window2world(p);
@@ -279,7 +281,7 @@ void Gui::try_select(const WindowPos &p) {
     }
 }
 
-void Gui::draw_level_selection() {
+void Interface::draw_level_selection() {
     const int lvl = world->get_curr_level();
     txt.setString("level: " + to_string(lvl));
     txt.setPosition(155, 15);
@@ -287,9 +289,10 @@ void Gui::draw_level_selection() {
     window.draw(txt);
 }
 
-void Gui::set_level(int lvl) {
+void Interface::set_level(int lvl) {
     if (0 <= lvl && lvl < world->num_levels()) {
         world->set_curr_level(lvl);
     }
 }
 
+}

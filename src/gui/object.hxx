@@ -2,10 +2,12 @@
 
 #include "input/inputhandler.hxx"
 
+namespace Gui {
+
 // Base class for gui things
-class GuiObject : public InputHandler {
+class Object : public InputHandler {
 public:
-    virtual ~GuiObject() { }
+    virtual ~Object() { }
 
     virtual void select() { }
     virtual void deselect() { }
@@ -27,3 +29,4 @@ public:
     virtual void draw(sf::RenderWindow &w) = 0;
 };
 
+}

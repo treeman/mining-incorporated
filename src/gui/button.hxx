@@ -1,9 +1,11 @@
 #pragma once
 
 #include "basicincludes.hxx"
-#include "guiobject.hxx"
+#include "gui/object.hxx"
 
-class Button : public GuiObject {
+namespace Gui {
+
+class Button : public Object {
 public:
     Button(function<void()> f, string s);
     virtual ~Button() { }
@@ -33,8 +35,6 @@ protected:
     bool hover;
 };
 
-typedef shared_ptr<Button> ButtonPtr;
-
 // Deselects itself when clicked on.
 class ClickButton : public Button {
 public:
@@ -43,4 +43,6 @@ public:
 
     void select();
 };
+
+}
 

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "state.hxx"
+#include "state/state.hxx"
 #include "world/world.hxx"
-#include "gui/gui.hxx"
+#include "gui/interface.hxx"
 
 class GameState : public State {
 public:
@@ -17,6 +17,6 @@ private:
     sf::Text txt;
     World world;
 
-    Gui gui;
+    Gui::Interface gui;
 };
 

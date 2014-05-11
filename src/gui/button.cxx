@@ -1,8 +1,10 @@
-#include "button.hxx"
 #include "butler.hxx"
 #include "constants.hxx"
-#include "util/ext.hxx"
 #include "locator.hxx"
+#include "util/ext.hxx"
+#include "gui/button.hxx"
+
+namespace Gui {
 
 Button::Button(function<void()> f, string s) : on_click(f) {
     txt = create_txt("consola.ttf", 14);
@@ -81,3 +83,6 @@ ClickButton::ClickButton(function<void()> f, string s) : Button(f, s) {
 }
 // Cannot be selected :)
 void ClickButton::select() { selected = false; }
+
+}
+

@@ -1,4 +1,4 @@
-#include "selection.hxx"
+#include "gui/selection.hxx"
 
 SelectionArea::SelectionArea() : start(-1), end(-1) {
 

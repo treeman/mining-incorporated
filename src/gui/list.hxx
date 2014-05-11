@@ -1,18 +1,20 @@
 #pragma once
 
 #include "basicincludes.hxx"
-#include "guiobject.hxx"
+#include "gui/object.hxx"
+
+namespace Gui {
 
 // TODO horisontal vs vertical align
 // TODO manage styles over the objects (height, width etc..)
 // GuiObjects ordered in a list.
-class GuiList : public GuiObject {
+class List : public Object {
 public:
-    GuiList(int x, int y);
+    List(int x, int y);
 
     void deselect() override;
 
-    void add(shared_ptr<GuiObject> o);
+    void add(shared_ptr<Object> o);
 
     sf::FloatRect bounds() const override;
     bool handle_input(const sf::Event &e) override;
@@ -23,7 +25,8 @@ public:
     void update(const sf::Time &dt) override ;
     void draw(sf::RenderWindow &w) override;
 private:
-    vector<shared_ptr<GuiObject>> objects;
+    vector<shared_ptr<Object>> objects;
     int x, y, space;
 };
 
+}

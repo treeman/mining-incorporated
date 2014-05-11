@@ -1,18 +1,20 @@
-#include "guilist.hxx"
 #include "constants.hxx"
 #include "locator.hxx"
+#include "gui/list.hxx"
 
-GuiList::GuiList(int _x, int _y) : x(_x), y(_y),
+namespace Gui {
+
+List::List(int _x, int _y) : x(_x), y(_y),
     space(Locator::get_settings().get_num("button_space")) // TODO make this general
 {
 }
 
-void GuiList::deselect() {
+void List::deselect() {
     for (auto o : objects) {
         o->deselect();
     }
 }
-void GuiList::add(shared_ptr<GuiObject> o) {
+void List::add(shared_ptr<Object> o) {
     if (objects.empty()) {
         o->set_pos(x, y);
     }
@@ -24,7 +26,7 @@ void GuiList::add(shared_ptr<GuiObject> o) {
     objects.push_back(o);
 }
 
-sf::FloatRect GuiList::bounds() const {
+sf::FloatRect List::bounds() const {
     int w = 0, h = 0;
     for (auto o : objects) {
         const sf::FloatRect b = o->bounds();
@@ -34,7 +36,7 @@ sf::FloatRect GuiList::bounds() const {
     w += space;
     return sf::FloatRect(x, y, w, h);
 }
-bool GuiList::handle_input(const sf::Event &e) {
+bool List::handle_input(const sf::Event &e) {
     switch (e.type) {
         case sf::Event::MouseMoved:
             for (auto o : objects) {
@@ -60,12 +62,13 @@ bool GuiList::handle_input(const sf::Event &e) {
     return true;
 }
 
-void GuiList::update(const sf::Time &dt) {
+void List::update(const sf::Time &dt) {
     for (auto o : objects)
         o->update(dt);
 }
-void GuiList::draw(sf::RenderWindow &w) {
+void List::draw(sf::RenderWindow &w) {
     for (auto o : objects)
         o->draw(w);
 }
 
+}

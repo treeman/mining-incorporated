@@ -1,6 +1,6 @@
-#include "historybox.hxx"
-#include "util/ext.hxx"
 #include "butler.hxx"
+#include "util/ext.hxx"
+#include "gui/historybox.hxx"
 
 HistoryBox::HistoryBox(int _x, int _y, int _w, int _h) : x(_x), y(_y), w(_w), h(_h) {
     int opacity = 0xDD;
