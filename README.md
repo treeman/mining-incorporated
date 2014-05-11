@@ -34,6 +34,9 @@ Next steps:
 * Refactor gui!!!
     * Refactor into states
 
+* Encapsulate things in namespaces
+    Gui, World, ...
+
 * Finalize loading ground types from ground.lua
     * Then use those as references
     * Continue in the same fashion with ores and rooms
