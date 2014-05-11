@@ -16,6 +16,8 @@ namespace state {
     template<typename T>
     class StateStack {
     public:
+        virtual ~StateStack() = default;
+
         bool has_current() const { return !s.empty(); }
         shared_ptr<T> current() const {
             assert(has_current());

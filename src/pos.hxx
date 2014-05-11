@@ -23,7 +23,7 @@ public:
         return pos.to_string() + " (" + std::to_string(lvl) + ")";
     }
 
-    TilePos pos;
+    Point<T> pos;
     int lvl;
 };
 

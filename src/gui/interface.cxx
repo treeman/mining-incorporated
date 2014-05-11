@@ -284,6 +284,8 @@ void Interface::want_to_select() {
 void Interface::try_select(const WindowPos &p) {
     if (!world->in_world(p)) return;
 
+    // TODO remove
+    /*
     WorldPos pos = world->window2world(p);
     WorkerPtr worker = world->select_closest_worker(pos.pos.x, pos.pos.y);
     if (worker) {
@@ -297,6 +299,7 @@ void Interface::try_select(const WindowPos &p) {
             printf("Worker at %lf %lf dist %lf\n", p.x, p.y, d);
         }
     }
+    */
 }
 
 void Interface::draw_level_selection() {

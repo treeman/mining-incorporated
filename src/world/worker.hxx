@@ -10,8 +10,9 @@ class Worker {
 public:
     Worker(int x, int y, World *world);
 
-    // TODO
-    // change to our own positions
+    // TODO change to our own positions
+    // TODO position in center of worker
+    // TODO some kind of bounding box?
     sf::Vector2f get_pos() const { return pos; }
 
     bool is_free();

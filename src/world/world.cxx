@@ -532,12 +532,11 @@ void World::draw_stats(string pre, int &val, sf::Color color, int x, int y) {
     w.draw(stat_txt);
 }
 
-WorkerPtr World::select_closest_worker(int x, int y) {
-    WorkerPtr res = nullptr;
-    double closest = numeric_limits<double>::infinity();
+shared_ptr<Worker> World::select_closest_worker(const WorldPos &p) {
+    shared_ptr<Worker> res{ nullptr };
+    float closest = numeric_limits<float>::infinity();
     for (auto w : workers) {
-        auto p = w->get_pos();
-        double d = hypot((double)x - p.x, (double)y - p.y);
+        float d =  FPoint(w->get_pos()).dist(p.pos);
         if (d < closest) {
             closest = d;
             res = w;
