@@ -8,6 +8,9 @@ shared_ptr<Dimension> make_dimension() {
     return res;
 }
 
+shared_ptr<Tile> Dimension::tile(const DimensionPos &p) const {
+    return level(p.lvl)->tile(p.pos.x, p.pos.y);
+}
 shared_ptr<Tile> Dimension::tile(int x, int y, int lvl) const {
     return level(lvl)->tile(x, y);
 }

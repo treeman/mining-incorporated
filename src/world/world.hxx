@@ -35,6 +35,9 @@ public:
     DimensionPos window2dimension(const WindowPos &p) const;
     DimensionPos world2dimension(const WorldPos &p) const;
 
+    //shared_ptr<Tile> get_tile(const WorldPos &p) const;
+    shared_ptr<Tile> get_tile(const DimensionPos &p) const;
+
     // TODO remove
     bool in_world(sf::Vector2i worldpos);
     bool in_world(int x, int y);

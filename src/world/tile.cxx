@@ -68,3 +68,7 @@ ObjectPtr Tile::get_object() {
     return obj;
 }
 
+const Ground *Tile::get_ground() const {
+    return ground;
+}
+

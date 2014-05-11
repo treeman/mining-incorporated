@@ -54,8 +54,8 @@ bool World::in_world(const WindowPos &p) const {
     return in_world(wp);
 }
 bool World::in_world(const WorldPos &p) const {
-    return 0 <= p.pos.x && p.pos.x <= world_width
-        && 0 <= p.pos.y && p.pos.y <= world_height;
+    return 0 <= p.pos.x && p.pos.x < world_width
+        && 0 <= p.pos.y && p.pos.y < world_height;
 }
 WorldPos World::window2world(const WindowPos &p) const {
     const WorldPos res(p.x  - view_xoff, p.y - view_yoff, curr_lvl);
@@ -68,6 +68,16 @@ DimensionPos World::window2dimension(const WindowPos &p) const {
 DimensionPos World::world2dimension(const WorldPos &p) const {
     assert(in_world(p));
     return DimensionPos(p.pos.x / tile_width, p.pos.y / tile_width, p.lvl);
+}
+
+/*
+shared_ptr<Tile> World::get_tile(const WorldPos &p) const {
+    assert(in_world(p));
+    return dimension->tile(world2dimension(p));
+}
+*/
+shared_ptr<Tile> World::get_tile(const DimensionPos &p) const {
+    return dimension->tile(p);
 }
 
 bool World::in_world(sf::Vector2i wp) { return in_world(wp.x, wp.y); }

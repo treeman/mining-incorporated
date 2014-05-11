@@ -23,6 +23,11 @@ public:
 
     // printf with type checking.
     template<typename... Ts>
+    void operator()(string f, const Ts&... ts)
+    {
+        write(fmt(f.c_str(), ts...));
+    }
+    template<typename... Ts>
     void operator()(const char *f, const Ts&... ts)
     {
         write(fmt(f, ts...));

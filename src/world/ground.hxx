@@ -13,6 +13,7 @@ public:
     virtual ~Ground() { }
     virtual unique_ptr<Tile> create_tile(int x, int y) const;
 
+    string key;
     bool is_walkable;
     float remove_time;
     float build_time;

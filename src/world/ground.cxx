@@ -41,7 +41,8 @@ void load_ground_definitions(string path) {
         //L_ << key << '\n';
         //L.dump_stack();
         if (!lua_istable(L, -1))
-            throw lua_parse_error(path, "ground element not a table.");
+            throw lua_parse_error(path, fmt("ground %s not a table.", key));
+        ground->key = key;
 
         // TODO create functions for these?
         // or just use these raw?
@@ -86,7 +87,7 @@ void load_ground_definitions(string path) {
 
     L_("found %d grounds\n", grounds.size());
     for (auto &x : grounds) {
-        L_("  %s\n", x.first);
+        L_("  %s\n", x.second->key);
     }
 }
 

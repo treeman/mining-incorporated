@@ -6,6 +6,7 @@
 #include "input/inputhandler.hxx"
 #include "gui/list.hxx"
 #include "gui/state.hxx"
+#include "state/statestack.hxx"
 
 class World;
 
@@ -64,10 +65,8 @@ namespace Gui {
 
     public:
         void set_state(string next);
-
     private:
-        shared_ptr<State> current_state;
-        map<string, shared_ptr<State>> states;
+        unique_ptr<state::StateStack<State>> state_handler;
     };
 
 }

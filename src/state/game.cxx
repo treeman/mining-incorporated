@@ -12,11 +12,11 @@ void GameState::handle_input(const sf::Event &e) {
     world.handle_input(e);
 }
 void GameState::update(const sf::Time &dt) {
+    gui.update(dt);
     world.update(dt);
 }
 void GameState::draw() {
     world.draw();
-
     gui.draw(window);
 }
 

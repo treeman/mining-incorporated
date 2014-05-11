@@ -146,9 +146,12 @@ shared_ptr<Level> make_level(int level) {
 }
 
 shared_ptr<Tile> Level::tile(int x, int y) {
-    assert(0 <= y && y <= (int)grid.size());
-    assert(0 <= x && x <= (int)grid[0].size());
+    assert(0 <= y && y < (int)grid.size());
+    assert(0 <= x && x < (int)grid[0].size());
     return grid[y][x];
+}
+shared_ptr<Tile> Level::tile(const TilePos &p) {
+    return tile(p.x, p.y);
 }
 
 void Level::update(const sf::Time &dt) {

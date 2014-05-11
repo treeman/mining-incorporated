@@ -39,7 +39,8 @@ void load_ore_definitions(string path) {
         //L_ << key << '\n';
         //L.dump_stack();
         if (!lua_istable(L, -1))
-            throw lua_parse_error(path, "ore element not a table.");
+            throw lua_parse_error(path, fmt("ore %s not a table.", key));
+        ore->key = key;
 
         // TODO create functions for these?
         // or just use these raw?

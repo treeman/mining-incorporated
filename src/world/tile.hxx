@@ -11,6 +11,7 @@ public:
 
     void draw(sf::RenderWindow &w);
 
+    // TODO move away?
     void set_room_preview();
     void set_object_preview();
     void clear_preview();
@@ -36,6 +37,9 @@ private:
     // TODO should be able to change ground
     Tile(const Ground *ground);
     const Ground *ground;
+
+public:
+    const Ground *get_ground() const;
 
     friend class Ground;
     friend class Ore;

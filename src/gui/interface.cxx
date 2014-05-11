@@ -4,13 +4,23 @@
 #include "world/world.hxx"
 #include "gui/interface.hxx"
 #include "gui/button.hxx"
+#include "gui/infostate.hxx"
 
 namespace Gui {
 
 Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win),
     selection_start(-1), selection_end(-1),
-    room_to_build(nullptr), object_to_build(nullptr), current_state(nullptr)
+    room_to_build(nullptr), object_to_build(nullptr),
+    state_handler(new state::StateStack<State>())
 {
+    // TODO don't create/destroy states but save them!
+    state_handler->add_generator("info", [this]() {
+        State *res = new InfoState();
+        res->init(this, this->world);
+        return res;
+    });
+    state_handler->push_generated("info");
+
     unique_ptr<List>(new List(20, 570)).swap(categories);
 
     // A bit hacky, could refactor into gui elements.
@@ -113,12 +123,16 @@ bool Interface::handle_input(const sf::Event &e) {
             break;
         default: break;
     }
+
+    state_handler->current()->handle_input(e);
+
     return true;
 }
 void Interface::update(const sf::Time &dt) {
     categories->update(dt);
     if (curr_subcategory != -1)
         subcategory[curr_subcategory]->update(dt);
+    state_handler->current()->update(dt);
 }
 void Interface::draw(sf::RenderWindow &w) {
     categories->draw(w);
@@ -127,6 +141,7 @@ void Interface::draw(sf::RenderWindow &w) {
     draw_level_selection();
     if (preview_cost)
         draw_preview_cost();
+    state_handler->current()->draw(w);
 }
 
 void Interface::handle_move(const WindowPos &p) {
@@ -299,9 +314,7 @@ void Interface::set_level(int lvl) {
 }
 
 void Interface::set_state(string next) {
-    auto it = states.find(next);
-    assert(it != states.end());
-    current_state = it->second;
+    state_handler->push_generated(next);
 }
 
 }
