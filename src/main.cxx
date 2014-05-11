@@ -1,5 +1,5 @@
 #include "state/help.hxx"
-#include "state/currentstate.hxx"
+#include "state/game.hxx"
 #include "constants.hxx"
 #include "roomtype.hxx"
 #include "settings.hxx"
@@ -11,22 +11,19 @@
 #include "visualdebug.hxx"
 #include "world/ore.hxx"
 #include "world/ground.hxx"
+#include "abort.hxx"
 
 #include <cstdlib>
 #include <ctime>
 
 int main()
 {
-    // Init global functions.
-    Locator::init();
-
     // Log to console atm
     Locator::provide_logger(unique_ptr<Logger>(new StdoutLogger()));
 
-    load_ground_definitions("ground.lua");
-    load_ore_definitions("ore.lua");
-
     // Register some defaults.
+    Locator::provide_settings(unique_ptr<Settings>(new Settings()));
+
     Settings &settings = Locator::get_settings();
     settings.register_num("screen_width", 800);
     settings.register_num("screen_height", 600);
@@ -37,6 +34,10 @@ int main()
     // TODO make something more general?
     // Should all be settings?
     settings.load_from_file("gui.lua");
+
+    // TODO move
+    load_ground_definitions("ground.lua");
+    load_ore_definitions("ore.lua");
 
     sf::RenderWindow window(
         sf::VideoMode(
@@ -59,15 +60,24 @@ int main()
     // We want a console for everything! =)
     Console console(window);
 
-    push_next_state("game", window);
+    // Setup possible reachable states.
+    typedef state::StateStack<state::State> StateHandler;
+    unique_ptr<StateHandler> states(new StateHandler());
+    states->add_generator("help", [&window](){ return new state::HelpState(window); });
+    states->add_generator("game", [&window](){ return new state::GameState(window); });
+    Locator::provide_statestack(move(states));
 
     InputQueue input_queue;
     input_queue.add_handler(&console);
 
+    // Start at "game" state.
+    StateHandler &state_handler = Locator::get_statestack();
+    state_handler.push_generated("game");
+
     sf::Clock clock;
-    while (window.isOpen() && has_state())
+    while (window.isOpen() && state_handler.has_current())
     {
-        shared_ptr<State> state = current_state();
+        shared_ptr<state::State> state = state_handler.current();
         sf::Event e;
         while (window.pollEvent(e))
         {
@@ -81,6 +91,10 @@ int main()
                         //drop = false;
                         //if (state->id() != "help")
                             //push_next_state("help", window);
+                    }
+                    if (e.key.code == sf::Keyboard::Q) {
+                        L_("exiting...\n");
+                        window.close();
                     }
                     break;
                 default: break;

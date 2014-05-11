@@ -1,9 +1,9 @@
 #include <cassert>
 #include "locator.hxx"
 
-void Locator::init() {
-    unique_ptr<Settings>(new Settings()).swap(settings);
-}
+//void Locator::init() {
+    //unique_ptr<Settings>(new Settings()).swap(settings);
+//}
 //static Butler &Locator::get_butler() {
     //assert(static_cast<bool>(butler));
     //return *butler;
@@ -11,6 +11,9 @@ void Locator::init() {
 Settings &Locator::get_settings() {
     assert(settings != nullptr);
     return *settings;
+}
+void Locator::provide_settings(unique_ptr<Settings> s) {
+    settings.swap(s);
 }
 
 Logger &Locator::get_logger() {
@@ -40,8 +43,17 @@ void Locator::provide_window(sf::RenderWindow *w) {
     window = w;
 }
 
+state::StateStack<state::State> &Locator::get_statestack() {
+    assert(statestack != nullptr);
+    return *statestack;
+}
+void Locator::provide_statestack(unique_ptr<state::StateStack<state::State>> s) {
+    statestack.swap(s);
+}
+
 unique_ptr<Settings> Locator::settings{ nullptr };
 unique_ptr<Logger> Locator::logger{ nullptr };
 unique_ptr<Debug> Locator::debug{ nullptr };
 sf::RenderWindow *Locator::window{ nullptr };
+unique_ptr<state::StateStack<state::State>> Locator::statestack{ nullptr };
 

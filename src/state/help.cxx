@@ -1,6 +1,8 @@
-#include "help.hxx"
 #include "butler.hxx"
-#include "currentstate.hxx"
+#include "locator.hxx"
+#include "state/help.hxx"
+
+namespace state {
 
 HelpState::HelpState(sf::RenderWindow &w) : State(w) {
     txt = create_txt("pf_tempesta_seven.ttf", 40, "Mining Incorporated");
@@ -11,8 +13,9 @@ HelpState::HelpState(sf::RenderWindow &w) : State(w) {
 void HelpState::handle_input(const sf::Event &e) {
     switch (e.type) {
         case sf::Event::KeyPressed:
-            if (e.key.code == sf::Keyboard::Space)
-                pop_state();
+            if (e.key.code == sf::Keyboard::Space) {
+                Locator::get_statestack().pop();
+            }
             break;
         default: break;
     }
@@ -24,3 +27,4 @@ void HelpState::draw() {
     //window.draw(pic);
 }
 
+}

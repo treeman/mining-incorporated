@@ -1,18 +1,22 @@
 #include <SFML/Graphics.hpp>
 
-#include "state.hxx"
+#include "state/state.hxx"
 
-class HelpState : public State {
-public:
-    HelpState(sf::RenderWindow &w);
+namespace state {
 
-    string id() const { return "help"; }
+    class HelpState : public State {
+    public:
+        HelpState(sf::RenderWindow &w);
 
-    void handle_input(const sf::Event &e);
-    void update(const sf::Time &dt);
-    void draw();
-private:
-    sf::Text txt;
-    sf::Sprite pic;
-};
+        string id() const { return "help"; }
+
+        void handle_input(const sf::Event &e);
+        void update(const sf::Time &dt);
+        void draw();
+    private:
+        sf::Text txt;
+        sf::Sprite pic;
+    };
+
+}
 

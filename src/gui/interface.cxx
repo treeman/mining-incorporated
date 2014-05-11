@@ -7,8 +7,9 @@
 
 namespace Gui {
 
-Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win), selection_start(-1), selection_end(-1),
-    room_to_build(nullptr), object_to_build(nullptr)
+Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win),
+    selection_start(-1), selection_end(-1),
+    room_to_build(nullptr), object_to_build(nullptr), current_state(nullptr)
 {
     unique_ptr<List>(new List(20, 570)).swap(categories);
 
@@ -75,6 +76,8 @@ Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win), s
     preview_cost = 0;
     txt = create_txt("consola.ttf", 16);
     want_select = false;
+
+    //set_state("info");
 }
 
 // TODO block on interactions
@@ -295,4 +298,11 @@ void Interface::set_level(int lvl) {
     }
 }
 
+void Interface::set_state(string next) {
+    auto it = states.find(next);
+    assert(it != states.end());
+    current_state = it->second;
 }
+
+}
+

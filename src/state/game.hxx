@@ -4,19 +4,22 @@
 #include "world/world.hxx"
 #include "gui/interface.hxx"
 
-class GameState : public State {
-public:
-    GameState(sf::RenderWindow &w);
+namespace state {
 
-    string id() const { return "game"; }
+    class GameState : public State {
+    public:
+        GameState(sf::RenderWindow &w);
 
-    void handle_input(const sf::Event &e);
-    void update(const sf::Time &dt);
-    void draw();
-private:
-    sf::Text txt;
-    World world;
+        string id() const { return "game"; }
 
-    Gui::Interface gui;
-};
+        void handle_input(const sf::Event &e);
+        void update(const sf::Time &dt);
+        void draw();
+    private:
+        sf::Text txt;
+        World world;
+        Gui::Interface gui;
+    };
+
+}
 

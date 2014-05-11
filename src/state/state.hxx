@@ -2,6 +2,8 @@
 
 #include "basicincludes.hxx"
 
+namespace state {
+
 class State {
 public:
     State(sf::RenderWindow &w) : window(w) { }
@@ -15,3 +17,4 @@ protected:
     sf::RenderWindow &window;
 };
 
+}
