@@ -1,9 +1,11 @@
 #include "butler.hxx"
 #include "constants.hxx"
+#include "locator.hxx"
 #include "util/ext.hxx"
 #include "world/world.hxx"
 #include "gui/interface.hxx"
 #include "gui/button.hxx"
+#include "gui/picbutton.hxx"
 #include "gui/infostate.hxx"
 
 namespace Gui {
@@ -21,16 +23,24 @@ Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win),
     });
     state_handler->push_generated("info");
 
-    unique_ptr<List>(new List(20, 570)).swap(categories);
+    //unique_ptr<List>(new List(20, 570)).swap(categories);
+    unique_ptr<List>(new List(10, 540)).swap(categories);
 
     // A bit hacky, could refactor into gui elements.
     curr_subcategory = -1;
     show_management = false;
+    categories->add(shared_ptr<Button>(new PicButton([&]() mutable {
+            curr_subcategory = 0;
+            this->clear_selection();
+            show_management = false;
+        }, "Rooms")));
+    /*
     categories->add(shared_ptr<Button>(new Button([&]() mutable {
             curr_subcategory = 0;
             this->clear_selection();
             show_management = false;
         }, "Rooms")));
+    */
     categories->add(shared_ptr<Button>(new Button([&]() mutable {
             curr_subcategory = 1;
             this->clear_selection();
@@ -118,7 +128,12 @@ bool Interface::handle_input(const sf::Event &e) {
             break;
         case sf::Event::TextEntered:
             if ('1' <= e.text.unicode && e.text.unicode <= '9') {
-                set_level(e.text.unicode - '1');
+                set_floor(e.text.unicode - '1');
+            }
+            break;
+        case sf::Event::KeyPressed:
+            if (e.key.code == sf::Keyboard::I) {
+                set_state("info");
             }
             break;
         default: break;
@@ -138,7 +153,7 @@ void Interface::draw(sf::RenderWindow &w) {
     categories->draw(w);
     if (curr_subcategory != -1)
         subcategory[curr_subcategory]->draw(w);
-    draw_level_selection();
+    draw_floor_selection();
     if (preview_cost)
         draw_preview_cost();
     state_handler->current()->draw(w);
@@ -218,7 +233,7 @@ void Interface::handle_preview(const WindowPos &p) {
     WindowPos wp(get_mpos());
     if (!world->in_world(wp)) return;
 
-    auto curr = world->window2dimension(wp).pos;
+    auto curr = world->window2map(wp).pos;
     if (object_to_build) {
         world->clear_preview();
         world->preview_object_build(curr.x, curr.y);
@@ -302,21 +317,24 @@ void Interface::try_select(const WindowPos &p) {
     */
 }
 
-void Interface::draw_level_selection() {
-    const int lvl = world->get_curr_level();
-    txt.setString("level: " + to_string(lvl));
+void Interface::draw_floor_selection() {
+    const int floor = world->get_curr_floor();
+    txt.setString("floor: " + to_string(floor));
     txt.setPosition(155, 15);
     txt.setColor(sf::Color::White);
     window.draw(txt);
 }
 
-void Interface::set_level(int lvl) {
-    if (0 <= lvl && lvl < world->num_levels()) {
-        world->set_curr_level(lvl);
+void Interface::set_floor(int floor) {
+    if (0 <= floor && floor < world->num_floors()) {
+        world->set_curr_floor(floor);
     }
 }
 
 void Interface::set_state(string next) {
+    L_("at state %s\n", next);
+    // TODO this is unintelligent....
+    state_handler->pop();
     state_handler->push_generated(next);
 }
 

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "world.hxx"
-#include "tile.hxx"
-#include "worker.hxx"
 #include "roomtype.hxx"
 #include "objecttype.hxx"
-#include "task.hxx"
+#include "world/worker.hxx"
+#include "world/world.hxx"
+#include "world/tile.hxx"
+#include "world/task.hxx"
+#include "world/map.hxx"
 #include "resources.hxx"
-#include "dimension.hxx"
 
 class World {
 public:
@@ -32,22 +32,22 @@ public:
     bool in_world(const WindowPos &p) const;
     bool in_world(const WorldPos &p) const;
     WorldPos window2world(const WindowPos &p) const;
-    DimensionPos window2dimension(const WindowPos &p) const;
-    DimensionPos world2dimension(const WorldPos &p) const;
+    MapPos window2map(const WindowPos &p) const;
+    MapPos world2map(const WorldPos &p) const;
 
     //shared_ptr<Tile> get_tile(const WorldPos &p) const;
-    shared_ptr<Tile> get_tile(const DimensionPos &p) const;
+    shared_ptr<Tile> get_tile(const MapPos &p) const;
 
     // TODO remove
     bool in_world(sf::Vector2i worldpos);
     bool in_world(int x, int y);
     bool is_tile(int x, int y);
 
-    int num_levels() const;
-    void set_curr_level(int lvl);
-    int get_curr_level() const;
+    int num_floors() const;
+    void set_curr_floor(int floor);
+    int get_curr_floor() const;
 private:
-    int curr_lvl;
+    int curr_floor;
 
 public:
     // TODO move to commands
@@ -100,7 +100,7 @@ private:
 
     //vector<vector<shared_ptr<Tile>>> grid;
     //shared_ptr<Level> level;
-    shared_ptr<Dimension> dimension;
+    shared_ptr<Map> map;
     vector<WorkerPtr> workers;
 
 public:

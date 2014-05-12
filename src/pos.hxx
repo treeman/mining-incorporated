@@ -9,24 +9,24 @@ typedef Point<float> WindowPos;
 template<typename T>
 class BasePos {
 public:
-    BasePos(int _lvl) : lvl(_lvl) { }
-    BasePos(int x, int y, int _lvl) : pos(x, y), lvl(_lvl) { }
+    BasePos(int _floor) : floor(_floor) { }
+    BasePos(int x, int y, int _floor) : pos(x, y), floor(_floor) { }
 
     bool operator == (const BasePos &p) const {
-        return pos == p.pos && lvl == p.lvl;
+        return pos == p.pos && floor == p.floor;
     }
     bool operator != (const BasePos &p) const {
         return !(*this == p);
     }
 
     string to_string() const {
-        return pos.to_string() + " (" + std::to_string(lvl) + ")";
+        return pos.to_string() + " (" + std::to_string(floor) + ")";
     }
 
     Point<T> pos;
-    int lvl;
+    int floor;
 };
 
-typedef BasePos<int> DimensionPos;
+typedef BasePos<int> MapPos;
 typedef BasePos<float> WorldPos;
 

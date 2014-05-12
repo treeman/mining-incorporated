@@ -3,7 +3,7 @@
 #include "world/tile.hxx"
 #include "pos.hxx"
 
-class Level {
+class Floor {
 public:
     shared_ptr<Tile> tile(int x, int y); // TODO remove?
     shared_ptr<Tile> tile(const TilePos &p);
@@ -12,10 +12,10 @@ public:
     void draw(sf::RenderWindow &w);
     // TODO fix
 //private:
-    Level();
+    Floor();
     //friend make_level(int level);
     vector<vector<shared_ptr<Tile>>> grid;
 };
 
-shared_ptr<Level> make_level(int level);
+shared_ptr<Floor> make_floor(int floor);
 

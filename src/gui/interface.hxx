@@ -60,8 +60,8 @@ namespace Gui {
         bool want_select;
         void try_select(const WindowPos &p);
 
-        void draw_level_selection();
-        void set_level(int lvl);
+        void draw_floor_selection();
+        void set_floor(int floor);
 
     public:
         void set_state(string next);

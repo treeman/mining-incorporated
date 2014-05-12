@@ -1,10 +1,10 @@
-#include "level.hxx"
+#include "floor.hxx"
 #include "constants.hxx"
 #include "util/rand.hxx"
 #include "ore.hxx"
 
 /*
-string first_level[num_tiles_high] = {
+string first_floor[num_tiles_high] = {
     "sssss.............aa",
     "sssss............aa.",
     "..............aaaa..",
@@ -23,12 +23,12 @@ string first_level[num_tiles_high] = {
     ".....i..............",
 };
 
-vector<vector<shared_ptr<Tile>>> make_first_level() {
+vector<vector<shared_ptr<Tile>>> make_first_floor() {
     vector<vector<shared_ptr<Tile>>> grid(num_tiles_high, vector<shared_ptr<Tile>>(num_tiles_wide));
     for (int i = 0; i < num_tiles_high; ++i) {
         for (int j = 0; j < num_tiles_wide; ++j) {
             RoomType type;
-            switch (first_level[i][j]) {
+            switch (first_floor[i][j]) {
                 case 's':
                     type = Mine; break;
                 case 'a':
@@ -79,17 +79,17 @@ string randomize_ore_type(int) {
 const int dr[4] = { 0, 1, 0, -1 };
 const int dc[4] = { 1, 0, -1, 0 };
 
-shared_ptr<Level> make_random_level(int lvl) {
-    shared_ptr<Level> level(new Level());
-    level->grid.assign(num_tiles_high, vector<shared_ptr<Tile>>(num_tiles_wide));
+shared_ptr<Floor> make_random_floor(int num) {
+    shared_ptr<Floor> floor(new Floor());
+    floor->grid.assign(num_tiles_high, vector<shared_ptr<Tile>>(num_tiles_wide));
 
-    // TODO better randomization, with things more common at different levels
+    // TODO better randomization, with things more common at different floors
     // Randomize some ore strips
     int num_strips = rand_int(6, 10);
     //printf("doing %d strips\n", num_strips);
 
     for (int k = 0; k < num_strips; ++k) {
-        string type = randomize_ore_type(lvl);
+        string type = randomize_ore_type(num);
         auto ore = get_ore(type);
         int num_ores = rand_int(3, 8);
 
@@ -116,7 +116,7 @@ shared_ptr<Level> make_random_level(int lvl) {
             // Place ore here!
             // TODO
             //grid[r][c] = create_tile(type, c * tile_width, r * tile_width);
-            level->grid[r][c] = ore->create_tile(c * tile_width, r * tile_width);
+            floor->grid[r][c] = ore->create_tile(c * tile_width, r * tile_width);
 
             for (int d = 0; d < 4; ++d) {
                 int nr = r + dr[d];
@@ -132,38 +132,38 @@ shared_ptr<Level> make_random_level(int lvl) {
     auto rock = get_ground("rock");
     for (int i = 0; i < num_tiles_high; ++i) {
         for (int j = 0; j < num_tiles_wide; ++j) {
-            if (!level->grid[i][j]) {
-                level->grid[i][j] = rock->create_tile(j * tile_width, i * tile_width);
+            if (!floor->grid[i][j]) {
+                floor->grid[i][j] = rock->create_tile(j * tile_width, i * tile_width);
             }
         }
     }
-    return level;
+    return floor;
 }
 
-shared_ptr<Level> make_level(int level) {
-    //if (level == 1) return make_first_level();
-    return make_random_level(level);
+shared_ptr<Floor> make_floor(int floor) {
+    //if (floor == 1) return make_first_floor();
+    return make_random_floor(floor);
 }
 
-shared_ptr<Tile> Level::tile(int x, int y) {
+shared_ptr<Tile> Floor::tile(int x, int y) {
     assert(0 <= y && y < (int)grid.size());
     assert(0 <= x && x < (int)grid[0].size());
     return grid[y][x];
 }
-shared_ptr<Tile> Level::tile(const TilePos &p) {
+shared_ptr<Tile> Floor::tile(const TilePos &p) {
     return tile(p.x, p.y);
 }
 
-void Level::update(const sf::Time &dt) {
-    for (int y = 0; y < (int)grid.size(); ++y) {
-        for (int x = 0; x < (int)grid[y].size(); ++x) {
-            // TODO
+void Floor::update(const sf::Time &dt) {
+    // TODO?
+    //for (int y = 0; y < (int)grid.size(); ++y) {
+        //for (int x = 0; x < (int)grid[y].size(); ++x) {
             //grid[y][x]->update(dt);
-        }
-    }
+        //}
+    //}
 }
 
-void Level::draw(sf::RenderWindow &w) {
+void Floor::draw(sf::RenderWindow &w) {
     for (int y = 0; y < (int)grid.size(); ++y) {
         for (int x = 0; x < (int)grid[y].size(); ++x) {
             grid[y][x]->draw(w);
@@ -171,7 +171,7 @@ void Level::draw(sf::RenderWindow &w) {
     }
 }
 
-Level::Level() {
+Floor::Floor() {
 
 }
 

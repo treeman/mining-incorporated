@@ -1,10 +1,10 @@
 #include "util/ext.hxx"
 #include "util/rand.hxx"
-#include "world.hxx"
+#include "world/world.hxx"
+#include "world/map.hxx"
 #include "constants.hxx"
 #include "butler.hxx"
 #include "assert.h"
-#include "level.hxx"
 #include "locator.hxx"
 
 const int view_xoff = (screen_width - world_width) / 2;
@@ -16,8 +16,8 @@ World::World(sf::RenderWindow &_w) :
 {
     view.move(-view_xoff, -view_yoff);
 
-    dimension = make_dimension();
-    set_curr_level(0);
+    map = make_map();
+    set_curr_floor(0);
 
     new_worker();
 
@@ -50,7 +50,7 @@ sf::Vector2i World::tile2window(int x, int y) {
 }
 
 bool World::in_world(const WindowPos &p) const {
-    const WorldPos wp(p.x  - view_xoff, p.y - view_yoff, curr_lvl);
+    const WorldPos wp(p.x  - view_xoff, p.y - view_yoff, curr_floor);
     return in_world(wp);
 }
 bool World::in_world(const WorldPos &p) const {
@@ -58,26 +58,26 @@ bool World::in_world(const WorldPos &p) const {
         && 0 <= p.pos.y && p.pos.y < world_height;
 }
 WorldPos World::window2world(const WindowPos &p) const {
-    const WorldPos res(p.x  - view_xoff, p.y - view_yoff, curr_lvl);
+    const WorldPos res(p.x  - view_xoff, p.y - view_yoff, curr_floor);
     assert(in_world(res));
     return res;
 }
-DimensionPos World::window2dimension(const WindowPos &p) const {
-    return world2dimension(window2world(p));
+MapPos World::window2map(const WindowPos &p) const {
+    return world2map(window2world(p));
 }
-DimensionPos World::world2dimension(const WorldPos &p) const {
+MapPos World::world2map(const WorldPos &p) const {
     assert(in_world(p));
-    return DimensionPos(p.pos.x / tile_width, p.pos.y / tile_width, p.lvl);
+    return MapPos(p.pos.x / tile_width, p.pos.y / tile_width, p.floor);
 }
 
 /*
 shared_ptr<Tile> World::get_tile(const WorldPos &p) const {
     assert(in_world(p));
-    return dimension->tile(world2dimension(p));
+    return map->tile(world2map(p));
 }
 */
-shared_ptr<Tile> World::get_tile(const DimensionPos &p) const {
-    return dimension->tile(p);
+shared_ptr<Tile> World::get_tile(const MapPos &p) const {
+    return map->tile(p);
 }
 
 bool World::in_world(sf::Vector2i wp) { return in_world(wp.x, wp.y); }
@@ -85,20 +85,20 @@ bool World::in_world(int x, int y) {
     return 0 <= x && x <= world_width && 0 <= y && y <= world_height;
 }
 
-// TODO move to level
+// TODO move to floor
 bool World::is_tile(int x, int y) {
-    return 0 <= x && x < (int)dimension->level(curr_lvl)->grid[0].size()
-        && 0 <= y && y < (int)dimension->level(curr_lvl)->grid.size();
+    return 0 <= x && x < (int)map->floor(curr_floor)->grid[0].size()
+        && 0 <= y && y < (int)map->floor(curr_floor)->grid.size();
 }
 
-int World::num_levels() const {
-    return dimension->num_levels();
+int World::num_floors() const {
+    return map->num_floors();
 }
-void World::set_curr_level(int lvl) {
-    assert(0 <= lvl && lvl < num_levels());
-    curr_lvl = lvl;
+void World::set_curr_floor(int floor) {
+    assert(0 <= floor && floor < num_floors());
+    curr_floor = floor;
 }
-int World::get_curr_level() const { return curr_lvl; }
+int World::get_curr_floor() const { return curr_floor; }
 
 void World::build(sf::Vector2i wp, RoomType type) {
     if (!in_world(wp)) return;
@@ -128,10 +128,10 @@ void World::build(int x, int y, RoomType type) {
     resources.money -= get_info(type)->cost;
     */
 }
-// TODO move to level
+// TODO move to floor
 void World::build(int x, int y, ObjectType type) {
     if (!is_tile(x, y)) return;
-    shared_ptr<Tile> tile = dimension->level(curr_lvl)->grid[y][x];
+    shared_ptr<Tile> tile = map->floor(curr_floor)->grid[y][x];
 
     if (tile->has_object() && type == SellObject) {
         tasks.push_back(create_sell_task(x, y));
@@ -154,7 +154,7 @@ void World::build(int x, int y, ObjectType type) {
 void World::sell_object(int x, int y) {
     // TODO money management here
     if (!is_tile(x, y)) return;
-    shared_ptr<Tile> tile = dimension->level(curr_lvl)->grid[y][x];
+    shared_ptr<Tile> tile = map->floor(curr_floor)->grid[y][x];
 
     tile->remove_object();
 }
@@ -200,7 +200,7 @@ void World::remove(int x1, int y1, int x2, int y2) {
 
 void World::preview_room_build(int x, int y) {
     if (is_tile(x, y)) {
-        dimension->level(curr_lvl)->grid[y][x]->set_room_preview();
+        map->floor(curr_floor)->grid[y][x]->set_room_preview();
     }
 }
 
@@ -219,11 +219,11 @@ void World::preview_room_build(int x1, int y1, int x2, int y2) {
 }
 void World::preview_object_build(int x, int y) {
     if (is_tile(x, y)) {
-        dimension->level(curr_lvl)->grid[y][x]->set_object_preview();
+        map->floor(curr_floor)->grid[y][x]->set_object_preview();
     }
 }
 void World::clear_preview() {
-    for (auto row : dimension->level(curr_lvl)->grid) {
+    for (auto row : map->floor(curr_floor)->grid) {
         for (auto t : row) {
             t->clear_preview();
         }
@@ -234,7 +234,7 @@ void World::handle_input(const sf::Event &e) { }
 void World::update(const sf::Time &dt) {
     assign_tasks();
 
-    dimension->update(dt);
+    map->update(dt);
     for (auto worker : workers) {
         worker->update(dt);
     }
@@ -244,13 +244,15 @@ void World::update(const sf::Time &dt) {
         WindowPos mp(get_mpos());
         if (in_world(mp)) {
             WorldPos wpos(window2world(mp));
-            DimensionPos dpos(world2dimension(wpos));
-            D_.set_key("wpos", wpos.to_string());
-            D_.set_key("dpos", dpos.to_string());
+            MapPos map_pos(world2map(wpos));
+            {   // Treat as int position, prevent unnecessary decimals
+                D_.set_key("world", IPoint(wpos.pos).to_string() + " (" + to_string(wpos.floor) + ")");
+            }
+            D_.set_key("map", map_pos.to_string());
         }
         else {
-            D_.set_key("wpos", "invalid");
-            D_.set_key("dpos", "invalid");
+            D_.set_key("world", "invalid");
+            D_.set_key("map", "invalid");
         }
     }
 
@@ -265,7 +267,7 @@ void World::draw() {
     sf::View curr = w.getView();
     w.setView(view);
 
-    dimension->draw(w, curr_lvl);
+    map->draw(w, curr_floor);
 
     for (auto &worker : workers) {
         worker->draw(w);
@@ -318,9 +320,9 @@ int manhattan(int x1, int y1, int x2, int y2) {
     return abs(x1 - x2) + abs(y1 - y2);
 }
 
-// TODO levels??`
+// TODO floor??`
 vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t) {
-    const int rows = dimension->level(curr_lvl)->grid.size(), cols = dimension->level(curr_lvl)->grid[0].size();
+    const int rows = map->floor(curr_floor)->grid.size(), cols = map->floor(curr_floor)->grid[0].size();
 
     //printf("Pathfinding %d,%d -> %d,%d\n", s.x, s.y, t.x, t.y);
 
@@ -359,7 +361,7 @@ vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t) {
             int nx = s.x + dx[d], ny = s.y + dy[d];
             if (nx < 0 || nx >= cols || ny < 0 || ny >= rows) continue;
             bool is_goal = nx == t.x && ny == t.y;
-            if (!dimension->level(curr_lvl)->grid.at(ny).at(nx)->is_walkable() && !is_goal) {
+            if (!map->floor(curr_floor)->grid.at(ny).at(nx)->is_walkable() && !is_goal) {
                 //printf("skip %d %d\n", nx, ny);
                 continue;
             }
@@ -475,7 +477,7 @@ void World::assign_tasks() {
 }
 
 shared_ptr<Tile> World::get_tile(int x, int y) {
-    return dimension->tile(x, y, curr_lvl);
+    return map->tile(x, y, curr_floor);
 }
 shared_ptr<Tile> World::get_tile(sf::Vector2i pos) { return get_tile(pos.x, pos.y); }
 
