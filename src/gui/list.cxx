@@ -4,7 +4,7 @@
 
 namespace Gui {
 
-List::List(int _x, int _y) : x(_x), y(_y),
+List::List(int _x, int _y) : pos(_x, _y),
     space(Locator::get_settings().get_num("button_space")) // TODO make this general
 {
 }
@@ -14,49 +14,52 @@ void List::deselect() {
         o->deselect();
     }
 }
-void List::add(shared_ptr<Object> o) {
+void List::add(shared_ptr<BoundedObject> o) {
     if (objects.empty()) {
-        o->set_pos(x, y);
+        o->set_pos(pos);
     }
     else {
         auto last_bound = objects.back()->bounds();
         const int next_x = last_bound.left + last_bound.width + space;
-        o->set_pos(next_x, y);
+        o->set_pos(WindowPos(next_x, pos.y));
     }
     objects.push_back(o);
 }
 
-sf::FloatRect List::bounds() const {
-    int w = 0, h = 0;
-    for (auto o : objects) {
-        const sf::FloatRect b = o->bounds();
-        w += b.width + space;
-        h = max(h, (int)b.height);
-    }
-    w += space;
-    return sf::FloatRect(x, y, w, h);
+bool List::is_over(const WindowPos &p) const {
+    for (auto &o : objects)
+        if (o->is_over(p)) return true;
+    return false;
 }
 bool List::handle_input(const sf::Event &e) {
     switch (e.type) {
         case sf::Event::MouseMoved:
             for (auto o : objects) {
-                if (o->is_over(e.mouseMove.x, e.mouseMove.y)) {
-                    o->handle_hover();
+                if (o->is_over(WindowPos(e.mouseMove.x, e.mouseMove.y))) {
+                    o->set_mouse_over(true);
                 }
                 else {
-                    o->handle_nonhover();
+                    o->set_mouse_over(false);
                 }
             }
+            break;
         case sf::Event::MouseButtonPressed:
-            if (is_over(e.mouseButton.x, e.mouseButton.y))
-                deselect();
+            //if (o->is_mouse_over())
+                //deselect();
 
             for (auto o : objects) {
-                if (o->is_over(e.mouseButton.x, e.mouseButton.y)) {
+                if (o->is_over(WindowPos(e.mouseButton.x, e.mouseButton.y))) {
                     o->handle_click(e.mouseButton.button);
                 }
             }
+            break;
         case sf::Event::MouseButtonReleased:
+            for (auto o : objects) {
+                if (o->is_over(WindowPos(e.mouseButton.x, e.mouseButton.y))) {
+                    o->handle_release(e.mouseButton.button);
+                }
+            }
+            break;
         default: break;
     }
     return true;

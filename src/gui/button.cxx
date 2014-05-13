@@ -6,15 +6,28 @@
 
 namespace Gui {
 
-Button::Button(function<void()> f, string s) : on_click(f) {
-    txt = create_txt("consola.ttf", 14);
-    txt.setString(s);
-    selected = false;
-    hover = false;
+BaseButton::BaseButton(function<void(BaseButton&)> f) : on_click(f)
+{
+
 }
 
-void Button::set_pos(int x, int y) {
-    txt.setPosition(x, y);
+void BaseButton::handle_click(int button) {
+    if (button == sf::Mouse::Button::Left) {
+        on_click(*this);
+    }
+}
+
+Button::Button(function<void(BaseButton&)> f, string s) : BaseButton(f) {
+    txt = create_txt("consola.ttf", 14);
+    txt.setString(s);
+    set_pos(WindowPos(0, 0)); // TODO ugly!
+}
+
+sf::FloatRect Button::bounds() const {
+    return bound;
+}
+void Button::set_pos(const WindowPos &p) {
+    txt.setPosition(p);
 
     auto txt_box = txt.getGlobalBounds();
 
@@ -25,48 +38,14 @@ void Button::set_pos(int x, int y) {
     bound.height = txt_box.height + 2 * button_pad;
 
     back = make_rect(bound);
-    /*back.setPointCount(4);
-    back.setPoint(0, sf::Vector2f(bound.left, bound.top));
-    back.setPoint(1, sf::Vector2f(bound.left, bound.top + bound.height));
-    back.setPoint(2, sf::Vector2f(bound.left + bound.width, bound.top + bound.height));
-    back.setPoint(3, sf::Vector2f(bound.left + bound.width, bound.top));*/
 }
 
-void Button::select() {
-    selected = true;
-}
-void Button::deselect() {
-    selected = false;
-}
-
-/*
-void Button::check_hover(sf::Vector2i pos) {
-    hover = bound.contains(sf::Vector2f(pos));
-}
-bool Button::check_click(sf::Vector2i pos) {
-    if (bound.contains(sf::Vector2f(pos))) {
-        on_click();
-        return true;
-    }
-    return false;
-}
-*/
-void Button::handle_hover() { hover = true; }
-void Button::handle_nonhover() { hover = false; }
-void Button::handle_click(int button) {
-    selected = true;
-    on_click();
-}
-
-void Button::update(const sf::Time &dt) {
-
-}
 void Button::draw(sf::RenderWindow &w) {
-    if (selected) {
+    if (is_selected()) {
         txt.setColor(make_color(0x303030));
         back.setFillColor(make_color(0xD4D4D4));
     }
-    else if (hover) {
+    else if (is_mouse_over()) {
         txt.setColor(sf::Color::Black);
         back.setFillColor(make_color(0xE0E0E0));
     }
@@ -78,7 +57,7 @@ void Button::draw(sf::RenderWindow &w) {
     w.draw(txt);
 }
 
-ClickButton::ClickButton(function<void()> f, string s) : Button(f, s) {
+ClickButton::ClickButton(function<void(BaseButton&)> f, string s) : Button(f, s) {
 
 }
 // Cannot be selected :)

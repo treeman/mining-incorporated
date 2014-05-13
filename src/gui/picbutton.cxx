@@ -4,7 +4,7 @@
 
 namespace Gui {
 
-PicButton::PicButton(function<void()> f, string s) : Button(f, s) {
+PicButton::PicButton(function<void(BaseButton&)> f, string s) : BaseButton(f) {
     bound.left = bound.top = 0;
     bound.width = 50;
     bound.height = 50;
@@ -12,14 +12,17 @@ PicButton::PicButton(function<void()> f, string s) : Button(f, s) {
 
     txt = create_txt("consola.ttf", 12);
     txt.setString(s);
-    selected = hover = false;
 }
 
-void PicButton::set_pos(int x, int y) {
-    bound.left = x;
-    bound.top = y;
-    back.setPosition(x, y);
-    txt.setPosition(x, y);
+sf::FloatRect PicButton::bounds() const {
+    return bound;
+}
+
+void PicButton::set_pos(const WindowPos &p) {
+    bound.left = p.x;
+    bound.top = p.y;
+    back.setPosition(p);
+    txt.setPosition(p);
 }
 
 void PicButton::draw(sf::RenderWindow &w) {

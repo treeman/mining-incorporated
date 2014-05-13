@@ -1,32 +1,42 @@
 #pragma once
 
+#include "pos.hxx"
 #include "input/inputhandler.hxx"
 
 namespace Gui {
 
-// Base class for gui things
-class Object : public InputHandler {
-public:
-    virtual ~Object() { }
+    // Base class for gui things
+    class Object : public InputHandler {
+    public:
+        Object() : selected(false), mouse_over(false) { }
+        virtual ~Object() = default;
 
-    virtual void select() { }
-    virtual void deselect() { }
+        virtual bool is_over(const WindowPos &p) const = 0;
 
-    virtual sf::FloatRect bounds() const = 0;
-    bool is_over(int x, int y) const;
+        virtual void set_pos(const WindowPos &p) = 0;
 
-    virtual void set_pos(int x, int y) = 0;
+        virtual void select();
+        virtual void deselect();
+        virtual void toggle_selection();
+        bool is_selected() const;
 
-    virtual bool handle_input(const sf::Event &e);
+        virtual void set_mouse_over(bool is_over);
+        virtual bool is_mouse_over() const;
 
-    // Will get called by handle_input
-    virtual void handle_hover() { }
-    virtual void handle_nonhover() { }
-    virtual void handle_click(int button) { }
-    virtual void handle_release(int button) { }
+        virtual void handle_click(int button);
+        virtual void handle_release(int button);
 
-    virtual void update(const sf::Time &dt) { }
-    virtual void draw(sf::RenderWindow &w) = 0;
-};
+        virtual void update(const sf::Time &dt);
+        virtual void draw(sf::RenderWindow &w) = 0;
+    protected:
+        bool selected;
+        bool mouse_over;
+    };
+
+    class BoundedObject : public Object {
+    public:
+        virtual sf::FloatRect bounds() const = 0;
+        bool is_over(const WindowPos &p) const override;
+    };
 
 }

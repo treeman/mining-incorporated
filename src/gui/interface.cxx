@@ -29,10 +29,11 @@ Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win),
     // A bit hacky, could refactor into gui elements.
     curr_subcategory = -1;
     show_management = false;
-    categories->add(shared_ptr<Button>(new PicButton([&]() mutable {
+    categories->add(shared_ptr<BoundedObject>(new PicButton([&](BaseButton &button) mutable {
             curr_subcategory = 0;
             this->clear_selection();
             show_management = false;
+            button.toggle_selection();
         }, "Rooms")));
     /*
     categories->add(shared_ptr<Button>(new Button([&]() mutable {
@@ -41,18 +42,20 @@ Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win),
             show_management = false;
         }, "Rooms")));
     */
-    categories->add(shared_ptr<Button>(new Button([&]() mutable {
+    categories->add(shared_ptr<BoundedObject>(new Button([&](BaseButton &button) mutable {
             curr_subcategory = 1;
             this->clear_selection();
             show_management = false;
+            button.toggle_selection();
         }, "Objects")));
-    categories->add(shared_ptr<Button>(new Button([&]() mutable {
+    categories->add(shared_ptr<BoundedObject>(new Button([&](BaseButton &button) mutable {
             //curr_subcategory = -1;
             show_management = true;
             //curr_subcategory = 1;
             //this->clear_selection();
             curr_subcategory = 2;
             this->clear_selection();
+            button.toggle_selection();
         }, "Management")));
 
     // Rooms
@@ -61,7 +64,7 @@ Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win),
     for (auto x : room_info) {
         auto &info = x.second;
         if (info.name == "") continue; // Hack
-        rooms->add(shared_ptr<Button>(new Button([=]() mutable {
+        rooms->add(shared_ptr<Button>(new Button([=](BaseButton &button) mutable {
                         this->room_to_build = &info;
                         this->object_to_build = nullptr;
                     }, info.name)));
@@ -73,7 +76,7 @@ Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win),
     for (auto x : object_info) {
         auto &info = x.second;
         if (info.name == "") continue; // Hack
-        objects->add(shared_ptr<Button>(new Button([=]() mutable {
+        objects->add(shared_ptr<Button>(new Button([=](BaseButton &button) mutable {
                         this->object_to_build = &info;
                         this->room_to_build = nullptr;
                     }, info.name)));
@@ -83,10 +86,10 @@ Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win),
     // Management
     // TODO move away
     unique_ptr<List> management(new List(subx, suby));
-    management->add(shared_ptr<Button>(new Button([=]() mutable{
+    management->add(shared_ptr<Button>(new Button([=](BaseButton &button) mutable{
                         this->want_to_select();
                     }, "Select")));
-    management->add(shared_ptr<Button>(new ClickButton([=]() mutable{
+    management->add(shared_ptr<Button>(new ClickButton([=](BaseButton &button) mutable{
                         this->clear_selection(); // TODO this will deselect this one T.T
                         world->new_worker();
                     }, "Hire Worker")));

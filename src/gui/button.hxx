@@ -1,48 +1,42 @@
 #pragma once
 
 #include "basicincludes.hxx"
+#include "pos.hxx"
 #include "gui/object.hxx"
 
 namespace Gui {
 
-    // TODO better virtual base class
-    class Button : public Object {
+    // TODO on_click and on_release
+    class BaseButton : public BoundedObject {
     public:
-        Button(function<void()> f, string s);
-        virtual ~Button() { }
+        BaseButton(function<void(BaseButton&)> f);
+        virtual ~BaseButton() = default;
 
-        virtual void select() override;
-        virtual void deselect() override;
-
-        sf::FloatRect bounds() const override { return bound; }
-
-        void set_pos(int x, int y) override;
-
-        //void check_hover(sf::Vector2i pos);
-        //bool check_click(sf::Vector2i pos);
-
-        void handle_hover() override;
-        void handle_nonhover() override;
         void handle_click(int button) override;
+    protected:
+        function<void(BaseButton&)> on_click;
+    };
 
-        void update(const sf::Time &dt) override;
+    class Button : public BaseButton {
+    public:
+        Button(function<void(BaseButton&)> f, string s);
+        virtual ~Button() = default;
+
+        sf::FloatRect bounds() const override;
+        void set_pos(const WindowPos &p) override;
         void draw(sf::RenderWindow &w) override;
     protected:
         sf::Text txt;
-        sf::FloatRect bound;
         sf::ConvexShape back;
-        function<void()> on_click;
-        bool selected;
-        bool hover;
+        sf::FloatRect bound;
     };
 
     // Deselects itself when clicked on.
     class ClickButton : public Button {
     public:
-        ClickButton(function<void()> f, string s);
-        virtual ~ClickButton() { }
+        ClickButton(function<void(BaseButton&)> f, string s);
 
-        void select();
+        void select() override;
     };
 
 }

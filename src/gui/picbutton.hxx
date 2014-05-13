@@ -4,15 +4,19 @@
 
 namespace Gui {
 
-    class PicButton : public Button {
+    class PicButton : public BaseButton {
     public:
-        PicButton(function<void()> f, string s);
+        PicButton(function<void(BaseButton&)> f, string s);
 
-        void set_pos(int x, int y) override;
+        sf::FloatRect bounds() const override;
+
+        void set_pos(const WindowPos &p) override;
         void draw(sf::RenderWindow &w) override;
     protected:
         // TODO sprite
         sf::ConvexShape back;
+        sf::Text txt;
+        sf::FloatRect bound;
     };
 
 }

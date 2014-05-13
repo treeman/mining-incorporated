@@ -2,32 +2,34 @@
 
 namespace Gui {
 
-bool Object::is_over(int x, int y) const {
-    return bounds().contains(sf::Vector2f(x, y));
+void Object::select() {
+    selected = true;
+}
+void Object::deselect() {
+    selected = false;
+}
+void Object::toggle_selection() {
+    if (is_selected()) deselect();
+    else select();
+}
+bool Object::is_selected() const {
+    return selected;
 }
 
-bool Object::handle_input(const sf::Event &e) {
-    switch (e.type) {
-        case sf::Event::MouseMoved:
-            if (!is_over(e.mouseMove.x, e.mouseMove.y)) {
-                handle_nonhover();
-                return true;
-            }
-            else {
-                handle_hover();
-            }
-            break;
-        case sf::Event::MouseButtonPressed:
-            if (!is_over(e.mouseButton.x, e.mouseButton.y)) return true;
-            handle_click(e.mouseButton.button);
-            break;
-        case sf::Event::MouseButtonReleased:
-            if (!is_over(e.mouseButton.x, e.mouseButton.y)) return true;
-            handle_release(e.mouseButton.button);
-        default: break;
-    }
+void Object::set_mouse_over(bool is_over) {
+    mouse_over = is_over;
+}
+bool Object::is_mouse_over() const {
+    return mouse_over;
+}
 
-    return false;
+void Object::handle_click(int button) { }
+void Object::handle_release(int button) { }
+
+void Object::update(const sf::Time &dt) { }
+
+bool BoundedObject::is_over(const WindowPos &p) const {
+    return bounds().contains(p);
 }
 
 }
