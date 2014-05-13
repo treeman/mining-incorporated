@@ -31,8 +31,19 @@ Next steps:
         3. Window position (Point<float>)
         4. World position (Point<float>, lvl)
 
+* Refactor room/object handling!
+* Add a new "material": grounds we can build.
+* Add ability for walls (later...)
+
 * Refactor gui!!!
     * Refactor into states
+    * Load ButtonPanel from lua
+        Along with the rest of the gui... later...
+    * ButtonPanel need to change interface states.
+        Plannig objects
+        Build rooms
+        etc...
+        Change state and give arguments?
 
 * Encapsulate things in namespaces
     Gui, World, ...

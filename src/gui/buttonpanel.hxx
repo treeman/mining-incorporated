@@ -2,6 +2,7 @@
 
 #include "input/inputhandler.hxx"
 #include "gui/list.hxx"
+#include "gui/button.hxx"
 
 namespace Gui {
 
@@ -14,15 +15,26 @@ namespace Gui {
         ButtonPanel(Interface &gui);
 
         bool handle_input(const sf::Event &e);
+    private:
+        bool mark_hover(const WindowPos &p);
+        bool click(const WindowPos &p);
 
+    public:
         void update(const sf::Time &dt);
         void draw(sf::RenderWindow &w);
     private:
         Interface &gui;
 
+        enum class Categories : int {
+            UNSELECTED = -1,
+            PLANNING,
+        };
+
         unique_ptr<List> categories;
         vector<unique_ptr<List>> subcategories;
-        int curr;
+        Categories curr;
+
+        function<void(BaseButton &button)> make_category_selector(Categories cat);
     };
 
 }

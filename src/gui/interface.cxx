@@ -106,10 +106,11 @@ Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win), p
 
 // TODO block on interactions
 bool Interface::handle_input(const sf::Event &e) {
-    categories->handle_input(e);
-    if (curr_subcategory != -1)
-        subcategory[curr_subcategory]->handle_input(e);
+    //categories->handle_input(e);
+    //if (curr_subcategory != -1)
+        //subcategory[curr_subcategory]->handle_input(e);
 
+    /*
     switch (e.type) {
         case sf::Event::MouseMoved:
             handle_move(WindowPos(e.mouseMove.x, e.mouseMove.y));
@@ -142,7 +143,9 @@ bool Interface::handle_input(const sf::Event &e) {
             break;
         default: break;
     }
+    */
 
+    panel.handle_input(e);
     state_handler->current()->handle_input(e);
 
     return true;
@@ -153,7 +156,6 @@ void Interface::update(const sf::Time &dt) {
         subcategory[curr_subcategory]->update(dt);
     */
     state_handler->current()->update(dt);
-
     panel.update(dt);
 }
 void Interface::draw(sf::RenderWindow &w) {
@@ -166,7 +168,6 @@ void Interface::draw(sf::RenderWindow &w) {
         draw_preview_cost();
     */
     state_handler->current()->draw(w);
-
     panel.draw(w);
 }
 
