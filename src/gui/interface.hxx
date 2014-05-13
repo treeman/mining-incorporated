@@ -69,9 +69,10 @@ namespace Gui {
         void set_floor(int floor);
 
     public:
-        void set_state(string next);
+        void set_state(GuiStates state);
     private:
-        unique_ptr<state::StateStack<State>> state_handler;
+        vector<shared_ptr<State>> states;
+        shared_ptr<State> current_state;
     };
 
 }

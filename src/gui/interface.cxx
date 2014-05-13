@@ -6,25 +6,22 @@
 #include "gui/interface.hxx"
 #include "gui/button.hxx"
 #include "gui/picbutton.hxx"
-#include "gui/infostate.hxx"
 #include "gui/buttonpanel.hxx"
 
 namespace Gui {
 
 Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win), panel(*this),
     selection_start(-1), selection_end(-1),
-    room_to_build(nullptr), object_to_build(nullptr),
-    state_handler(new state::StateStack<State>())
+    room_to_build(nullptr), object_to_build(nullptr), current_state(nullptr)
 {
-    // TODO don't create/destroy states but save them!
-    state_handler->add_generator("info", [this]() {
-        State *res = new InfoState();
-        res->init(this, this->world);
-        return res;
-    });
-    state_handler->push_generated("info");
+    // Setup guistates.
+    states.resize(static_cast<unsigned>(GuiStates::NUM_STATES));
+    states[static_cast<unsigned>(GuiStates::INFO)] = shared_ptr<State>(new InfoState());
+    for (auto &s : states)
+        s->init(this, world);
+    set_state(GuiStates::INFO);
+    assert(current_state != nullptr);
 
-    //unique_ptr<List>(new List(20, 570)).swap(categories);
     unique_ptr<List>(new List(10, 540)).swap(categories);
 
     // A bit hacky, could refactor into gui elements.
@@ -100,8 +97,6 @@ Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win), p
     preview_cost = 0;
     txt = create_txt("consola.ttf", 16);
     want_select = false;
-
-    //set_state("info");
 }
 
 // TODO block on interactions
@@ -146,7 +141,7 @@ bool Interface::handle_input(const sf::Event &e) {
     */
 
     panel.handle_input(e);
-    state_handler->current()->handle_input(e);
+    current_state->handle_input(e);
 
     return true;
 }
@@ -155,7 +150,7 @@ void Interface::update(const sf::Time &dt) {
     if (curr_subcategory != -1)
         subcategory[curr_subcategory]->update(dt);
     */
-    state_handler->current()->update(dt);
+    current_state->update(dt);
     panel.update(dt);
 }
 void Interface::draw(sf::RenderWindow &w) {
@@ -167,7 +162,7 @@ void Interface::draw(sf::RenderWindow &w) {
     if (preview_cost)
         draw_preview_cost();
     */
-    state_handler->current()->draw(w);
+    current_state->draw(w);
     panel.draw(w);
 }
 
@@ -343,11 +338,12 @@ void Interface::set_floor(int floor) {
     }
 }
 
-void Interface::set_state(string next) {
-    L_("at state %s\n", next);
-    // TODO this is unintelligent....
-    state_handler->pop();
-    state_handler->push_generated(next);
+void Interface::set_state(GuiStates state) {
+    unsigned x = static_cast<unsigned>(state);
+    L_("set state: %d\n", (int)x);
+    assert(x < states.size());
+    current_state = states[x];
+    current_state->reset();
 }
 
 }
