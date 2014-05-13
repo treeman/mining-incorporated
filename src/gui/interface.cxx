@@ -7,10 +7,11 @@
 #include "gui/button.hxx"
 #include "gui/picbutton.hxx"
 #include "gui/infostate.hxx"
+#include "gui/buttonpanel.hxx"
 
 namespace Gui {
 
-Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win),
+Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win), panel(*this),
     selection_start(-1), selection_end(-1),
     room_to_build(nullptr), object_to_build(nullptr),
     state_handler(new state::StateStack<State>())
@@ -147,19 +148,26 @@ bool Interface::handle_input(const sf::Event &e) {
     return true;
 }
 void Interface::update(const sf::Time &dt) {
-    categories->update(dt);
+    /*categories->update(dt);
     if (curr_subcategory != -1)
         subcategory[curr_subcategory]->update(dt);
+    */
     state_handler->current()->update(dt);
+
+    panel.update(dt);
 }
 void Interface::draw(sf::RenderWindow &w) {
+    /*
     categories->draw(w);
     if (curr_subcategory != -1)
         subcategory[curr_subcategory]->draw(w);
     draw_floor_selection();
     if (preview_cost)
         draw_preview_cost();
+    */
     state_handler->current()->draw(w);
+
+    panel.draw(w);
 }
 
 void Interface::handle_move(const WindowPos &p) {

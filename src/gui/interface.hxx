@@ -7,10 +7,12 @@
 #include "gui/list.hxx"
 #include "gui/state.hxx"
 #include "state/statestack.hxx"
+#include "gui/buttonpanel.hxx"
 
 class World;
 
 namespace Gui {
+    class ButtonPanel;
 
     class Interface : public InputHandler {
     public:
@@ -34,6 +36,8 @@ namespace Gui {
         World *world;
         sf::RenderWindow &window;
 
+        ButtonPanel panel;
+
         unique_ptr<List> categories;
 
         // TODO subcategory class
@@ -41,6 +45,7 @@ namespace Gui {
         int curr_subcategory;
 
         // TODO selection class
+        // TODO move to states
         WorldPos selection_start, selection_end;
         bool active_selection;
 
