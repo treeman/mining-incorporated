@@ -8,49 +8,26 @@ Todo
 ====
 
 Next steps:
-1. Refactor gui to use state transitions.
-2. Make gui issue tasks/commands to world.
+
+2. Make gui issue tasks/commands to world.  
+    GUI State -> world
 3. Refactor world task handling.
-3. Make a wide & flat task class hierarchy
-    Dig
-    Mine
-    Place object
-    Fetch object
-    ...
-4. Refactor world.
-    Pathfinding in level/dimension.
-    Remove unneeded things (point conversions, task handling)
-
-* Refactor world!!!
-    * Offload things to Dimension/Level
-    * Pathfinding inside dimension
-    * Separate types for different positions
-        Take from base class Point (int or float)
-        1. Tile position (x, y)
-        2. Dimension position (TilePos, lvl)
-        3. Window position (Point<float>)
-        4. World position (Point<float>, lvl)
-
-* Refactor room/object handling!
-* Add a new "material": grounds we can build.
-* Add ability for walls (later...)
-
-* Refactor gui!!!
-    * Refactor into states
-    * Load ButtonPanel from lua
-        Along with the rest of the gui... later...
-    * ButtonPanel need to change interface states.
-        Plannig objects
-        Build rooms
-        etc...
-        Change state and give arguments?
-
-* Encapsulate things in namespaces
-    Gui, World, ...
-
-* Finalize loading ground types from ground.lua
-    * Then use those as references
-    * Continue in the same fashion with ores and rooms
+4. Refactor world.  
+    Pathfinding in level/dimension, possibly other things.  Remove unneeded things.
+5. Refactor Tile.  
+    Readd objects, ability to change ground.
+6. Remove rooms the way they are now.
+7. Refactor objects.
+8. Add materials (look of the ground).
+9. Specify all data things from lua.  
+    * Planning objects (currently in world, move?)
+    * Sprites (set colors/alpha channels. load from tileset with indexes)
+    * Buildable materials, with costs and what ground it is.
+    * Colors and positions of gui elements.
+    * What buttons in ButtonPanel and in what order.  
+        Should be able to specify actions. Need to expose functions C++ -> lua.
+10. Correct task handling for workers.
+11. Multilevel pathfinding.
 
 * remove typedef shared ptrs
 * unit tests

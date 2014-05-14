@@ -4,6 +4,7 @@
 
 namespace gui {
 
+    // buttons and similar -> gui states.
     class Event {
     public:
         virtual ~Event() = default;
