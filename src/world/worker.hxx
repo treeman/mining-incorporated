@@ -1,8 +1,9 @@
 #pragma once
 
-#include "task.hxx"
-#include "gui/progressbar.hxx"
 #include "pos.hxx"
+#include "world/task.hxx"
+#include "world/planningobject.hxx"
+#include "gui/progressbar.hxx"
 
 class World;
 

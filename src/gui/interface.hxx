@@ -18,11 +18,29 @@ namespace Gui {
     public:
         Interface(World *world, sf::RenderWindow &window);
 
+        World &get_world() const;
+
         bool handle_input(const sf::Event &e);
         void update(const sf::Time &dt);
         void draw(sf::RenderWindow &w);
     private:
+        World *world;
+        sf::RenderWindow &window;
+
+        ButtonPanel panel;
+
+    public:
+        void set_state(GuiState state);
+    private:
+        vector<shared_ptr<State>> states;
+        shared_ptr<State> current_state;
+
+    public:
+        void handle_event(const Event &event);
+    private:
+        // Old things. To be refactored!
         // TODO state transitions
+        /*
         void handle_move(const WindowPos &p);
         void handle_left_click(const WindowPos &p);
         void handle_right_click(const WindowPos &p);
@@ -32,12 +50,9 @@ namespace Gui {
         void build_room();
         void build_object();
         void handle_preview(const WindowPos &p);
+        */
 
-        World *world;
-        sf::RenderWindow &window;
-
-        ButtonPanel panel;
-
+        /*
         unique_ptr<List> categories;
 
         // TODO subcategory class
@@ -67,12 +82,8 @@ namespace Gui {
 
         void draw_floor_selection();
         void set_floor(int floor);
+        */
 
-    public:
-        void set_state(GuiStates state);
-    private:
-        vector<shared_ptr<State>> states;
-        shared_ptr<State> current_state;
     };
 
 }

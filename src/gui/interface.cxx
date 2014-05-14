@@ -11,161 +11,54 @@
 namespace Gui {
 
 Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win), panel(*this),
-    selection_start(-1), selection_end(-1),
-    room_to_build(nullptr), object_to_build(nullptr), current_state(nullptr)
+    current_state(nullptr)
 {
     // Setup guistates.
-    states.resize(static_cast<unsigned>(GuiStates::NUM_STATES));
-    states[static_cast<unsigned>(GuiStates::INFO)] = shared_ptr<State>(new InfoState());
+    states.resize(static_cast<unsigned>(GuiState::NUM_STATES));
+    states[static_cast<unsigned>(GuiState::INFO)] = shared_ptr<State>(new InfoState());
+    states[static_cast<unsigned>(GuiState::PLANNING)] = shared_ptr<State>(new PlanningState());
     for (auto &s : states)
         s->init(this, world);
-    set_state(GuiStates::INFO);
+    set_state(GuiState::INFO);
     assert(current_state != nullptr);
+}
 
-    unique_ptr<List>(new List(10, 540)).swap(categories);
-
-    // A bit hacky, could refactor into gui elements.
-    curr_subcategory = -1;
-    show_management = false;
-    categories->add(shared_ptr<BoundedObject>(new PicButton([&](BaseButton &button) mutable {
-            curr_subcategory = 0;
-            this->clear_selection();
-            show_management = false;
-            button.toggle_selection();
-        }, "Rooms")));
-    /*
-    categories->add(shared_ptr<Button>(new Button([&]() mutable {
-            curr_subcategory = 0;
-            this->clear_selection();
-            show_management = false;
-        }, "Rooms")));
-    */
-    categories->add(shared_ptr<BoundedObject>(new Button([&](BaseButton &button) mutable {
-            curr_subcategory = 1;
-            this->clear_selection();
-            show_management = false;
-            button.toggle_selection();
-        }, "Objects")));
-    categories->add(shared_ptr<BoundedObject>(new Button([&](BaseButton &button) mutable {
-            //curr_subcategory = -1;
-            show_management = true;
-            //curr_subcategory = 1;
-            //this->clear_selection();
-            curr_subcategory = 2;
-            this->clear_selection();
-            button.toggle_selection();
-        }, "Management")));
-
-    // Rooms
-    const int subx = 20, suby = 530;
-    unique_ptr<List> rooms(new List(subx, suby));
-    for (auto x : room_info) {
-        auto &info = x.second;
-        if (info.name == "") continue; // Hack
-        rooms->add(shared_ptr<Button>(new Button([=](BaseButton &button) mutable {
-                        this->room_to_build = &info;
-                        this->object_to_build = nullptr;
-                    }, info.name)));
-    }
-    subcategory.push_back(move(rooms));
-
-    // Objects
-    unique_ptr<List> objects(new List(subx, suby));
-    for (auto x : object_info) {
-        auto &info = x.second;
-        if (info.name == "") continue; // Hack
-        objects->add(shared_ptr<Button>(new Button([=](BaseButton &button) mutable {
-                        this->object_to_build = &info;
-                        this->room_to_build = nullptr;
-                    }, info.name)));
-    }
-    subcategory.push_back(move(objects));
-
-    // Management
-    // TODO move away
-    unique_ptr<List> management(new List(subx, suby));
-    management->add(shared_ptr<Button>(new Button([=](BaseButton &button) mutable{
-                        this->want_to_select();
-                    }, "Select")));
-    management->add(shared_ptr<Button>(new ClickButton([=](BaseButton &button) mutable{
-                        this->clear_selection(); // TODO this will deselect this one T.T
-                        world->new_worker();
-                    }, "Hire Worker")));
-    subcategory.push_back(move(management));
-
-    active_selection = false;
-    preview_cost = 0;
-    txt = create_txt("consola.ttf", 16);
-    want_select = false;
+World &Interface::get_world() const {
+    assert(world != nullptr);
+    return *world;
 }
 
 // TODO block on interactions
 bool Interface::handle_input(const sf::Event &e) {
-    //categories->handle_input(e);
-    //if (curr_subcategory != -1)
-        //subcategory[curr_subcategory]->handle_input(e);
-
-    /*
-    switch (e.type) {
-        case sf::Event::MouseMoved:
-            handle_move(WindowPos(e.mouseMove.x, e.mouseMove.y));
-            break;
-        case sf::Event::MouseButtonPressed:
-            if (e.mouseButton.button == sf::Mouse::Button::Left) {
-                handle_left_click(WindowPos(e.mouseButton.x, e.mouseButton.y));
-            }
-            else if (e.mouseButton.button == sf::Mouse::Button::Right) {
-                handle_right_click(WindowPos(e.mouseButton.x, e.mouseButton.y));
-            }
-            break;
-        case sf::Event::MouseButtonReleased:
-            if (e.mouseButton.button == sf::Mouse::Button::Left) {
-                handle_left_release(WindowPos(e.mouseButton.x, e.mouseButton.y));
-            }
-            else if (e.mouseButton.button == sf::Mouse::Button::Right) {
-                handle_right_release(WindowPos(e.mouseButton.x, e.mouseButton.y));
-            }
-            break;
-        case sf::Event::TextEntered:
-            if ('1' <= e.text.unicode && e.text.unicode <= '9') {
-                set_floor(e.text.unicode - '1');
-            }
-            break;
-        case sf::Event::KeyPressed:
-            if (e.key.code == sf::Keyboard::I) {
-                set_state("info");
-            }
-            break;
-        default: break;
-    }
-    */
-
     panel.handle_input(e);
     current_state->handle_input(e);
 
     return true;
 }
 void Interface::update(const sf::Time &dt) {
-    /*categories->update(dt);
-    if (curr_subcategory != -1)
-        subcategory[curr_subcategory]->update(dt);
-    */
     current_state->update(dt);
     panel.update(dt);
 }
 void Interface::draw(sf::RenderWindow &w) {
-    /*
-    categories->draw(w);
-    if (curr_subcategory != -1)
-        subcategory[curr_subcategory]->draw(w);
-    draw_floor_selection();
-    if (preview_cost)
-        draw_preview_cost();
-    */
     current_state->draw(w);
     panel.draw(w);
 }
+void Interface::set_state(GuiState state) {
+    unsigned x = static_cast<unsigned>(state);
+    // TODO flag
+    D_.set_key("gui state", type2string(state));
+    assert(x < states.size());
+    current_state = states[x];
+    current_state->reset();
+}
 
+void Interface::handle_event(const Event &event) {
+    current_state->handle_event(event);
+}
+
+// Old stuff
+
+#if 0
 void Interface::handle_move(const WindowPos &p) {
     //sf::Vector2i p(x, y);
     //categories.check_hover(p);
@@ -323,7 +216,6 @@ void Interface::try_select(const WindowPos &p) {
     }
     */
 }
-
 void Interface::draw_floor_selection() {
     const int floor = world->get_curr_floor();
     txt.setString("floor: " + to_string(floor));
@@ -338,13 +230,7 @@ void Interface::set_floor(int floor) {
     }
 }
 
-void Interface::set_state(GuiStates state) {
-    unsigned x = static_cast<unsigned>(state);
-    L_("set state: %d\n", (int)x);
-    assert(x < states.size());
-    current_state = states[x];
-    current_state->reset();
-}
+#endif
 
-}
+} // Gui
 

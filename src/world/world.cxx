@@ -28,6 +28,8 @@ World::World(sf::RenderWindow &_w) :
 
     Locator::get_settings().register_bool("debug_tasks", false);
     Locator::get_settings().register_bool("debug_positions", false);
+
+    init_planning_objects();
 }
 
 //sf::Vector2i World::window2tile(int x, int y) {
@@ -559,5 +561,26 @@ RoomType World::get_tile_type(int x, int y) {
 
 void World::add_task(unique_ptr<Task> task) {
     pending_tasks.push_back(move(task));
+}
+
+shared_ptr<PlanningObject> World::get_planning_object(PlanningType o) const {
+    unsigned x = static_cast<unsigned>(o);
+    assert(x < planning_objects.size());
+    return planning_objects[x];
+}
+void World::init_planning_objects() {
+    /*planning_objects.resize(static_cast<unsigned>(PlanningType::NUM_OBJECTS));
+
+    // TODO load from lua
+    shared_ptr<PlanningObject>(new PlanningObject("room_preview.png", PlanningType::ROOM)).swap(
+        planning_objects[static_cast<unsigned>(PlanningType::ROOM)]);
+    shared_ptr<PlanningObject>(new PlanningObject("object_preview.png", PlanningType::OBJECT)).swap(
+        planning_objects[static_cast<unsigned>(PlanningType::OBJECT)]);
+    */
+    // Do in order!
+    planning_objects.push_back(shared_ptr<PlanningObject>(
+        new PlanningObject("room_preview.png", PlanningType::ROOM)));
+    planning_objects.push_back(shared_ptr<PlanningObject>(
+        new PlanningObject("object_preview.png", PlanningType::OBJECT)));
 }
 

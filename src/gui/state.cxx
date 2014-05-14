@@ -16,6 +16,14 @@ void State::init(Interface *_gui, World *_world) {
     world = _world;
 }
 
+string type2string(GuiState type) {
+    switch (type) {
+        case GuiState::INFO: return "Info";
+        case GuiState::PLANNING: return "Planning";
+        default: return "Invalid";
+    }
+}
+
 void InfoState::reset() {
 
 }
@@ -50,5 +58,22 @@ void InfoState::draw(sf::RenderWindow &w) {
 
 }
 
+void PlanningState::reset() {
+
 }
 
+void PlanningState::handle_event(const Gui::Event &e) {
+    L_("Recieved event: %s\n", e.to_string());
+}
+
+bool PlanningState::handle_input(const sf::Event &e) {
+    return true;
+}
+void PlanningState::update(const sf::Time &dt) {
+
+}
+void PlanningState::draw(sf::RenderWindow &w) {
+
+}
+
+} // Gui

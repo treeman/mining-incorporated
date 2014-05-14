@@ -123,5 +123,12 @@ private:
 
     // Levels
     int current_level;
+
+    // TODO move to Locator object
+public:
+    shared_ptr<PlanningObject> get_planning_object(PlanningType o) const;
+private:
+    void init_planning_objects();
+    vector<shared_ptr<PlanningObject>> planning_objects;
 };
 

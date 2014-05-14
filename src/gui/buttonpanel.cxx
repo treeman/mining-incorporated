@@ -2,6 +2,7 @@
 #include "gui/buttonpanel.hxx"
 #include "gui/picbutton.hxx"
 #include "gui/interface.hxx"
+#include "world/world.hxx"
 
 namespace Gui {
 
@@ -32,12 +33,19 @@ ButtonPanel::ButtonPanel(Interface &_gui) : gui(_gui), curr(Categories::UNSELECT
             new PicButton(make_category_selector(Categories::PLANNING), "planning"))
         );
         // TODO in order!
-        unique_ptr<List> cat(new List(15, 525));
-        cat->add(shared_ptr<BoundedObject>(new PicButton([](BaseButton &button) {
+        // TODO cleanup!
+        unique_ptr<List> cat(new List(12, 525));
+        cat->add(shared_ptr<BoundedObject>(new PicButton([this](BaseButton &button) {
             L_("Plan room\n");
+            gui.set_state(GuiState::PLANNING);
+            auto x = gui.get_world().get_planning_object(PlanningType::ROOM);
+            gui.handle_event(PlanningObjectEvent(x));
         }, "room")));
-        cat->add(shared_ptr<BoundedObject>(new PicButton([](BaseButton &button) {
+        cat->add(shared_ptr<BoundedObject>(new PicButton([this](BaseButton &button) {
             L_("Plan object\n");
+            gui.set_state(GuiState::PLANNING);
+            auto x = gui.get_world().get_planning_object(PlanningType::OBJECT);
+            gui.handle_event(PlanningObjectEvent(x));
         }, "object")));
         subcategories.push_back(move(cat));
     }
@@ -92,10 +100,13 @@ function<void(BaseButton &button)> ButtonPanel::make_category_selector(Categorie
         //L_("selecting: %d\n", static_cast<int>(cat));
 
         button.toggle_selection();
-        if (button.is_selected())
+        if (button.is_selected()) {
             curr = cat;
-        else
+        }
+        else {
             curr = Categories::UNSELECTED;
+            gui.set_state(GuiState::INFO);
+        }
     };
 }
 
