@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "gui/event.hxx"
+#include "gui/selection.hxx"
 
 class World;
 
@@ -16,7 +17,7 @@ namespace Gui {
         virtual ~State() noexcept = default;
 
         void init(Interface *gui, World *world);
-        virtual void reset() = 0;
+        virtual void reset() { };
 
         virtual void handle_event(const Gui::Event &) { }
         virtual bool handle_input(const sf::Event &e) = 0;
@@ -27,6 +28,14 @@ namespace Gui {
         World *world;
     };
 
+
+    // States:
+    // Info
+    // Build room
+    // (Demolish)
+    // Build object -or- room selection!
+    // (Sell object)
+    // Mine (?)
     enum class GuiState : unsigned {
         INFO,
         PLANNING,
@@ -38,8 +47,6 @@ namespace Gui {
 
     class InfoState : public State {
     public:
-        void reset() override;
-
         bool handle_input(const sf::Event &e) override;
         void update(const sf::Time &dt) override;
         void draw(sf::RenderWindow &w) override;
@@ -47,22 +54,27 @@ namespace Gui {
 
     class PlanningState : public State {
     public:
+        PlanningState();
+
         void reset() override;
 
         void handle_event(const Gui::Event &) override;
+
         bool handle_input(const sf::Event &e) override;
+    private:
+        void move(const WindowPos &p);
+        void left_click(const WindowPos &p);
+        void right_click(const WindowPos &p);
+        void left_release(const WindowPos &p);
+        void right_release(const WindowPos &p);
+
+    public:
         void update(const sf::Time &dt) override;
         void draw(sf::RenderWindow &w) override;
+    private:
+        Selection selection;
+        shared_ptr<PlanningObject> obj;
     };
-
-// States:
-// Info
-// Build room
-// (Demolish)
-// Build object -or- room selection!
-// (Sell object)
-// Mine (?)
-// Nothing special
 
 }
 

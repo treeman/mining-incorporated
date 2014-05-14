@@ -24,9 +24,6 @@ string type2string(GuiState type) {
     }
 }
 
-void InfoState::reset() {
-
-}
 bool InfoState::handle_input(const sf::Event &e) {
     return true;
 }
@@ -48,6 +45,7 @@ void InfoState::update(const sf::Time &dt) {
             D_.tmp(fmt("ground: %s", ground->key));
         }
 
+        // TODO should select worker by bounding box
         shared_ptr<Worker> worker(world->select_closest_worker(world_pos));
         if (worker != nullptr) {
             D_.tmp("Some worker!");
@@ -58,22 +56,85 @@ void InfoState::draw(sf::RenderWindow &w) {
 
 }
 
-void PlanningState::reset() {
+PlanningState::PlanningState() : obj(nullptr) {
 
+}
+void PlanningState::reset() {
+    selection.clear();
+    obj = nullptr;
 }
 
 void PlanningState::handle_event(const Gui::Event &e) {
-    L_("Recieved event: %s\n", e.to_string());
+    if (auto p = dynamic_cast<const PlanningObjectEvent*>(&e)) {
+        L_("Recieved event: %s\n", p->to_string());
+        obj = p->obj;
+    }
 }
 
 bool PlanningState::handle_input(const sf::Event &e) {
+    switch (e.type) {
+        case sf::Event::MouseMoved:
+            move(WindowPos(e.mouseMove.x, e.mouseMove.y));
+            break;
+        case sf::Event::MouseButtonPressed:
+            if (e.mouseButton.button == sf::Mouse::Button::Left) {
+                left_click(WindowPos(e.mouseButton.x, e.mouseButton.y));
+            }
+            else if (e.mouseButton.button == sf::Mouse::Button::Right) {
+                right_click(WindowPos(e.mouseButton.x, e.mouseButton.y));
+            }
+            break;
+        case sf::Event::MouseButtonReleased:
+            if (e.mouseButton.button == sf::Mouse::Button::Left) {
+                left_release(WindowPos(e.mouseButton.x, e.mouseButton.y));
+            }
+            else if (e.mouseButton.button == sf::Mouse::Button::Right) {
+                right_release(WindowPos(e.mouseButton.x, e.mouseButton.y));
+            }
+            break;
+        default: break;
+    }
     return true;
 }
-void PlanningState::update(const sf::Time &dt) {
 
+void PlanningState::move(const WindowPos &p) {
+    if (world->in_world(p))
+        selection.extend(world->window2world(p));
+}
+void PlanningState::left_click(const WindowPos &p) {
+    if (world->in_world(p)) {
+        selection.begin(world->window2world(p));
+    }
+}
+void PlanningState::right_click(const WindowPos &p) {
+
+}
+void PlanningState::left_release(const WindowPos &p) {
+    // Can cancel selection by holding right and releasing
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+        selection.clear();
+    }
+    else if (selection.is_active()) {
+        // TODO Execute selection
+        MapSelection sel = to_map(world, selection.get_area());
+        L_("Executing %s\n", sel.to_string());
+        selection.clear();
+    }
+}
+void PlanningState::right_release(const WindowPos &p) {
+
+}
+
+void PlanningState::update(const sf::Time &dt) {
+    D_.tmp("world sel: " + selection.to_string());
+    if (selection.is_active()) {
+        MapSelection sel = to_map(world, selection.get_area());
+        D_.tmp("map sel: " + sel.to_string());
+    }
 }
 void PlanningState::draw(sf::RenderWindow &w) {
 
 }
 
 } // Gui
+

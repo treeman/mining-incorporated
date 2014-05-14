@@ -1,11 +1,21 @@
 #include "gui/selection.hxx"
+#include "world/world.hxx"
 
-SelectionArea::SelectionArea() : start(-1), end(-1) {
-
+MapSelection to_map(World *world, WorldSelection sel) {
+    return MapSelection(world->world2map(sel.start), world->world2map(sel.end));
 }
 
 Selection::Selection() : active(false) {
 
+}
+
+WorldSelection Selection::get_area() const {
+    return WorldSelection(area);
+}
+
+string Selection::to_string() const {
+    if (!is_active()) return "inactive";
+    return get_area().to_string();
 }
 
 void Selection::begin(const WorldPos &start) {
