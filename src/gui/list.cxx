@@ -2,7 +2,7 @@
 #include "locator.hxx"
 #include "gui/list.hxx"
 
-namespace Gui {
+namespace gui {
 
 List::List(int _x, int _y) : pos(_x, _y),
     space(Locator::get_settings().get_num("button_space")) // TODO make this general

@@ -4,7 +4,7 @@
 #include "pos.hxx"
 #include "gui/object.hxx"
 
-namespace Gui {
+namespace gui {
 
     // TODO on_click and on_release
     class BaseButton : public BoundedObject {

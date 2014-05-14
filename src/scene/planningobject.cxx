@@ -2,6 +2,8 @@
 #include "butler.hxx"
 #include "util/fmt.hxx"
 
+namespace scene {
+
 string type2string(PlanningType type) {
     switch (type) {
         case PlanningType::ROOM: return "Room";
@@ -27,4 +29,6 @@ void PlanningObject::set_pos(int x, int y) {
 void PlanningObject::draw(sf::RenderWindow &w) {
     w.draw(spr);
 }
+
+} // Scene
 

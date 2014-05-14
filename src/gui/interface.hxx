@@ -9,22 +9,25 @@
 #include "state/statestack.hxx"
 #include "gui/buttonpanel.hxx"
 
-class World;
+namespace scene {
+    class World;
+};
 
-namespace Gui {
+namespace gui {
+
     class ButtonPanel;
 
     class Interface : public InputHandler {
     public:
-        Interface(World *world, sf::RenderWindow &window);
+        Interface(scene::World *world, sf::RenderWindow &window);
 
-        World &get_world() const;
+        scene::World &get_world() const;
 
         bool handle_input(const sf::Event &e);
         void update(const sf::Time &dt);
         void draw(sf::RenderWindow &w);
     private:
-        World *world;
+        scene::World *world;
         sf::RenderWindow &window;
 
         ButtonPanel panel;
@@ -86,5 +89,5 @@ namespace Gui {
 
     };
 
-}
+};
 

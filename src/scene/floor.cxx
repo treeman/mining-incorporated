@@ -3,6 +3,8 @@
 #include "util/rand.hxx"
 #include "ore.hxx"
 
+namespace scene {
+
 /*
 string first_floor[num_tiles_high] = {
     "sssss.............aa",
@@ -175,3 +177,4 @@ Floor::Floor() {
 
 }
 
+}

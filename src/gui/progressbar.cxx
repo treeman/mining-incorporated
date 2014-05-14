@@ -1,6 +1,8 @@
 #include "util/ext.hxx"
 #include "gui/progressbar.hxx"
 
+namespace gui {
+
 // ^^
 const int w = 23, h = 4;
 
@@ -44,4 +46,6 @@ void Progressbar::draw(sf::RenderWindow &w) {
     bar.setFillColor(sf::Color::Red);
     w.draw(bar);
 }
+
+} // gui
 

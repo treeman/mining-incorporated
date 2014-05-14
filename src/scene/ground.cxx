@@ -4,6 +4,8 @@
 #include "lua.hxx"
 #include "abort.hxx"
 
+namespace scene {
+
 Ground::Ground() : is_walkable(false), remove_time(0), build_time(0)
 { }
 
@@ -99,3 +101,4 @@ shared_ptr<const Ground> get_ground(string key) {
     return it->second;
 }
 
+} // Scene

@@ -2,9 +2,11 @@
 #include "gui/buttonpanel.hxx"
 #include "gui/picbutton.hxx"
 #include "gui/interface.hxx"
-#include "world/world.hxx"
+#include "scene/world.hxx"
 
-namespace Gui {
+using PType = scene::PlanningType;
+
+namespace gui {
 
 ButtonPanel::ButtonPanel(Interface &_gui) : gui(_gui), curr(Categories::UNSELECTED) {
     // TODO load from lua
@@ -38,13 +40,13 @@ ButtonPanel::ButtonPanel(Interface &_gui) : gui(_gui), curr(Categories::UNSELECT
         cat->add(shared_ptr<BoundedObject>(new PicButton([this](BaseButton &button) {
             L_("Plan room\n");
             gui.set_state(GuiState::PLANNING);
-            auto x = gui.get_world().get_planning_object(PlanningType::ROOM);
+            auto x = gui.get_world().get_planning_object(PType::ROOM);
             gui.handle_event(PlanningObjectEvent(x));
         }, "room")));
         cat->add(shared_ptr<BoundedObject>(new PicButton([this](BaseButton &button) {
             L_("Plan object\n");
             gui.set_state(GuiState::PLANNING);
-            auto x = gui.get_world().get_planning_object(PlanningType::OBJECT);
+            auto x = gui.get_world().get_planning_object(PType::OBJECT);
             gui.handle_event(PlanningObjectEvent(x));
         }, "object")));
         subcategories.push_back(move(cat));
@@ -110,5 +112,5 @@ function<void(BaseButton &button)> ButtonPanel::make_category_selector(Categorie
     };
 }
 
-}
+};
 

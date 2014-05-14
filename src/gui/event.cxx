@@ -1,9 +1,9 @@
 #include "locator.hxx"
 #include "gui/event.hxx"
 
-namespace Gui {
+namespace gui {
 
-PlanningObjectEvent::PlanningObjectEvent(shared_ptr<PlanningObject> o) : obj(o) {
+PlanningObjectEvent::PlanningObjectEvent(shared_ptr<scene::PlanningObject> o) : obj(o) {
 }
 
 string PlanningObjectEvent::to_string() const {

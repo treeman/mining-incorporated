@@ -1,7 +1,9 @@
 #include "gui/selection.hxx"
-#include "world/world.hxx"
+#include "scene/world.hxx"
 
-MapSelection to_map(World *world, WorldSelection sel) {
+namespace gui {
+
+MapSelection to_map(scene::World *world, WorldSelection sel) {
     return MapSelection(world->world2map(sel.start), world->world2map(sel.end));
 }
 
@@ -36,3 +38,4 @@ bool Selection::is_point() const {
     return is_active() && area.start == area.end;
 }
 
+} // gui

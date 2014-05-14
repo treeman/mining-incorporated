@@ -3,7 +3,7 @@
 #include "pos.hxx"
 #include "input/inputhandler.hxx"
 
-namespace Gui {
+namespace gui {
 
     // Base class for gui things
     class Object : public InputHandler {

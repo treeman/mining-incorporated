@@ -2,6 +2,8 @@
 #include "butler.hxx"
 #include "ground.hxx"
 
+namespace scene {
+
 // Tile class
 Tile::Tile(const Ground *_ground) : ground(_ground) {
     room_preview = object_preview = false;
@@ -71,4 +73,6 @@ ObjectPtr Tile::get_object() {
 const Ground *Tile::get_ground() const {
     return ground;
 }
+
+} // Scene
 

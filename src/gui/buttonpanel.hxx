@@ -4,7 +4,7 @@
 #include "gui/list.hxx"
 #include "gui/button.hxx"
 
-namespace Gui {
+namespace gui {
 
     class Interface;
 

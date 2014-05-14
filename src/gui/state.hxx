@@ -5,9 +5,11 @@
 #include "gui/event.hxx"
 #include "gui/selection.hxx"
 
-class World;
+namespace scene {
+    class World;
+};
 
-namespace Gui {
+namespace gui {
 
     class Interface;
 
@@ -16,16 +18,16 @@ namespace Gui {
         State();
         virtual ~State() noexcept = default;
 
-        void init(Interface *gui, World *world);
+        void init(Interface *gui, scene::World *world);
         virtual void reset() { };
 
-        virtual void handle_event(const Gui::Event &) { }
+        virtual void handle_event(const gui::Event &) { }
         virtual bool handle_input(const sf::Event &e) = 0;
         virtual void update(const sf::Time &dt) = 0;
         virtual void draw(sf::RenderWindow &w) = 0;
     protected:
         Interface *gui;
-        World *world;
+        scene::World *world;
     };
 
 
@@ -58,7 +60,7 @@ namespace Gui {
 
         void reset() override;
 
-        void handle_event(const Gui::Event &) override;
+        void handle_event(const gui::Event &) override;
 
         bool handle_input(const sf::Event &e) override;
     private:
@@ -73,7 +75,7 @@ namespace Gui {
         void draw(sf::RenderWindow &w) override;
     private:
         Selection selection;
-        shared_ptr<PlanningObject> obj;
+        shared_ptr<scene::PlanningObject> obj;
     };
 
 }

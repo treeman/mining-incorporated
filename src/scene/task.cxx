@@ -1,5 +1,7 @@
 #include "task.hxx"
 
+namespace scene {
+
 // Hate this
 string to_str(TaskType type) {
     switch (type) {
@@ -65,4 +67,6 @@ Task create_sell_task(int x, int y) {
 
     return task;
 }
+
+} // Scene
 

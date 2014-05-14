@@ -4,7 +4,7 @@
 #include "util/ext.hxx"
 #include "gui/button.hxx"
 
-namespace Gui {
+namespace gui {
 
 BaseButton::BaseButton(function<void(BaseButton&)> f) : on_click(f)
 {

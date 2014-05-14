@@ -1,6 +1,8 @@
 #include "butler.hxx"
 #include "gui/inputbox.hxx"
 
+namespace gui {
+
 InputBox::InputBox(int x, int y) {
     txt = create_txt("arial.ttf", 10);
     txt.setPosition(x, y);
@@ -19,3 +21,4 @@ void InputBox::draw(sf::RenderWindow &w) {
     w.draw(txt);
 }
 
+} // gui

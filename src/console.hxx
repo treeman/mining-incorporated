@@ -23,8 +23,8 @@ private:
     sf::RenderWindow &window;
     bool is_active;
 
-    HistoryBox history;
-    InputBox input;
+    gui::HistoryBox history;
+    gui::InputBox input;
     void execute_cmd();
 };
 

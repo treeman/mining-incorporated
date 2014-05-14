@@ -2,16 +2,16 @@
 #include "util/ext.hxx"
 #include "gui/state.hxx"
 #include "gui/interface.hxx"
-#include "world/world.hxx"
-#include "world/ore.hxx"
+#include "scene/world.hxx"
+#include "scene/ore.hxx"
 
-namespace Gui {
+namespace gui {
 
 State::State() : gui(nullptr), world(nullptr) {
 
 }
 
-void State::init(Interface *_gui, World *_world) {
+void State::init(Interface *_gui, scene::World *_world) {
     gui = _gui;
     world = _world;
 }
@@ -34,11 +34,11 @@ void InfoState::update(const sf::Time &dt) {
         const WorldPos world_pos(world->window2world(wp));
         const MapPos dim_pos(world->world2map(world_pos));
 
-        shared_ptr<Tile> tile(world->get_tile(dim_pos));
+        shared_ptr<scene::Tile> tile(world->get_tile(dim_pos));
         auto ground = tile->get_ground();
 
         // TODO make something more persistent.
-        if (auto ore = dynamic_cast<const Ore*>(ground)) {
+        if (auto ore = dynamic_cast<const scene::Ore*>(ground)) {
             D_.tmp(fmt("ore: %s", ore->key));
         }
         else {
@@ -46,7 +46,7 @@ void InfoState::update(const sf::Time &dt) {
         }
 
         // TODO should select worker by bounding box
-        shared_ptr<Worker> worker(world->select_closest_worker(world_pos));
+        shared_ptr<scene::Worker> worker(world->select_closest_worker(world_pos));
         if (worker != nullptr) {
             D_.tmp("Some worker!");
         }
@@ -64,7 +64,7 @@ void PlanningState::reset() {
     obj = nullptr;
 }
 
-void PlanningState::handle_event(const Gui::Event &e) {
+void PlanningState::handle_event(const gui::Event &e) {
     if (auto p = dynamic_cast<const PlanningObjectEvent*>(&e)) {
         L_("Recieved event: %s\n", p->to_string());
         obj = p->obj;

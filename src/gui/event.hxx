@@ -1,8 +1,8 @@
 #pragma once
 
-#include "world/planningobject.hxx"
+#include "scene/planningobject.hxx"
 
-namespace Gui {
+namespace gui {
 
     class Event {
     public:
@@ -14,10 +14,10 @@ namespace Gui {
     // Choose a planning object.
     class PlanningObjectEvent : public Event {
     public:
-        PlanningObjectEvent(shared_ptr<PlanningObject> o);
+        PlanningObjectEvent(shared_ptr<scene::PlanningObject> o);
 
         string to_string() const;
-        shared_ptr<PlanningObject> obj;
+        shared_ptr<scene::PlanningObject> obj;
     };
 }
 

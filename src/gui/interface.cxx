@@ -2,15 +2,15 @@
 #include "constants.hxx"
 #include "locator.hxx"
 #include "util/ext.hxx"
-#include "world/world.hxx"
+#include "scene/world.hxx"
 #include "gui/interface.hxx"
 #include "gui/button.hxx"
 #include "gui/picbutton.hxx"
 #include "gui/buttonpanel.hxx"
 
-namespace Gui {
+namespace gui {
 
-Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win), panel(*this),
+Interface::Interface(scene::World *w, sf::RenderWindow &win) : world(w), window(win), panel(*this),
     current_state(nullptr)
 {
     // Setup guistates.
@@ -23,7 +23,7 @@ Interface::Interface(World *w, sf::RenderWindow &win) : world(w), window(win), p
     assert(current_state != nullptr);
 }
 
-World &Interface::get_world() const {
+scene::World &Interface::get_world() const {
     assert(world != nullptr);
     return *world;
 }

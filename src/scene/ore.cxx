@@ -3,6 +3,8 @@
 #include "locator.hxx"
 #include "lua.hxx"
 
+namespace scene {
+
 Ore::Ore()
 { }
 
@@ -96,4 +98,6 @@ shared_ptr<const Ore> get_ore(string key) {
     }
     return it->second;
 }
+
+} // Scene
 

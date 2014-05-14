@@ -2,7 +2,7 @@
 
 #include "gui/button.hxx"
 
-namespace Gui {
+namespace gui {
 
     // TODO sprite based
     class PicButton : public BaseButton {

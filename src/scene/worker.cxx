@@ -1,7 +1,9 @@
-#include "worker.hxx"
 #include "butler.hxx"
-#include "world.hxx"
 #include "constants.hxx"
+#include "scene/worker.hxx"
+#include "scene/world.hxx"
+
+namespace scene {
 
 Worker::Worker(int x, int y, World *_world) : pos(x, y), world(_world){
     spr = create_sprite("worker.png");
@@ -128,4 +130,6 @@ void Worker::follow_path(const sf::Time &dt) {
 WorkerPtr create_worker(int x, int y, World *world) {
     return WorkerPtr(new Worker(x, y, world));
 }
+
+} // Scene
 

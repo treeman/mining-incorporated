@@ -1,5 +1,7 @@
 #include "map.hxx"
 
+namespace scene {
+
 shared_ptr<Map> make_map() {
     shared_ptr<Map> res(new Map());
     for (int i = 0; i < 10; ++i) {
@@ -34,3 +36,4 @@ Map::Map() {
 
 }
 
+} // Scene

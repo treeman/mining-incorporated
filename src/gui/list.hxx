@@ -3,7 +3,7 @@
 #include "basicincludes.hxx"
 #include "gui/object.hxx"
 
-namespace Gui {
+namespace gui {
 
     // TODO horisontal vs vertical align
     // TODO manage styles over the objects (height, width etc..)

@@ -2,6 +2,8 @@
 #include "util/ext.hxx"
 #include "gui/historybox.hxx"
 
+namespace gui {
+
 HistoryBox::HistoryBox(int _x, int _y, int _w, int _h) : x(_x), y(_y), w(_w), h(_h) {
     int opacity = 0xDD;
     back = make_rect(sf::FloatRect(x, y, w, h));
@@ -40,3 +42,4 @@ void HistoryBox::add_line(string s) {
     history.push_back(s);
 }
 
+}

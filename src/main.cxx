@@ -9,8 +9,8 @@
 #include "locator.hxx"
 #include "stdoutlogger.hxx"
 #include "visualdebug.hxx"
-#include "world/ore.hxx"
-#include "world/ground.hxx"
+#include "scene/ore.hxx"
+#include "scene/ground.hxx"
 #include "abort.hxx"
 
 #include <cstdlib>
@@ -36,8 +36,8 @@ int main()
     settings.load_from_file("gui.lua");
 
     // TODO move
-    load_ground_definitions("ground.lua");
-    load_ore_definitions("ore.lua");
+    scene::load_ground_definitions("ground.lua");
+    scene::load_ore_definitions("ore.lua");
 
     sf::RenderWindow window(
         sf::VideoMode(

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "state/state.hxx"
-#include "world/world.hxx"
+#include "scene/world.hxx"
 #include "gui/interface.hxx"
 
 namespace state {
@@ -17,8 +17,8 @@ namespace state {
         void draw();
     private:
         sf::Text txt;
-        World world;
-        Gui::Interface gui;
+        scene::World world;
+        gui::Interface gui;
     };
 
 }

@@ -1,11 +1,13 @@
 #include "util/ext.hxx"
 #include "util/rand.hxx"
-#include "world/world.hxx"
-#include "world/map.hxx"
+#include "scene/world.hxx"
+#include "scene/map.hxx"
 #include "constants.hxx"
 #include "butler.hxx"
 #include "assert.h"
 #include "locator.hxx"
+
+namespace scene {
 
 const int view_xoff = (screen_width - world_width) / 2;
 const int view_yoff = (screen_height - world_height) / 2;
@@ -583,4 +585,6 @@ void World::init_planning_objects() {
     planning_objects.push_back(shared_ptr<PlanningObject>(
         new PlanningObject("object_preview.png", PlanningType::OBJECT)));
 }
+
+}; // Scene
 

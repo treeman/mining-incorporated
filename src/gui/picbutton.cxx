@@ -2,7 +2,7 @@
 #include "gui/picbutton.hxx"
 #include "util/ext.hxx"
 
-namespace Gui {
+namespace gui {
 
 PicButton::PicButton(function<void(BaseButton&)> f, string s) : BaseButton(f) {
     // TODO parameters?
@@ -23,7 +23,7 @@ sf::FloatRect PicButton::bounds() const {
 void PicButton::set_pos(const WindowPos &p) {
     const int txt_y_off = 5;
     const int txt_w = txt.getLocalBounds().width;
-    const int txt_h = txt.getLocalBounds().height;
+    //const int txt_h = txt.getLocalBounds().height;
     const int top_y = p.y - bound.height - txt_y_off;
     bound.left = p.x;
     bound.top = top_y;
@@ -40,5 +40,5 @@ void PicButton::draw(sf::RenderWindow &w) {
     w.draw(txt);
 }
 
-}
+} // gui
 
