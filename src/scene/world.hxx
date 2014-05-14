@@ -15,29 +15,15 @@ namespace scene {
     public:
         World(sf::RenderWindow &w);
 
-        // TODO remove/move
-        // xD
-        //sf::Vector2i window2tile(int x, int y);
-        //sf::Vector2i window2world(int x, int y);
-        sf::Vector2i world2tile(int x, int y);
-        sf::Vector2i tile2world(int x, int y);
-        sf::Vector2i world2window(int x, int y);
-        sf::Vector2i tile2window(int x, int y);
-
-        //sf::Vector2i window2tile(sf::Vector2i p) { return window2tile(p.x, p.y); }
-        //sf::Vector2i window2world(sf::Vector2i p) { return window2world(p.x, p.y); }
-        sf::Vector2i world2tile(sf::Vector2i p) { return world2tile(p.x, p.y); }
-        sf::Vector2i tile2world(sf::Vector2i p) { return tile2world(p.x, p.y); }
-        sf::Vector2i world2window(sf::Vector2i p) { return world2window(p.x, p.y); }
-        sf::Vector2i tile2window(sf::Vector2i p) { return tile2window(p.x, p.y); }
-
         bool in_world(const WindowPos &p) const;
         bool in_world(const WorldPos &p) const;
+
         WorldPos window2world(const WindowPos &p) const;
         MapPos window2map(const WindowPos &p) const;
         MapPos world2map(const WorldPos &p) const;
+        WindowPos map2window(const MapPos &p) const;
+        WindowPos world2window(const WorldPos &p) const;
 
-        //shared_ptr<Tile> get_tile(const WorldPos &p) const;
         shared_ptr<Tile> get_tile(const MapPos &p) const;
 
         // TODO remove
@@ -52,29 +38,6 @@ namespace scene {
         int curr_floor;
 
     public:
-        // TODO move to commands
-        // World positions
-        void build(sf::Vector2i worldpos, RoomType type);
-        void remove(sf::Vector2i worldpos);
-
-        // Tile positions
-        void build(int x, int y, RoomType type);
-        void build(int x, int y, ObjectType type);
-        //void remove(int x, int y);
-        void sell_object(int x, int y);
-
-        // Build and remove things in a 2x2 area, in tile coordinates.
-        void build(int x1, int y1, int x2, int y2, RoomType type);
-        //void build(int x1, int y1, int x2, int y2, ObjectType type);
-        //void remove(int x1, int y1, int x2, int y2);
-
-        // TODO move to commands
-        // Current action
-        void preview_room_build(int x, int y);
-        void preview_room_build(int x1, int y1, int x2, int y2);
-        void preview_object_build(int x, int y);
-        void clear_preview();
-
         void handle_input(const sf::Event &e);
         void update(const sf::Time &dt);
         void draw();
@@ -94,6 +57,9 @@ namespace scene {
         RoomType get_tile_type(int x, int y);
     private:
         sf::RenderWindow &w;
+    public:
+        sf::View &get_view();
+    private:
         sf::View view;
 
         // TODO multiple levels
@@ -118,6 +84,7 @@ namespace scene {
         sf::Text txt;
         sf::Text stat_txt;
 
+        // TODO move to gui
         // Count money etc.
         Resources resources;
         void draw_stats();

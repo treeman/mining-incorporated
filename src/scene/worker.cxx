@@ -7,7 +7,8 @@ namespace scene {
 
 Worker::Worker(int x, int y, World *_world) : pos(x, y), world(_world){
     spr = create_sprite("worker.png");
-    tile_pos = IPoint(world->world2tile(x, y));
+    // TODO fix positions.
+    tile_pos = IPoint(world->world2map(WorldPos(x, y, 0)).pos);
     current_task.is_done = true;
     txt = create_txt("arial.ttf", 14);
     has_work_time = false;
@@ -33,13 +34,16 @@ bool Worker::assign_task(Task task) {
 }
 
 void Worker::update(const sf::Time &dt) {
+    // TODO fix with new positions!
+#if 0
     if (!path.empty())
         follow_path(dt);
 
     if (path.empty() && !is_free()) {
         // Align!
         tile_pos = current_task.pos;
-        pos = FPoint(world->tile2world(tile_pos));
+        // TODO fix!
+        // pos = FPoint(world->tile2world(tile_pos));
 
         // Work on task, it's not instant.
         if (!has_work_time) {
@@ -74,6 +78,7 @@ void Worker::update(const sf::Time &dt) {
     }
 
     progressbar.set_position(pos.x, pos.y - 11);
+#endif
 }
 void Worker::draw(sf::RenderWindow &w) {
     spr.setPosition(pos.x, pos.y);
@@ -111,6 +116,8 @@ void Worker::draw(sf::RenderWindow &w) {
 }
 
 void Worker::follow_path(const sf::Time &dt) {
+    // TODO fix with new points!
+#if 0
     // Check for finish
     FPoint a(pos), b(world->tile2world(path.back()));
     if ((b - a).len() < 0.05) {
@@ -125,6 +132,7 @@ void Worker::follow_path(const sf::Time &dt) {
     auto diff = norm * dt.asSeconds() * 100.0f;
     pos = pos + diff;
     tile_pos = IPoint(world->world2tile(sf::Vector2i(pos.x, pos.y)));
+#endif
 }
 
 WorkerPtr create_worker(int x, int y, World *world) {

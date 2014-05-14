@@ -12,8 +12,9 @@ string type2string(PlanningType type) {
     }
 }
 
-PlanningObject::PlanningObject(string path, PlanningType t) : type(t) {
+PlanningObject::PlanningObject(string path, PlanningType t, sf::Color color) : type(t){
     spr = create_sprite(path);
+    spr.setColor(color);
 }
 
 string PlanningObject::to_string() const {

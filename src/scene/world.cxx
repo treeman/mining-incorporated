@@ -34,25 +34,6 @@ World::World(sf::RenderWindow &_w) :
     init_planning_objects();
 }
 
-//sf::Vector2i World::window2tile(int x, int y) {
-    //return world2tile(window2world(x, y));
-//}
-//sf::Vector2i World::window2world(int x, int y) {
-    //return sf::Vector2i(x - view_xoff, y - view_yoff);
-//}
-sf::Vector2i World::world2tile(int x, int y) {
-    return sf::Vector2i(x / tile_width, y / tile_width);
-}
-sf::Vector2i World::tile2world(int x, int y) {
-    return sf::Vector2i(x * tile_width, y * tile_width);
-}
-sf::Vector2i World::world2window(int x, int y) {
-    return sf::Vector2i(x + view_xoff, y + view_yoff);
-}
-sf::Vector2i World::tile2window(int x, int y) {
-    return world2window(tile2world(x, y));
-}
-
 bool World::in_world(const WindowPos &p) const {
     const WorldPos wp(p.x  - view_xoff, p.y - view_yoff, curr_floor);
     return in_world(wp);
@@ -72,6 +53,12 @@ MapPos World::window2map(const WindowPos &p) const {
 MapPos World::world2map(const WorldPos &p) const {
     assert(in_world(p));
     return MapPos(p.pos.x / tile_width, p.pos.y / tile_width, p.floor);
+}
+WindowPos World::map2window(const MapPos &p) const {
+    return WindowPos(p.pos.x * tile_width + view_xoff, p.pos.y * tile_width + view_yoff);
+}
+WindowPos World::world2window(const WorldPos &p) const {
+    return map2window(world2map(p));
 }
 
 /*
@@ -103,136 +90,6 @@ void World::set_curr_floor(int floor) {
     curr_floor = floor;
 }
 int World::get_curr_floor() const { return curr_floor; }
-
-void World::build(sf::Vector2i wp, RoomType type) {
-    if (!in_world(wp)) return;
-
-    auto tpos = world2tile(wp.x, wp.y);
-    build(tpos.x, tpos.y, type);
-}
-/*
-void World::remove(sf::Vector2i wp) {
-    if (!in_world(wp)) return;
-
-    auto tpos = world2tile(wp.x, wp.y);
-    remove(tpos.x, tpos.y);
-}
-*/
-
-// Tile positions
-void World::build(int x, int y, RoomType type) {
-    if (!is_tile(x, y)) return;
-
-    /*
-    shared_ptr<Tile> tile = get_tile(x, y);
-    if (tile->get_type() == type) return;
-
-    tasks.push_back(create_room_task(x, y, type));
-    tile->set_room_build_pending();
-    resources.money -= get_info(type)->cost;
-    */
-}
-// TODO move to floor
-void World::build(int x, int y, ObjectType type) {
-    if (!is_tile(x, y)) return;
-    shared_ptr<Tile> tile = map->floor(curr_floor)->grid[y][x];
-
-    if (tile->has_object() && type == SellObject) {
-        tasks.push_back(create_sell_task(x, y));
-    }
-    else if (type != SellObject) {
-        if (!tile->has_object()) {
-            int cost = get_info(type)->cost;
-            if (cost <= resources.money) {
-                resources.money -= cost;
-                tile->set_object_build_pending();
-                tasks.push_back(create_object_task(x, y, type));
-            }
-            else {
-                // TODO some error when too expensive?
-            }
-        }
-    }
-}
-
-void World::sell_object(int x, int y) {
-    // TODO money management here
-    if (!is_tile(x, y)) return;
-    shared_ptr<Tile> tile = map->floor(curr_floor)->grid[y][x];
-
-    tile->remove_object();
-}
-
-/*
-void World::remove(int x, int y) {
-    shared_ptr<Tile> tile = grid[y][x];
-    tile->unmark();
-}
-*/
-
-void World::build(int x1, int y1, int x2, int y2, RoomType type) {
-    if (x2 < x1) swap(x1, x2);
-    if (y2 < y1) swap(y1, y2);
-
-    int cost = calculate_build_cost(x1, y1, x2, y2, type);
-    if (cost > resources.money) {
-        // TODO some error?
-        return;
-    }
-
-    for (int y = y1; y <= y2; ++y) {
-        for (int x = x1; x <= x2; ++x) {
-            if (is_tile(x, y)) {
-                build(x, y, type);
-            }
-        }
-    }
-}
-/*
-void World::remove(int x1, int y1, int x2, int y2) {
-    if (x2 < x1) swap(x1, x2);
-    if (y2 < y1) swap(y1, y2);
-    for (int y = y1; y <= y2; ++y) {
-        for (int x = x1; x <= x2; ++x) {
-            if (is_tile(x, y)) {
-                remove(x, y);
-            }
-        }
-    }
-}
-*/
-
-void World::preview_room_build(int x, int y) {
-    if (is_tile(x, y)) {
-        map->floor(curr_floor)->grid[y][x]->set_room_preview();
-    }
-}
-
-void World::preview_room_build(int x1, int y1, int x2, int y2) {
-    clear_preview();
-
-    if (x2 < x1) swap(x1, x2);
-    if (y2 < y1) swap(y1, y2);
-    for (int y = y1; y <= y2; ++y) {
-        for (int x = x1; x <= x2; ++x) {
-            if (is_tile(x, y)) {
-                preview_room_build(x, y);
-            }
-        }
-    }
-}
-void World::preview_object_build(int x, int y) {
-    if (is_tile(x, y)) {
-        map->floor(curr_floor)->grid[y][x]->set_object_preview();
-    }
-}
-void World::clear_preview() {
-    for (auto row : map->floor(curr_floor)->grid) {
-        for (auto t : row) {
-            t->clear_preview();
-        }
-    }
-}
 
 void World::handle_input(const sf::Event &e) { }
 void World::update(const sf::Time &dt) {
@@ -441,19 +298,23 @@ void World::task_done(Task task) {
         */
     }
     else if (task.type == PlaceObject) {
+        /*
         shared_ptr<Tile> tile = get_tile(task.pos);
         tile->set_object(make_object(task.object_type));
 
         if (task.object_type == Bed) {
             resources.max_workers += bed_capacity;
         }
+        */
     }
     else if (task.type == SellTask) {
+        /*
         shared_ptr<Tile> tile = get_tile(task.pos);
         if (tile->get_object()->get_type() == Bed) {
             resources.max_workers -= bed_capacity;
         }
         tile->remove_object();
+        */
     }
     else {
         printf("Unknown task %d is done!\n", task.type);
@@ -561,6 +422,8 @@ RoomType World::get_tile_type(int x, int y) {
     return Rock;
 }
 
+sf::View &World::get_view() { return view; }
+
 void World::add_task(unique_ptr<Task> task) {
     pending_tasks.push_back(move(task));
 }
@@ -571,19 +434,13 @@ shared_ptr<PlanningObject> World::get_planning_object(PlanningType o) const {
     return planning_objects[x];
 }
 void World::init_planning_objects() {
-    /*planning_objects.resize(static_cast<unsigned>(PlanningType::NUM_OBJECTS));
-
     // TODO load from lua
-    shared_ptr<PlanningObject>(new PlanningObject("room_preview.png", PlanningType::ROOM)).swap(
+    auto col = sf::Color(255, 255, 255, 100);
+    planning_objects.resize(static_cast<unsigned>(PlanningType::NUM_OBJECTS));
+    shared_ptr<PlanningObject>(new PlanningObject("room_preview.png", PlanningType::ROOM, col)).swap(
         planning_objects[static_cast<unsigned>(PlanningType::ROOM)]);
-    shared_ptr<PlanningObject>(new PlanningObject("object_preview.png", PlanningType::OBJECT)).swap(
+    shared_ptr<PlanningObject>(new PlanningObject("object_preview.png", PlanningType::OBJECT, col)).swap(
         planning_objects[static_cast<unsigned>(PlanningType::OBJECT)]);
-    */
-    // Do in order!
-    planning_objects.push_back(shared_ptr<PlanningObject>(
-        new PlanningObject("room_preview.png", PlanningType::ROOM)));
-    planning_objects.push_back(shared_ptr<PlanningObject>(
-        new PlanningObject("object_preview.png", PlanningType::OBJECT)));
 }
 
 }; // Scene

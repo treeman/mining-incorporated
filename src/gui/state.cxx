@@ -130,10 +130,29 @@ void PlanningState::update(const sf::Time &dt) {
     if (selection.is_active()) {
         MapSelection sel = to_map(world, selection.get_area());
         D_.tmp("map sel: " + sel.to_string());
+        //WindowPos wp1 = world->map2window(sel.start);
+        //WindowPos wp2 = world->map2window(sel.end);
+        //D_.tmp("win sel: " + IPoint(wp1).to_string() + " - " + IPoint(wp2).to_string());
     }
 }
 void PlanningState::draw(sf::RenderWindow &w) {
+    //sf::View curr_view = w.getView();
 
+    //w.setView(world->get_view());
+    if (selection.is_active()) {
+        assert(obj != nullptr);
+
+        MapSelection sel = to_map(world, selection.get_area());
+        for (int x = sel.start.pos.x; x <= sel.end.pos.x; ++x) {
+            for (int y = sel.start.pos.y; y <= sel.end.pos.y; ++y) {
+                WindowPos p = world->map2window(MapPos(x, y, world->get_curr_floor()));
+                obj->set_pos(p.x, p.y);
+                obj->draw(w);
+            }
+        }
+    }
+
+    //w.setView(curr_view);
 }
 
 } // Gui

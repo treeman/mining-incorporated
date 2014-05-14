@@ -18,7 +18,7 @@ namespace scene {
 
     class PlanningObject {
     public:
-        PlanningObject(string spr, PlanningType type);
+        PlanningObject(string spr, PlanningType type, sf::Color color = sf::Color::White);
 
         PlanningType get_type() const;
         string to_string() const;
