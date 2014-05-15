@@ -38,6 +38,7 @@ namespace gui {
     // Mine (?)
     enum class GuiState : unsigned {
         INFO,
+        MATERIAL,
         PLANNING,
 
         NUM_STATES,
@@ -52,6 +53,22 @@ namespace gui {
         bool handle_input(const sf::Event &e) override;
         void update(const sf::Time &dt) override;
         void draw(sf::RenderWindow &w) override;
+    };
+
+    class MaterialState : public State {
+    public:
+        MaterialState(Interface *gui, scene::World *world);
+
+        void reset() override;
+
+        void handle_event(const gui::Event &) override;
+        bool handle_input(const sf::Event &e) override;
+
+        void update(const sf::Time &dt) override;
+        void draw(sf::RenderWindow &w) override;
+    private:
+        //shared_ptr<scene::PlanningObject> obj;
+        unique_ptr<Selection> selection;
     };
 
     class PlanningState : public State {

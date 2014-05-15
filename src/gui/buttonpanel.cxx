@@ -12,12 +12,12 @@ ButtonPanel::ButtonPanel(Interface &_gui) : gui(_gui), curr(Categories::UNSELECT
     // TODO load from lua
     unique_ptr<List>(new List(12, 588)).swap(categories);
 
+    subcategories.resize(static_cast<int>(Categories::NUM_CATEGORIES));
     categories->add(shared_ptr<BoundedObject>(
         new PicButton(make_category_selector(Categories::UNSELECTED), "mine"))
     );
-    categories->add(shared_ptr<BoundedObject>(
-        new PicButton(make_category_selector(Categories::UNSELECTED), "material"))
-    );
+
+    init_material_button();
     categories->add(shared_ptr<BoundedObject>(
         new PicButton(make_category_selector(Categories::UNSELECTED), "rooms"))
     );
@@ -30,27 +30,7 @@ ButtonPanel::ButtonPanel(Interface &_gui) : gui(_gui), curr(Categories::UNSELECT
     categories->add(shared_ptr<BoundedObject>(
         new PicButton(make_category_selector(Categories::UNSELECTED), "utilities"))
     );
-    {
-        categories->add(shared_ptr<BoundedObject>(
-            new PicButton(make_category_selector(Categories::PLANNING), "planning"))
-        );
-        // TODO in order!
-        // TODO cleanup!
-        unique_ptr<List> cat(new List(12, 525));
-        cat->add(shared_ptr<BoundedObject>(new PicButton([this](BaseButton &button) {
-            L_("Plan room\n");
-            gui.set_state(GuiState::PLANNING);
-            auto x = Locator::get_object_factory().create_planning_object(PType::ROOM);
-            gui.handle_event(PlanningObjectEvent(move(x)));
-        }, "room")));
-        cat->add(shared_ptr<BoundedObject>(new PicButton([this](BaseButton &button) {
-            L_("Plan object\n");
-            gui.set_state(GuiState::PLANNING);
-            auto x = Locator::get_object_factory().create_planning_object(PType::OBJECT);
-            gui.handle_event(PlanningObjectEvent(move(x)));
-        }, "object")));
-        subcategories.push_back(move(cat));
-    }
+    init_planning_button();
 }
 
 bool ButtonPanel::handle_input(const sf::Event &e) {
@@ -58,6 +38,7 @@ bool ButtonPanel::handle_input(const sf::Event &e) {
     if (curr != Categories::UNSELECTED) {
         int sel = static_cast<int>(curr);
         assert(0 <= sel && sel < (int)subcategories.size());
+        assert(subcategories[sel] != nullptr);
         subcategories[sel]->handle_input(e);
     }
 
@@ -77,6 +58,7 @@ void ButtonPanel::update(const sf::Time &dt) {
     if (curr != Categories::UNSELECTED) {
         int sel = static_cast<int>(curr);
         assert(0 <= sel && sel < (int)subcategories.size());
+        assert(subcategories[sel] != nullptr);
         subcategories[sel]->update(dt);
     }
 }
@@ -85,6 +67,7 @@ void ButtonPanel::draw(sf::RenderWindow &w) {
     if (curr != Categories::UNSELECTED) {
         int sel = static_cast<int>(curr);
         assert(0 <= sel && sel < (int)subcategories.size());
+        assert(subcategories[sel] != nullptr);
         subcategories[sel]->draw(w);
     }
 }
@@ -95,11 +78,12 @@ function<void(BaseButton &button)> ButtonPanel::make_category_selector(Categorie
         if (curr != Categories::UNSELECTED) {
             int sel = static_cast<int>(curr);
             assert(0 <= sel && sel < (int)subcategories.size());
+            assert(subcategories[sel] != nullptr);
             //L_("deselecting prev: %d\n", sel);
             subcategories[sel]->deselect();
         }
 
-        //L_("selecting: %d\n", static_cast<int>(cat));
+        L_("selecting: %d\n", static_cast<int>(cat));
 
         button.toggle_selection();
         if (button.is_selected()) {
@@ -112,5 +96,37 @@ function<void(BaseButton &button)> ButtonPanel::make_category_selector(Categorie
     };
 }
 
-};
+void ButtonPanel::init_material_button() {
+    categories->add(shared_ptr<BoundedObject>(
+        new PicButton(make_category_selector(Categories::MATERIAL), "material"))
+    );
+    unique_ptr<List> cat(new List(12, 525));
+
+    // TODO load buttons from material.lua
+
+    subcategories[static_cast<int>(Categories::MATERIAL)].swap(cat);
+}
+void ButtonPanel::init_planning_button() {
+    categories->add(shared_ptr<BoundedObject>(
+        new PicButton(make_category_selector(Categories::PLANNING), "planning"))
+    );
+    // TODO in order!
+    // TODO cleanup!
+    unique_ptr<List> cat(new List(12, 525));
+    cat->add(shared_ptr<BoundedObject>(new PicButton([this](BaseButton &button) {
+        L_("Plan room\n");
+        gui.set_state(GuiState::PLANNING);
+        auto x = Locator::get_object_factory().create_planning_object(PType::ROOM);
+        gui.handle_event(PlanningObjectEvent(move(x)));
+    }, "room")));
+    cat->add(shared_ptr<BoundedObject>(new PicButton([this](BaseButton &button) {
+        L_("Plan object\n");
+        gui.set_state(GuiState::PLANNING);
+        auto x = Locator::get_object_factory().create_planning_object(PType::OBJECT);
+        gui.handle_event(PlanningObjectEvent(move(x)));
+    }, "object")));
+    subcategories[static_cast<int>(Categories::PLANNING)].swap(cat);
+}
+
+}; // gui
 

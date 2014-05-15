@@ -16,6 +16,7 @@ Interface::Interface(scene::World *w, sf::RenderWindow &win) : world(w), window(
     // Setup guistates.
     states.resize(static_cast<unsigned>(GuiState::NUM_STATES));
     states[static_cast<unsigned>(GuiState::INFO)].reset(new InfoState(this, world));
+    states[static_cast<unsigned>(GuiState::MATERIAL)].reset(new MaterialState(this, world));
     states[static_cast<unsigned>(GuiState::PLANNING)].reset(new PlanningState(this, world));
     set_state(GuiState::INFO);
     assert(current_state != nullptr);

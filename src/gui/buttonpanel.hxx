@@ -27,7 +27,10 @@ namespace gui {
 
         enum class Categories : int {
             UNSELECTED = -1,
+            MATERIAL,
             PLANNING,
+
+            NUM_CATEGORIES,
         };
 
         unique_ptr<List> categories;
@@ -35,6 +38,10 @@ namespace gui {
         Categories curr;
 
         function<void(BaseButton &button)> make_category_selector(Categories cat);
+
+        // TODO incorporate loading design from lua (later)
+        void init_material_button();
+        void init_planning_button();
     };
 
 }

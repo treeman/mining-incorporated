@@ -21,6 +21,7 @@ bool Worker::is_free() {
 bool Worker::assign_task(Task task) {
     //printf("I have a task type: %d\n", task.type);
 
+    /*
     if (tile_pos == task.pos) {
         current_task = task;
     }
@@ -30,6 +31,7 @@ bool Worker::assign_task(Task task) {
         current_task = task;
     }
     has_work_time = false;
+    */
     return true;
 }
 
