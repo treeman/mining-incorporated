@@ -24,10 +24,12 @@ namespace scene {
         void set_object_build_pending();
         */
 
+        void suppress_preview();
         void set_preview(shared_ptr<PlanningObject> o);
-        void remove_prevew();
+        void remove_preview();
     private:
         shared_ptr<PlanningObject> preview;
+        bool tmp_suppress_preview;
 
     public:
         bool is_walkable();

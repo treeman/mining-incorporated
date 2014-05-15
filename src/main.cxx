@@ -1,17 +1,18 @@
-#include "state/help.hxx"
-#include "state/game.hxx"
 #include "constants.hxx"
 #include "roomtype.hxx"
 #include "settings.hxx"
 #include "console.hxx"
-#include "util/rand.hxx"
 #include "input/inputqueue.hxx"
 #include "locator.hxx"
 #include "stdoutlogger.hxx"
 #include "visualdebug.hxx"
+#include "abort.hxx"
+#include "util/rand.hxx"
+#include "state/help.hxx"
+#include "state/game.hxx"
 #include "scene/ore.hxx"
 #include "scene/ground.hxx"
-#include "abort.hxx"
+#include "scene/objectfactory.hxx"
 
 #include <cstdlib>
 #include <ctime>
@@ -23,6 +24,7 @@ int main()
 
     // Register some defaults.
     Locator::provide_settings(unique_ptr<Settings>(new Settings()));
+    Locator::provide_object_factory(unique_ptr<scene::ObjectFactory>(new scene::ObjectFactory()));
 
     Settings &settings = Locator::get_settings();
     settings.register_num("screen_width", 800);

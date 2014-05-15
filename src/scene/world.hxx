@@ -2,12 +2,13 @@
 
 #include "roomtype.hxx"
 #include "objecttype.hxx"
+#include "resources.hxx"
 #include "scene/worker.hxx"
 #include "scene/world.hxx"
 #include "scene/tile.hxx"
 #include "scene/task.hxx"
 #include "scene/map.hxx"
-#include "resources.hxx"
+#include "scene/command.hxx"
 
 namespace scene {
 
@@ -41,6 +42,8 @@ namespace scene {
         void handle_input(const sf::Event &e);
         void update(const sf::Time &dt);
         void draw();
+
+        void push_cmd(unique_ptr<Command> cmd);
 
         // TODO move to commands/events
         void new_worker();

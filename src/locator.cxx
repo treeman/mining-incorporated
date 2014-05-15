@@ -51,9 +51,18 @@ void Locator::provide_statestack(unique_ptr<state::StateStack<state::State>> s) 
     statestack.swap(s);
 }
 
+scene::ObjectFactory &Locator::get_object_factory() {
+    assert(object_factory != nullptr);
+    return *object_factory;
+}
+void Locator::provide_object_factory(unique_ptr<scene::ObjectFactory> f) {
+    object_factory.swap(f);
+}
+
 unique_ptr<Settings> Locator::settings{ nullptr };
 unique_ptr<Logger> Locator::logger{ nullptr };
 unique_ptr<Debug> Locator::debug{ nullptr };
 sf::RenderWindow *Locator::window{ nullptr };
 unique_ptr<state::StateStack<state::State>> Locator::statestack{ nullptr };
+unique_ptr<scene::ObjectFactory> Locator::object_factory{ nullptr };
 

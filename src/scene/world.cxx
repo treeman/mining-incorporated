@@ -159,6 +159,27 @@ void World::draw() {
     draw_stats();
 }
 
+void World::push_cmd(unique_ptr<Command> cmd) {
+    if (auto c = dynamic_cast<PlacePlanningCommand*>(cmd.get())) {
+        L_("%s\n", c->to_string());
+        for (int x = c->area.start.pos.x; x <= c->area.end.pos.x; ++x) {
+            for (int y = c->area.start.pos.y; y <= c->area.end.pos.y; ++y) {
+                shared_ptr<Tile> tile(map->tile(MapPos(x, y, c->area.start.floor)));
+                tile->set_preview(c->obj);
+            }
+        }
+    }
+    else if (auto c = dynamic_cast<RemovePlanningCommand*>(cmd.get())) {
+        L_("%s\n", c->to_string());
+        for (int x = c->area.start.pos.x; x <= c->area.end.pos.x; ++x) {
+            for (int y = c->area.start.pos.y; y <= c->area.end.pos.y; ++y) {
+                shared_ptr<Tile> tile(map->tile(MapPos(x, y, c->area.start.floor)));
+                tile->remove_preview();
+            }
+        }
+    }
+}
+
 void World::new_worker() {
     // TODO
     // Some marker that we can't hire? Or something?

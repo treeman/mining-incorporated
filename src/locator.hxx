@@ -7,6 +7,7 @@
 #include "debug.hxx"
 #include "state/statestack.hxx"
 #include "state/state.hxx"
+#include "scene/objectfactory.hxx"
 
 #define L_ (Locator::get_logger())
 #define D_ (Locator::get_debug())
@@ -33,6 +34,9 @@ public:
 
     static state::StateStack<state::State> &get_statestack();
     static void provide_statestack(unique_ptr<state::StateStack<state::State>> s);
+
+    static scene::ObjectFactory &get_object_factory();
+    static void provide_object_factory(unique_ptr<scene::ObjectFactory> f);
 private:
     //static unique_ptr<Butler> butler;
     static unique_ptr<Settings> settings;
@@ -40,5 +44,6 @@ private:
     static unique_ptr<Debug> debug;
     static sf::RenderWindow *window;
     static unique_ptr<state::StateStack<state::State>> statestack;
+    static unique_ptr<scene::ObjectFactory> object_factory;
 };
 

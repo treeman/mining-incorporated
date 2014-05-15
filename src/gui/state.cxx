@@ -4,6 +4,7 @@
 #include "gui/interface.hxx"
 #include "scene/world.hxx"
 #include "scene/ore.hxx"
+#include "scene/command.hxx"
 
 namespace gui {
 
@@ -97,35 +98,70 @@ bool PlanningState::handle_input(const sf::Event &e) {
     return true;
 }
 
+// TODO move logic to selection class.
 void PlanningState::move(const WindowPos &p) {
     if (world->in_world(p))
         selection.extend(world->window2world(p));
 }
 void PlanningState::left_click(const WindowPos &p) {
-    if (world->in_world(p)) {
+    if (!sf::Mouse::isButtonPressed(sf::Mouse::Right) && world->in_world(p)) {
         selection.begin(world->window2world(p));
+        erase = false;
     }
 }
 void PlanningState::right_click(const WindowPos &p) {
-
+    if (!sf::Mouse::isButtonPressed(sf::Mouse::Left) && world->in_world(p)) {
+        selection.begin(world->window2world(p));
+        erase = true;
+    }
 }
 void PlanningState::left_release(const WindowPos &p) {
-    // Can cancel selection by holding right and releasing
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-        selection.clear();
-    }
-    else if (selection.is_active()) {
-        // TODO Execute selection
-        MapSelection sel = to_map(world, selection.get_area());
-        L_("Executing %s\n", sel.to_string());
-        selection.clear();
+    if (!erase) {
+        // Can cancel selection by holding right and releasing
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+            selection.clear();
+        }
+        else if (selection.is_active()) {
+            // TODO Execute selection
+            MapSelection sel = to_map(world, selection.get_area());
+
+            unique_ptr<scene::Command> cmd(new scene::PlacePlanningCommand(obj, sel));
+            world->push_cmd(std::move(cmd));
+
+            selection.clear();
+        }
     }
 }
 void PlanningState::right_release(const WindowPos &p) {
+    if (erase) {
+        // Can cancel erase selection by holding left and releasing
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            selection.clear();
+        }
+        else if (selection.is_active()) {
+            // TODO Execute selection
+            MapSelection sel = to_map(world, selection.get_area());
 
+            unique_ptr<scene::Command> cmd(new scene::RemovePlanningCommand(sel));
+            world->push_cmd(std::move(cmd));
+
+            selection.clear();
+        }
+    }
 }
 
 void PlanningState::update(const sf::Time &dt) {
+    // Suppress drawing of preview objects if we want to delete
+    if (erase && selection.is_active()) {
+        MapSelection sel = to_map(world, selection.get_area());
+        for (int x = sel.start.pos.x; x <= sel.end.pos.x; ++x) {
+            for (int y = sel.start.pos.y; y <= sel.end.pos.y; ++y) {
+                auto tile = world->get_tile(MapPos(x, y, world->get_curr_floor()));
+                tile->suppress_preview();
+            }
+        }
+    }
+
     D_.tmp("world sel: " + selection.to_string());
     if (selection.is_active()) {
         MapSelection sel = to_map(world, selection.get_area());
@@ -139,7 +175,7 @@ void PlanningState::draw(sf::RenderWindow &w) {
     //sf::View curr_view = w.getView();
 
     //w.setView(world->get_view());
-    if (selection.is_active()) {
+    if (!erase && selection.is_active()) {
         assert(obj != nullptr);
 
         MapSelection sel = to_map(world, selection.get_area());

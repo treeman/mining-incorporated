@@ -9,8 +9,6 @@ Todo
 
 Next steps:
 
-2. Make gui issue tasks/commands to world.  
-    GUI State -> world
 3. Refactor world task handling.
 4. Refactor world.  
     Pathfinding in level/dimension, possibly other things.  Remove unneeded things.

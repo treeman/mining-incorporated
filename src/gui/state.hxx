@@ -61,7 +61,6 @@ namespace gui {
         void reset() override;
 
         void handle_event(const gui::Event &) override;
-
         bool handle_input(const sf::Event &e) override;
     private:
         void move(const WindowPos &p);
@@ -76,6 +75,7 @@ namespace gui {
     private:
         Selection selection;
         shared_ptr<scene::PlanningObject> obj;
+        bool erase;
     };
 
 }

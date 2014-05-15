@@ -4,6 +4,8 @@
 #include "objecttype.hxx"
 #include "pos.hxx"
 
+// A task is something for workers to do,
+// verified by the world so it works.
 namespace scene {
 
     // TODO

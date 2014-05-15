@@ -40,14 +40,14 @@ ButtonPanel::ButtonPanel(Interface &_gui) : gui(_gui), curr(Categories::UNSELECT
         cat->add(shared_ptr<BoundedObject>(new PicButton([this](BaseButton &button) {
             L_("Plan room\n");
             gui.set_state(GuiState::PLANNING);
-            auto x = gui.get_world().get_planning_object(PType::ROOM);
-            gui.handle_event(PlanningObjectEvent(x));
+            auto x = Locator::get_object_factory().create_planning_object(PType::ROOM);
+            gui.handle_event(PlanningObjectEvent(move(x)));
         }, "room")));
         cat->add(shared_ptr<BoundedObject>(new PicButton([this](BaseButton &button) {
             L_("Plan object\n");
             gui.set_state(GuiState::PLANNING);
-            auto x = gui.get_world().get_planning_object(PType::OBJECT);
-            gui.handle_event(PlanningObjectEvent(x));
+            auto x = Locator::get_object_factory().create_planning_object(PType::OBJECT);
+            gui.handle_event(PlanningObjectEvent(move(x)));
         }, "object")));
         subcategories.push_back(move(cat));
     }
