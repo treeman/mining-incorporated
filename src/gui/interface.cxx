@@ -50,59 +50,13 @@ void Interface::set_state(GuiState state) {
     current_state->reset();
 }
 
-void Interface::handle_event(const Event &event) {
-    current_state->handle_event(event);
+void Interface::handle_event(const Event &e) {
+    current_state->handle_event(e);
 }
 
 // Old stuff
 
 #if 0
-void Interface::handle_move(const WindowPos &p) {
-    //sf::Vector2i p(x, y);
-    //categories.check_hover(p);
-    //if (curr_subcategory != -1)
-        //subcategory[curr_subcategory].check_hover(p);
-
-    handle_preview(p);
-}
-void Interface::handle_left_click(const WindowPos &p) {
-    //sf::Vector2i p(x, y);
-    //categories.check_click(p);
-    //if (curr_subcategory != -1)
-        //subcategory[curr_subcategory].check_click(p);
-
-    if (!world->in_world(p)) return;
-
-    if (want_select) {
-        try_select(p);
-    }
-    else {
-        // TODO refactor
-        selection_start = world->window2world(p);
-        active_selection = true;
-    }
-}
-void Interface::handle_right_click(const WindowPos &p) {
-
-}
-void Interface::handle_left_release(const WindowPos &p) {
-    if (!world->in_world(p)) return;
-
-    selection_end = world->window2world(p);
-    active_selection = false;
-    preview_cost = 0;
-
-    // Can cancel by holding right at release
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-        world->clear_preview();
-    }
-    else {
-        build();
-    }
-}
-void Interface::handle_right_release(const WindowPos &p) {
-
-}
 void Interface::build() {
     if (room_to_build) build_room();
     else if (object_to_build) build_object();
@@ -189,31 +143,6 @@ void Interface::draw_preview_cost() {
     window.draw(txt);
 }
 
-void Interface::want_to_select() {
-    clear_selection();
-    want_select = true;
-}
-
-void Interface::try_select(const WindowPos &p) {
-    if (!world->in_world(p)) return;
-
-    // TODO remove
-    /*
-    WorldPos pos = world->window2world(p);
-    WorkerPtr worker = world->select_closest_worker(pos.pos.x, pos.pos.y);
-    if (worker) {
-        // TODO better points...
-        // TODO select distance from center of worker
-        auto p = worker->get_pos();
-        //double d = hypot((double)pos.x - p.x, (double)pos.y - p.y);
-        float d = pos.pos.dist(IPoint(p));
-        if (d <= min_select_dist) {
-            // TODO store as weak_ptr
-            printf("Worker at %lf %lf dist %lf\n", p.x, p.y, d);
-        }
-    }
-    */
-}
 void Interface::draw_floor_selection() {
     const int floor = world->get_curr_floor();
     txt.setString("floor: " + to_string(floor));

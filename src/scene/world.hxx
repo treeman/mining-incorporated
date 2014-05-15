@@ -31,6 +31,7 @@ namespace scene {
         bool in_world(int x, int y);
         bool is_tile(int x, int y);
 
+        // TODO move to gui
         int num_floors() const;
         void set_curr_floor(int floor);
         int get_curr_floor() const;
@@ -43,19 +44,26 @@ namespace scene {
         void draw();
 
         void push_cmd(unique_ptr<Command> cmd);
+        void push_task(unique_ptr<Task> task);
+    private:
+        deque<unique_ptr<Task>> pending_tasks;
 
         // TODO move to commands/events
         void new_worker();
         WorkerPtr choose_free_worker();
-        vector<sf::Vector2i> pathfind(sf::Vector2i s, sf::Vector2i t);
         void task_done(Task task);
         void skip_task(Task task);
         void assign_tasks();
 
+        // TODO move to map
+        vector<sf::Vector2i> pathfind(sf::Vector2i s, sf::Vector2i t);
+
         //WorkerPtr select_closest_worker(int x, int y);
         shared_ptr<Worker> select_closest_worker(const WorldPos &p);
 
+        // TODO remove/move to gui
         int calculate_build_cost(int x1, int y1, int x2, int y2, RoomType type);
+        // TODO remove
         RoomType get_tile_type(int x, int y);
     private:
         sf::RenderWindow &w;
@@ -68,30 +76,23 @@ namespace scene {
         shared_ptr<Tile> get_tile(int x, int y);
         shared_ptr<Tile> get_tile(sf::Vector2i pos);
 
-        //vector<vector<shared_ptr<Tile>>> grid;
-        //shared_ptr<Level> level;
         shared_ptr<Map> map;
         vector<WorkerPtr> workers;
-
-    public:
-        void add_task(unique_ptr<Task> task);
-    private:
-        deque<unique_ptr<Task>> pending_tasks;
 
         // TODO delete, old
         //deque<WorkerPtr> free_workers;
         deque<Task> tasks;
 
-        sf::Text mpos;
-        sf::Text txt;
         sf::Text stat_txt;
 
-        // TODO move to gui
         // Count money etc.
         Resources resources;
+
+        // TODO move to gui
         void draw_stats();
         void draw_stats(string pre, int &val, sf::Color color, int x, int y);
 
+        // TODO move to gui
         // Levels
         int current_level;
     };

@@ -22,10 +22,6 @@ World::World(sf::RenderWindow &_w) :
     set_curr_floor(0);
 
     new_worker();
-
-    mpos = create_txt("arial.ttf", 14, "0, 0");
-    mpos.setPosition(100, 5);
-    txt = create_txt("arial.ttf", 14);
     stat_txt = create_txt("consola.ttf", 14);
 
     Locator::get_settings().register_bool("debug_tasks", false);
@@ -104,9 +100,8 @@ void World::update(const sf::Time &dt) {
         if (in_world(mp)) {
             WorldPos wpos(window2world(mp));
             MapPos map_pos(world2map(wpos));
-            {   // Treat as int position, prevent unnecessary decimals
-                D_.set_key("world", IPoint(wpos.pos).to_string() + " (" + to_string(wpos.floor) + ")");
-            }
+            // Treat as int position, prevent unnecessary decimals
+            D_.set_key("world", IPoint(wpos.pos).to_string() + " (" + to_string(wpos.floor) + ")");
             D_.set_key("map", map_pos.to_string());
         }
         else {
@@ -133,33 +128,12 @@ void World::draw() {
     }
 
     w.setView(curr);
-
-#if 0
-    // Draw position in world.
-    auto mp = sf::Mouse::getPosition(w);
-    auto wp = window2world(mp.x, mp.y);
-    stringstream ss; ss << wp.x << ", " << wp.y;
-    auto tp = world2tile(wp.x, wp.y);
-    ss << "   " << tp;
-    mpos.setString(ss.str());
-    w.draw(mpos);
-
-    // Draw current task queue
-    int x = 620, y = 250, dy = 16;
-    for (auto t : tasks) {
-        txt.setString(t.to_str());
-        txt.setPosition(x, y);
-        w.draw(txt);
-        y += dy;
-    }
-#endif
-
     draw_stats();
 }
 
 void World::push_cmd(unique_ptr<Command> cmd) {
     if (auto c = dynamic_cast<PlacePlanningCommand*>(cmd.get())) {
-        L_("%s\n", c->to_string());
+        //L_("%s\n", c->to_string());
         for (int x = c->area.start.pos.x; x <= c->area.end.pos.x; ++x) {
             for (int y = c->area.start.pos.y; y <= c->area.end.pos.y; ++y) {
                 shared_ptr<Tile> tile(map->tile(MapPos(x, y, c->area.start.floor)));
@@ -168,7 +142,7 @@ void World::push_cmd(unique_ptr<Command> cmd) {
         }
     }
     else if (auto c = dynamic_cast<RemovePlanningCommand*>(cmd.get())) {
-        L_("%s\n", c->to_string());
+        //L_("%s\n", c->to_string());
         for (int x = c->area.start.pos.x; x <= c->area.end.pos.x; ++x) {
             for (int y = c->area.start.pos.y; y <= c->area.end.pos.y; ++y) {
                 shared_ptr<Tile> tile(map->tile(MapPos(x, y, c->area.start.floor)));
@@ -176,6 +150,10 @@ void World::push_cmd(unique_ptr<Command> cmd) {
             }
         }
     }
+}
+
+void World::push_task(unique_ptr<Task> task) {
+    pending_tasks.push_back(move(task));
 }
 
 void World::new_worker() {
@@ -365,6 +343,7 @@ shared_ptr<Tile> World::get_tile(int x, int y) {
 }
 shared_ptr<Tile> World::get_tile(sf::Vector2i pos) { return get_tile(pos.x, pos.y); }
 
+// TODO move to gui
 void World::draw_stats() {
     // Draw current state
     int xoff = 690;
@@ -442,10 +421,6 @@ RoomType World::get_tile_type(int x, int y) {
 }
 
 sf::View &World::get_view() { return view; }
-
-void World::add_task(unique_ptr<Task> task) {
-    pending_tasks.push_back(move(task));
-}
 
 }; // Scene
 

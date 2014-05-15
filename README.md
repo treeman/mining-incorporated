@@ -9,11 +9,26 @@ Todo
 
 Next steps:
 
-3. Refactor world task handling.
+2. Place materials via gui  
+    Send task to world
+3. Refactor world task handling.  
+    Handle tasks
 4. Refactor world.  
-    Pathfinding in level/dimension, possibly other things.  Remove unneeded things.
+    * Pathfinding in level/dimension, possibly other things.
+    * Remove old position checks (related to pathfinding)
+    * Move current floor to gui.
+    * Rename commands to events
+    * Move task done/skip to events
+    * Move build calculations to gui
+5. Refactor Worker.--
+    * Migrate to new positions
+    * Report back to world via events.
+5. Refactor tasks.  
+    * Use dynamic class hierarchy instead.
 5. Refactor Tile.  
     Readd objects, ability to change ground.
+5. Move ground definitions to object factory
+5. Move floor definitions to Locator
 6. Remove rooms the way they are now.
 7. Refactor objects.
 8. Add materials (look of the ground).
@@ -30,7 +45,6 @@ Next steps:
 * remove typedef shared ptrs
 * unit tests
     for fmt at least
-* Preview building and items, see Prison Architect
 * Refactor RoomType into OreType or similar
 * Multiple levels
 * Use lua for constants and definitions

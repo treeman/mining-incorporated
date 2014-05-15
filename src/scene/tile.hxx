@@ -14,16 +14,6 @@ namespace scene {
 
         void draw(sf::RenderWindow &w);
 
-        /*
-        // TODO move away?
-        void set_room_preview();
-        void set_object_preview();
-        void clear_preview();
-
-        void set_room_build_pending();
-        void set_object_build_pending();
-        */
-
         void suppress_preview();
         void set_preview(shared_ptr<PlanningObject> o);
         void remove_preview();
@@ -34,23 +24,9 @@ namespace scene {
     public:
         bool is_walkable();
 
-        /*
-        bool has_object() const;
-        void set_object(ObjectPtr obj);
-        void remove_object();
-        ObjectPtr get_object();
-        */
     private:
         sf::Sprite ground_spr;
         sf::Vector2i pos;
-
-        /*
-        bool room_preview, object_preview;
-        sf::Sprite room_preview_spr, object_preview_spr;
-        ObjectPtr obj;
-        RoomType room_type;
-        bool room_build_pending, object_build_pending;
-        */
 
         // TODO should be able to change ground
         Tile(const Ground *ground);

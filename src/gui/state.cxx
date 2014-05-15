@@ -78,7 +78,7 @@ void PlanningState::reset() {
 
 void PlanningState::handle_event(const gui::Event &e) {
     if (auto p = dynamic_cast<const PlanningObjectEvent*>(&e)) {
-        L_("Recieved event: %s\n", p->to_string());
+        //L_("Recieved event: %s\n", p->to_string());
         obj = p->obj;
     }
 }
