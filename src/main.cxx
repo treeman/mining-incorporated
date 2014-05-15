@@ -1,12 +1,11 @@
 #include "constants.hxx"
-#include "roomtype.hxx"
 #include "settings.hxx"
 #include "console.hxx"
-#include "input/inputqueue.hxx"
 #include "locator.hxx"
 #include "stdoutlogger.hxx"
 #include "visualdebug.hxx"
 #include "abort.hxx"
+#include "input/inputqueue.hxx"
 #include "util/rand.hxx"
 #include "state/help.hxx"
 #include "state/game.hxx"
@@ -75,6 +74,8 @@ int main()
     // Start at "game" state.
     StateHandler &state_handler = Locator::get_statestack();
     state_handler.push_generated("game");
+
+    L_("starting game loop\n");
 
     sf::Clock clock;
     while (window.isOpen() && state_handler.has_current())

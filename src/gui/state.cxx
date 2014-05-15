@@ -8,13 +8,8 @@
 
 namespace gui {
 
-State::State() : gui(nullptr), world(nullptr) {
+State::State(Interface *_gui, scene::World *_world) : gui(_gui), world(_world) {
 
-}
-
-void State::init(Interface *_gui, scene::World *_world) {
-    gui = _gui;
-    world = _world;
 }
 
 string type2string(GuiState type) {
@@ -25,6 +20,9 @@ string type2string(GuiState type) {
     }
 }
 
+InfoState::InfoState(Interface *gui, scene::World *world) : State(gui, world) {
+
+}
 bool InfoState::handle_input(const sf::Event &e) {
     return true;
 }
@@ -57,11 +55,24 @@ void InfoState::draw(sf::RenderWindow &w) {
 
 }
 
-PlanningState::PlanningState() : obj(nullptr) {
+PlanningState::PlanningState(Interface *gui, scene::World *world) : State(gui, world), obj(nullptr),
+    selection(new Selection(world,
+        [this](WorldSelection sel) mutable {
+            MapSelection mapsel = to_map(this->world, sel);
 
+            unique_ptr<scene::Command> cmd(new scene::PlacePlanningCommand(obj, mapsel));
+            this->world->push_cmd(std::move(cmd));
+        },
+        [this](WorldSelection sel) mutable {
+            MapSelection mapsel = to_map(this->world, sel);
+
+            unique_ptr<scene::Command> cmd(new scene::RemovePlanningCommand(mapsel));
+            this->world->push_cmd(std::move(cmd));
+        }))
+{
 }
 void PlanningState::reset() {
-    selection.clear();
+    selection->clear();
     obj = nullptr;
 }
 
@@ -73,87 +84,14 @@ void PlanningState::handle_event(const gui::Event &e) {
 }
 
 bool PlanningState::handle_input(const sf::Event &e) {
-    switch (e.type) {
-        case sf::Event::MouseMoved:
-            move(WindowPos(e.mouseMove.x, e.mouseMove.y));
-            break;
-        case sf::Event::MouseButtonPressed:
-            if (e.mouseButton.button == sf::Mouse::Button::Left) {
-                left_click(WindowPos(e.mouseButton.x, e.mouseButton.y));
-            }
-            else if (e.mouseButton.button == sf::Mouse::Button::Right) {
-                right_click(WindowPos(e.mouseButton.x, e.mouseButton.y));
-            }
-            break;
-        case sf::Event::MouseButtonReleased:
-            if (e.mouseButton.button == sf::Mouse::Button::Left) {
-                left_release(WindowPos(e.mouseButton.x, e.mouseButton.y));
-            }
-            else if (e.mouseButton.button == sf::Mouse::Button::Right) {
-                right_release(WindowPos(e.mouseButton.x, e.mouseButton.y));
-            }
-            break;
-        default: break;
-    }
+    selection->handle_input(e);
     return true;
-}
-
-// TODO move logic to selection class.
-void PlanningState::move(const WindowPos &p) {
-    if (world->in_world(p))
-        selection.extend(world->window2world(p));
-}
-void PlanningState::left_click(const WindowPos &p) {
-    if (!sf::Mouse::isButtonPressed(sf::Mouse::Right) && world->in_world(p)) {
-        selection.begin(world->window2world(p));
-        erase = false;
-    }
-}
-void PlanningState::right_click(const WindowPos &p) {
-    if (!sf::Mouse::isButtonPressed(sf::Mouse::Left) && world->in_world(p)) {
-        selection.begin(world->window2world(p));
-        erase = true;
-    }
-}
-void PlanningState::left_release(const WindowPos &p) {
-    if (!erase) {
-        // Can cancel selection by holding right and releasing
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-            selection.clear();
-        }
-        else if (selection.is_active()) {
-            // TODO Execute selection
-            MapSelection sel = to_map(world, selection.get_area());
-
-            unique_ptr<scene::Command> cmd(new scene::PlacePlanningCommand(obj, sel));
-            world->push_cmd(std::move(cmd));
-
-            selection.clear();
-        }
-    }
-}
-void PlanningState::right_release(const WindowPos &p) {
-    if (erase) {
-        // Can cancel erase selection by holding left and releasing
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            selection.clear();
-        }
-        else if (selection.is_active()) {
-            // TODO Execute selection
-            MapSelection sel = to_map(world, selection.get_area());
-
-            unique_ptr<scene::Command> cmd(new scene::RemovePlanningCommand(sel));
-            world->push_cmd(std::move(cmd));
-
-            selection.clear();
-        }
-    }
 }
 
 void PlanningState::update(const sf::Time &dt) {
     // Suppress drawing of preview objects if we want to delete
-    if (erase && selection.is_active()) {
-        MapSelection sel = to_map(world, selection.get_area());
+    if (selection->want_remove() && selection->is_active()) {
+        MapSelection sel = to_map(world, selection->get_area());
         for (int x = sel.start.pos.x; x <= sel.end.pos.x; ++x) {
             for (int y = sel.start.pos.y; y <= sel.end.pos.y; ++y) {
                 auto tile = world->get_tile(MapPos(x, y, world->get_curr_floor()));
@@ -162,23 +100,17 @@ void PlanningState::update(const sf::Time &dt) {
         }
     }
 
-    D_.tmp("world sel: " + selection.to_string());
-    if (selection.is_active()) {
-        MapSelection sel = to_map(world, selection.get_area());
+    D_.tmp("world sel: " + selection->to_string());
+    if (selection->is_active()) {
+        MapSelection sel = to_map(world, selection->get_area());
         D_.tmp("map sel: " + sel.to_string());
-        //WindowPos wp1 = world->map2window(sel.start);
-        //WindowPos wp2 = world->map2window(sel.end);
-        //D_.tmp("win sel: " + IPoint(wp1).to_string() + " - " + IPoint(wp2).to_string());
     }
 }
 void PlanningState::draw(sf::RenderWindow &w) {
-    //sf::View curr_view = w.getView();
-
-    //w.setView(world->get_view());
-    if (!erase && selection.is_active()) {
+    if (!selection->want_remove() && selection->is_active()) {
         assert(obj != nullptr);
 
-        MapSelection sel = to_map(world, selection.get_area());
+        MapSelection sel = to_map(world, selection->get_area());
         for (int x = sel.start.pos.x; x <= sel.end.pos.x; ++x) {
             for (int y = sel.start.pos.y; y <= sel.end.pos.y; ++y) {
                 WindowPos p = world->map2window(MapPos(x, y, world->get_curr_floor()));
@@ -187,8 +119,6 @@ void PlanningState::draw(sf::RenderWindow &w) {
             }
         }
     }
-
-    //w.setView(curr_view);
 }
 
 } // Gui

@@ -30,8 +30,6 @@ World::World(sf::RenderWindow &_w) :
 
     Locator::get_settings().register_bool("debug_tasks", false);
     Locator::get_settings().register_bool("debug_positions", false);
-
-    init_planning_objects();
 }
 
 bool World::in_world(const WindowPos &p) const {
@@ -447,21 +445,6 @@ sf::View &World::get_view() { return view; }
 
 void World::add_task(unique_ptr<Task> task) {
     pending_tasks.push_back(move(task));
-}
-
-shared_ptr<PlanningObject> World::get_planning_object(PlanningType o) const {
-    unsigned x = static_cast<unsigned>(o);
-    assert(x < planning_objects.size());
-    return planning_objects[x];
-}
-void World::init_planning_objects() {
-    // TODO load from lua
-    auto col = sf::Color(255, 255, 255, 100);
-    planning_objects.resize(static_cast<unsigned>(PlanningType::NUM_OBJECTS));
-    shared_ptr<PlanningObject>(new PlanningObject("room_preview.png", PlanningType::ROOM, col)).swap(
-        planning_objects[static_cast<unsigned>(PlanningType::ROOM)]);
-    shared_ptr<PlanningObject>(new PlanningObject("object_preview.png", PlanningType::OBJECT, col)).swap(
-        planning_objects[static_cast<unsigned>(PlanningType::OBJECT)]);
 }
 
 }; // Scene

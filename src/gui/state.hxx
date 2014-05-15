@@ -15,10 +15,9 @@ namespace gui {
 
     class State {
     public:
-        State();
+        State(Interface *gui, scene::World *world);
         virtual ~State() noexcept = default;
 
-        void init(Interface *gui, scene::World *world);
         virtual void reset() { };
 
         virtual void handle_event(const gui::Event &) { }
@@ -29,7 +28,6 @@ namespace gui {
         Interface *gui;
         scene::World *world;
     };
-
 
     // States:
     // Info
@@ -49,6 +47,8 @@ namespace gui {
 
     class InfoState : public State {
     public:
+        InfoState(Interface *gui, scene::World *world);
+
         bool handle_input(const sf::Event &e) override;
         void update(const sf::Time &dt) override;
         void draw(sf::RenderWindow &w) override;
@@ -56,26 +56,18 @@ namespace gui {
 
     class PlanningState : public State {
     public:
-        PlanningState();
+        PlanningState(Interface *gui, scene::World *world);
 
         void reset() override;
 
         void handle_event(const gui::Event &) override;
         bool handle_input(const sf::Event &e) override;
-    private:
-        void move(const WindowPos &p);
-        void left_click(const WindowPos &p);
-        void right_click(const WindowPos &p);
-        void left_release(const WindowPos &p);
-        void right_release(const WindowPos &p);
 
-    public:
         void update(const sf::Time &dt) override;
         void draw(sf::RenderWindow &w) override;
     private:
-        Selection selection;
         shared_ptr<scene::PlanningObject> obj;
-        bool erase;
+        unique_ptr<Selection> selection;
     };
 
 }

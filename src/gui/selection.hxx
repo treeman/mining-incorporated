@@ -47,7 +47,11 @@ namespace gui {
 
     class Selection {
     public:
-        Selection();
+        Selection(
+            scene::World *world,
+            function<void(WorldSelection)> on_build,
+            function<void(WorldSelection)> on_remove
+        );
 
         WorldSelection get_area() const;
 
@@ -57,10 +61,24 @@ namespace gui {
         void extend(const WorldPos &end);
         void clear();
         bool is_active() const;
+        bool want_remove() const;
         bool is_point() const;
     private:
         WorldSelection area;
         bool active;
+        bool remove;
+
+    public:
+        bool handle_input(const sf::Event &e);
+    private:
+        void move(const WindowPos &p);
+        void left_click(const WindowPos &p);
+        void right_click(const WindowPos &p);
+        void left_release(const WindowPos &p);
+        void right_release(const WindowPos &p);
+
+        scene::World *world;
+        function<void(WorldSelection)> on_build, on_remove;
     };
 
 }
