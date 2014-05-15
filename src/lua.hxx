@@ -20,10 +20,22 @@ public:
     // Implicitly act as a lua_State pointer
     operator lua_State*() { return L; }
 
+    void dofile(string path);
+
+    // Getters with exception on failure
+    string require_string(string key, string err);
+    double require_num(string key, string err);
+    bool require_bool(string key, string err);
+
+    //bool get_string(string key, string &res) noexcept;
+    //bool get_num(string key, double &res) noexcept;
+    //bool get_bool(string key, bool &res) noexcept;
+
     void dump_stack();
     int stack_size() const;
-protected:
+private:
     lua_State *L;
+    string path;
 };
 
 void print_table(LuaState &L);

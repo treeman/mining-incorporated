@@ -20,14 +20,8 @@ unique_ptr<Tile> Ground::create_tile(int x, int y) const {
 map<string, shared_ptr<const Ground>> grounds;
 
 void load_ground_definitions(string path) {
-    L_("Loading ground file %s\n", path);
-
     LuaState L;
-
-    if (luaL_dofile(L, path.c_str())) {
-        const char *err = lua_tostring(L, -1);
-        throw lua_parse_error(path, err);
-    }
+    L.dofile(path);
 
     // Go through global table
     //lua_getglobal(L, "ground");

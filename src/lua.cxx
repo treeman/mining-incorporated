@@ -47,13 +47,62 @@ bool is_predefined_lua_key(string key) {
     return lua_ignored_keys.find(key) != lua_ignored_keys.end();
 }
 
-LuaState::LuaState() : L( lua_open() ) {
-    luaL_openlibs( L );
+LuaState::LuaState() : L(lua_open()) {
+    luaL_openlibs(L);
 }
 
 LuaState::~LuaState() {
-    lua_close( L );
+    lua_close(L);
 }
+
+void LuaState::dofile(string _path) {
+    L_("Parsing lua file: %s\n", _path);
+    path = _path;
+    if (luaL_dofile(L, path.c_str())) {
+        const char *err = lua_tostring(L, -1);
+        throw lua_parse_error(path, err);
+    }
+}
+
+string LuaState::require_string(string key, string err) {
+    lua_pushstring(L, key.c_str());
+    lua_gettable(L, -2);
+    if (!lua_isstring(L, -1))
+        throw lua_parse_error(path, err);
+    string res = lua_tostring(L, -1);
+    lua_pop(L, 1);
+    return res;
+}
+double LuaState::require_num(string key, string err) {
+    lua_pushstring(L, key.c_str());
+    lua_gettable(L, -2);
+    if (!lua_isnumber(L, -1))
+        throw lua_parse_error(path, err);
+    double res = lua_tonumber(L, -1);
+    lua_pop(L, 1);
+    return res;
+}
+bool LuaState::require_bool(string key, string err) {
+    lua_pushstring(L, key.c_str());
+    lua_gettable(L, -2);
+    if (!lua_isboolean(L, -1))
+        throw lua_parse_error(path, err);
+    bool res = lua_toboolean(L, -1);
+    lua_pop(L, 1);
+    return res;
+}
+
+/*
+bool LuaState::get_string(string key, string &res) noexcept {
+
+}
+bool LuaState::get_num(string key, double &res) noexcept {
+
+}
+bool LuaState::get_bool(string key, bool &res) noexcept {
+
+}
+*/
 
 void LuaState::dump_stack() {
     const int top = lua_gettop(L);

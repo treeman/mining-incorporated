@@ -8,20 +8,20 @@ material = {
         cost = 20,
     },
     marble = {
-        sprite = "marble",
+        ground = "marble",
         cost = 30,
     },
     carpet = {
-        sprite = "carpet",
+        ground = "carpet",
         cost = 10,
     },
     -- TODO rename
     store = {
-        sprite = "store",
+        ground = "store",
         cost = 10,
     },
     star = {
-        sprite = "star",
+        ground = "star",
         cost = 30,
     },
 }

@@ -102,7 +102,26 @@ void ButtonPanel::init_material_button() {
     );
     unique_ptr<List> cat(new List(12, 525));
 
-    // TODO load buttons from material.lua
+    string path = "material.lua";
+    LuaState L;
+    L.dofile(path);
+
+    lua_getglobal(L, "material");
+    if (!lua_istable(L, -1))
+        throw lua_parse_error(path, fmt("material not a table."));
+
+    for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+        string key = lua_tostring(L, -2);
+        if (!lua_istable(L, -1))
+            throw lua_parse_error(path, fmt("material: %s not a table.", key));
+
+        string ground = L.require_string("ground", fmt("ground missing from %s", key));
+        int cost = (int)L.require_num("cost", fmt("cost missing from %s", key));
+
+        L_("material %s: %s %d\n", key, ground, cost);
+    }
+    lua_pop(L, 1);
+    assert(L.stack_size() == 0);
 
     subcategories[static_cast<int>(Categories::MATERIAL)].swap(cat);
 }
