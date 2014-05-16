@@ -150,6 +150,9 @@ void World::push_cmd(unique_ptr<Command> cmd) {
             }
         }
     }
+    else if (auto c = dynamic_cast<BuildMaterialCommand*>(cmd.get())) {
+        L_("%s\n", c->to_string());
+    }
 }
 
 void World::push_task(unique_ptr<Task> task) {

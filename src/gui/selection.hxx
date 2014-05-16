@@ -56,6 +56,7 @@ namespace gui {
         WorldSelection get_area() const;
 
         string to_string() const;
+        void show_debug() const;
 
         void begin(const WorldPos &start);
         void extend(const WorldPos &end);

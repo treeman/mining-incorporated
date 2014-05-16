@@ -1,3 +1,4 @@
+#include "locator.hxx"
 #include "gui/selection.hxx"
 #include "scene/world.hxx"
 
@@ -21,6 +22,13 @@ WorldSelection Selection::get_area() const {
 string Selection::to_string() const {
     if (!is_active()) return "inactive";
     return get_area().to_string();
+}
+void Selection::show_debug() const {
+    D_.tmp("world sel: " + to_string());
+    if (is_active()) {
+        MapSelection sel = to_map(world, get_area());
+        D_.tmp("map sel: " + sel.to_string());
+    }
 }
 
 void Selection::begin(const WorldPos &start) {

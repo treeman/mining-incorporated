@@ -3,6 +3,7 @@
 #include "gui/picbutton.hxx"
 #include "gui/interface.hxx"
 #include "scene/world.hxx"
+#include "scene/material.hxx"
 
 using PType = scene::PlanningType;
 
@@ -72,9 +73,18 @@ void ButtonPanel::draw(sf::RenderWindow &w) {
     }
 }
 
-// TODO may cause some buttons to have to be clicked on twice.
+void ButtonPanel::deselect_categories() {
+    categories->deselect();
+    curr = Categories::UNSELECTED;
+}
+
+// XXX This need to be reworked if we want buttons and not only categories.
+// Assumes that is the case and forces deselect on every interaction,
+// to prevent buttons having to be clicked twice.
 function<void(BaseButton &button)> ButtonPanel::make_category_selector(Categories cat) {
     return [this, cat](BaseButton &button) mutable {
+        bool sel = button.is_selected();
+
         if (curr != Categories::UNSELECTED) {
             int sel = static_cast<int>(curr);
             assert(0 <= sel && sel < (int)subcategories.size());
@@ -83,15 +93,15 @@ function<void(BaseButton &button)> ButtonPanel::make_category_selector(Categorie
             subcategories[sel]->deselect();
         }
 
-        L_("selecting: %d\n", static_cast<int>(cat));
+        //L_("selecting: %d\n", static_cast<int>(cat));
 
-        button.toggle_selection();
-        if (button.is_selected()) {
-            curr = cat;
+        deselect_categories();
+        if (sel) {
+            gui.set_state(GuiState::INFO);
         }
         else {
-            curr = Categories::UNSELECTED;
-            gui.set_state(GuiState::INFO);
+            button.select();
+            curr = cat;
         }
     };
 }
@@ -118,7 +128,15 @@ void ButtonPanel::init_material_button() {
         string ground = L.require_string("ground", fmt("ground missing from %s", key));
         int cost = (int)L.require_num("cost", fmt("cost missing from %s", key));
 
-        L_("material %s: %s %d\n", key, ground, cost);
+        shared_ptr<scene::Material> material(new scene::Material(scene::get_ground(ground), cost));
+
+        //L_("%s: %s\n", key, material->to_string());
+
+        cat->add(shared_ptr<BoundedObject>(new PicButton([this, material, key](BaseButton &button) {
+            L_("Build %s\n", key);
+            gui.set_state(GuiState::MATERIAL);
+            gui.handle_event(GroundMaterialObjectEvent(material));
+        }, key)));
     }
     lua_pop(L, 1);
     assert(L.stack_size() == 0);

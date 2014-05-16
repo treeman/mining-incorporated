@@ -15,8 +15,10 @@ State::State(Interface *_gui, scene::World *_world) : gui(_gui), world(_world) {
 string type2string(GuiState type) {
     switch (type) {
         case GuiState::INFO: return "Info";
+        case GuiState::MATERIAL: return "Material";
         case GuiState::PLANNING: return "Planning";
-        default: return "Invalid";
+        case GuiState::NUM_STATES: return "Invalid GuiState";
+        default: return "Unknown GuiState";
     }
 }
 
@@ -58,29 +60,24 @@ void InfoState::draw(sf::RenderWindow &w) {
 MaterialState::MaterialState(Interface *gui, scene::World *world) : State(gui, world), //obj(nullptr),
     selection(new Selection(world,
         [this](WorldSelection sel) mutable {
-            //MapSelection mapsel = to_map(this->world, sel);
+            MapSelection mapsel = to_map(this->world, sel);
 
-            //unique_ptr<scene::Command> cmd(new scene::PlacePlanningCommand(obj, mapsel));
-            //this->world->push_cmd(std::move(cmd));
+            assert(material != nullptr);
+            unique_ptr<scene::Command> cmd(new scene::BuildMaterialCommand(material, mapsel));
+            this->world->push_cmd(std::move(cmd));
         },
-        [this](WorldSelection sel) mutable {
-            //MapSelection mapsel = to_map(this->world, sel);
-
-            //unique_ptr<scene::Command> cmd(new scene::RemovePlanningCommand(mapsel));
-            //this->world->push_cmd(std::move(cmd));
-        }))
+        [](WorldSelection sel) { }))
 {
 }
 void MaterialState::reset() {
     selection->clear();
-    //obj = nullptr;
+    material = nullptr;
 }
 
 void MaterialState::handle_event(const gui::Event &e) {
-    /*if (auto p = dynamic_cast<const PlanningObjectEvent*>(&e)) {
-        //L_("Recieved event: %s\n", p->to_string());
-        obj = p->obj;
-    }*/
+    if (auto p = dynamic_cast<const GroundMaterialObjectEvent*>(&e)) {
+        material = p->obj;
+    }
 }
 
 bool MaterialState::handle_input(const sf::Event &e) {
@@ -89,24 +86,7 @@ bool MaterialState::handle_input(const sf::Event &e) {
 }
 
 void MaterialState::update(const sf::Time &dt) {
-    /*
-    // Suppress drawing of preview objects if we want to delete
-    if (selection->want_remove() && selection->is_active()) {
-        MapSelection sel = to_map(world, selection->get_area());
-        for (int x = sel.start.pos.x; x <= sel.end.pos.x; ++x) {
-            for (int y = sel.start.pos.y; y <= sel.end.pos.y; ++y) {
-                auto tile = world->get_tile(MapPos(x, y, world->get_curr_floor()));
-                tile->suppress_preview();
-            }
-        }
-    }
-    */
-
-    D_.tmp("world sel: " + selection->to_string());
-    if (selection->is_active()) {
-        MapSelection sel = to_map(world, selection->get_area());
-        D_.tmp("map sel: " + sel.to_string());
-    }
+    selection->show_debug();
 }
 void MaterialState::draw(sf::RenderWindow &w) {
     /*if (!selection->want_remove() && selection->is_active()) {
@@ -169,11 +149,7 @@ void PlanningState::update(const sf::Time &dt) {
         }
     }
 
-    D_.tmp("world sel: " + selection->to_string());
-    if (selection->is_active()) {
-        MapSelection sel = to_map(world, selection->get_area());
-        D_.tmp("map sel: " + sel.to_string());
-    }
+    selection->show_debug();
 }
 void PlanningState::draw(sf::RenderWindow &w) {
     if (!selection->want_remove() && selection->is_active()) {

@@ -37,6 +37,8 @@ namespace gui {
         vector<unique_ptr<List>> subcategories;
         Categories curr;
 
+        void deselect_categories();
+
         function<void(BaseButton &button)> make_category_selector(Categories cat);
 
         // TODO incorporate loading design from lua (later)

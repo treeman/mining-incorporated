@@ -16,5 +16,13 @@ string RemovePlanningCommand::to_string() const {
     return "Remove planning: " + area.to_string();
 }
 
+BuildMaterialCommand::BuildMaterialCommand(shared_ptr<Material> o, gui::MapSelection sel) :
+    material(o), area(sel)
+{ }
+
+string BuildMaterialCommand::to_string() const {
+    return "Build " + material->to_string() + " at " + area.to_string();
+}
+
 } // scene
 

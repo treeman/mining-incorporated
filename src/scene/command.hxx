@@ -2,6 +2,7 @@
 
 #include "gui/selection.hxx"
 #include "scene/planningobject.hxx"
+#include "scene/material.hxx"
 
 namespace scene {
 
@@ -30,6 +31,16 @@ namespace scene {
 
         string to_string() const override;
 
+        gui::MapSelection area;
+    };
+
+    class BuildMaterialCommand : public Command {
+    public:
+        BuildMaterialCommand(shared_ptr<Material> o, gui::MapSelection area);
+
+        string to_string() const override;
+
+        shared_ptr<Material> material;
         gui::MapSelection area;
     };
 

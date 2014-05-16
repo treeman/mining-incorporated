@@ -28,5 +28,5 @@ namespace scene {
 
     shared_ptr<const Ground> get_ground(string key);
 
-}
+};
 

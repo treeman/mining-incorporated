@@ -67,7 +67,7 @@ namespace gui {
         void update(const sf::Time &dt) override;
         void draw(sf::RenderWindow &w) override;
     private:
-        //shared_ptr<scene::PlanningObject> obj;
+        shared_ptr<scene::Material> material;
         unique_ptr<Selection> selection;
     };
 
