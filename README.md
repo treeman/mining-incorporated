@@ -9,9 +9,8 @@ Todo
 
 Next steps:
 
-2. Place materials via gui  
-    Send task to world
 3. Refactor world task handling.  
+    Place material tasks for workers
     Handle tasks
 4. Refactor world.  
     * Pathfinding in level/dimension, possibly other things.
