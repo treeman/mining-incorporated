@@ -44,32 +44,24 @@ namespace scene {
         void draw();
 
         void push_cmd(unique_ptr<Command> cmd);
-        void push_task(unique_ptr<Task> task);
+        void push_task(shared_ptr<Task> task); // TODO unique_ptr!
     private:
-        deque<unique_ptr<Task>> pending_tasks;
+        deque<shared_ptr<Task>> pending_tasks;
 
         // TODO move to commands/events
         void new_worker();
         WorkerPtr choose_free_worker();
-        void task_done(Task task);
-        void skip_task(Task task);
+        void task_done(shared_ptr<Task> task);
+        void skip_task(shared_ptr<Task> task);
         void assign_tasks();
 
         // TODO move to map
         vector<sf::Vector2i> pathfind(sf::Vector2i s, sf::Vector2i t);
 
-        //WorkerPtr select_closest_worker(int x, int y);
+        // TODO some kind of bounding box for workers
         shared_ptr<Worker> select_closest_worker(const WorldPos &p);
-
-        // TODO remove/move to gui
-        int calculate_build_cost(int x1, int y1, int x2, int y2, RoomType type);
-        // TODO remove
-        RoomType get_tile_type(int x, int y);
     private:
         sf::RenderWindow &w;
-    public:
-        sf::View &get_view();
-    private:
         sf::View view;
 
         // TODO multiple levels
@@ -78,10 +70,6 @@ namespace scene {
 
         shared_ptr<Map> map;
         vector<WorkerPtr> workers;
-
-        // TODO delete, old
-        //deque<WorkerPtr> free_workers;
-        deque<Task> tasks;
 
         sf::Text stat_txt;
 

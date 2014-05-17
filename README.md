@@ -9,9 +9,11 @@ Todo
 
 Next steps:
 
+2. Handle current floor inside gui instead of inside world  
+    * floor in AreaSelection (also needs an iterator over positions)
 3. Refactor world task handling.  
-    Place material tasks for workers
-    Handle tasks
+    * Have tasks coming in, need to handle them.
+    * Handle tasks as unique pointers, not shared.
 4. Refactor world.  
     * Pathfinding in level/dimension, possibly other things.
     * Remove old position checks (related to pathfinding)

@@ -5,20 +5,19 @@
 
 namespace scene {
 
-Worker::Worker(int x, int y, World *_world) : pos(x, y), world(_world){
+Worker::Worker(int x, int y, World *_world) : pos(x, y), world(_world), current_task(nullptr) {
     spr = create_sprite("worker.png");
     // TODO fix positions.
     tile_pos = IPoint(world->world2map(WorldPos(x, y, 0)).pos);
-    current_task.is_done = true;
     txt = create_txt("arial.ttf", 14);
     has_work_time = false;
     work_time = 0;
 }
 
 bool Worker::is_free() {
-    return current_task.is_done;
+    return current_task == nullptr;
 }
-bool Worker::assign_task(Task task) {
+bool Worker::assign_task(shared_ptr<Task> task) {
     //printf("I have a task type: %d\n", task.type);
 
     /*

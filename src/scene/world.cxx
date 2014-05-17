@@ -2,9 +2,10 @@
 #include "util/rand.hxx"
 #include "scene/world.hxx"
 #include "scene/map.hxx"
+#include "scene/task.hxx"
 #include "constants.hxx"
 #include "butler.hxx"
-#include "assert.h"
+//#include "assert.h"
 #include "locator.hxx"
 
 namespace scene {
@@ -151,11 +152,21 @@ void World::push_cmd(unique_ptr<Command> cmd) {
         }
     }
     else if (auto c = dynamic_cast<BuildMaterialCommand*>(cmd.get())) {
-        L_("%s\n", c->to_string());
+        for (int x = c->area.start.pos.x; x <= c->area.end.pos.x; ++x) {
+            for (int y = c->area.start.pos.y; y <= c->area.end.pos.y; ++y) {
+                // TODO some kind of check for possibility?
+                push_task(shared_ptr<Task>(new BuildGroundTask(c->material->ground,
+                                MapPos(x, y, curr_floor))));
+            }
+        }
+    }
+    else {
+        L_("unknown command in world: %s\n", c->to_string());
     }
 }
 
-void World::push_task(unique_ptr<Task> task) {
+void World::push_task(shared_ptr<Task> task) {
+    L_("new task: %s\n", task->to_string());
     pending_tasks.push_back(move(task));
 }
 
@@ -254,79 +265,18 @@ vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t) {
     return res;
 }
 
-void World::task_done(Task task) {
-    // TODO update grid here!
-    if (task.type == Dig) {
-        // Currently unused (?)
-        shared_ptr<Tile> tile = get_tile(task.pos);
-    }
-    else if (task.type == BuildRoom) {
-        shared_ptr<Tile> tile = get_tile(task.pos);
-
-        /*
-        // Check for ore mining
-        RoomInfo *info = get_info(tile->get_type());
-        if (info->is_ore) {
-            int ores = rand_int(info->min_ores, info->max_ores);
-            //printf("%d - %d => %d\n", info->min_ores, info->max_ores, ores);
-            resources.money += ores * info->money_per_ore;
-            switch (info->type) {
-                case AluminiumOre:
-                    resources.aluminium += ores;
-                    break;
-                case CoalOre:
-                    resources.coal += ores;
-                    break;
-                case CopperOre:
-                    resources.copper += ores;
-                    break;
-                case DiamondOre:
-                    resources.diamond += ores;
-                    break;
-                case GoldOre:
-                    resources.gold += ores;
-                    break;
-                case IronOre:
-                    resources.iron += ores;
-                    break;
-                default: break;
-            }
-        }
-
-        // Update tile
-        tile->set_type(task.room_type);
-        */
-    }
-    else if (task.type == PlaceObject) {
-        /*
-        shared_ptr<Tile> tile = get_tile(task.pos);
-        tile->set_object(make_object(task.object_type));
-
-        if (task.object_type == Bed) {
-            resources.max_workers += bed_capacity;
-        }
-        */
-    }
-    else if (task.type == SellTask) {
-        /*
-        shared_ptr<Tile> tile = get_tile(task.pos);
-        if (tile->get_object()->get_type() == Bed) {
-            resources.max_workers -= bed_capacity;
-        }
-        tile->remove_object();
-        */
-    }
-    else {
-        printf("Unknown task %d is done!\n", task.type);
-    }
+void World::task_done(shared_ptr<Task> task) {
+    L_("TODO world received a completed task: %s\n", task->to_string());
 }
-void World::skip_task(Task task) {
-    tasks.push_back(task);
+void World::skip_task(shared_ptr<Task> task) {
+    L_("TODO world received a skipped task: %s\n", task->to_string());
+    //tasks.push_back(task);
 }
 void World::assign_tasks() {
     // TODO make something better...
-    deque<Task> unfinished;
-    for (Task t : tasks) {
+    // 1. Take into account time for workers doing tasks, might be able to do tasks close.
+    deque<shared_ptr<Task>> unfinished;
+    for (shared_ptr<Task> t : pending_tasks) {
         bool assigned = false;
         for (auto worker : workers) {
             if (!worker->is_free()) continue;
@@ -338,7 +288,7 @@ void World::assign_tasks() {
         if (!assigned) unfinished.push_back(t);
     }
 
-    tasks.swap(unfinished);
+    pending_tasks.swap(unfinished);
 }
 
 shared_ptr<Tile> World::get_tile(int x, int y) {
@@ -412,18 +362,6 @@ shared_ptr<Worker> World::select_closest_worker(const WorldPos &p) {
     }
     return res;
 }
-
-int World::calculate_build_cost(int x1, int y1, int x2, int y2, RoomType type) {
-    int dx = abs(x1 - x2) + 1, dy = abs(y2 - y1) + 1;
-    return dx * dy * get_info(type)->cost;
-}
-RoomType World::get_tile_type(int x, int y) {
-    //shared_ptr<Tile> tile = get_tile(x, y);
-    //return tile->get_type();
-    return Rock;
-}
-
-sf::View &World::get_view() { return view; }
 
 }; // Scene
 

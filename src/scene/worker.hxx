@@ -19,7 +19,7 @@ namespace scene {
         sf::Vector2f get_pos() const { return pos; }
 
         bool is_free();
-        bool assign_task(Task task);
+        bool assign_task(shared_ptr<Task> task);
 
         void update(const sf::Time &dt);
         void draw(sf::RenderWindow &w);
@@ -33,7 +33,7 @@ namespace scene {
 
         World *world;
 
-        Task current_task;
+        shared_ptr<Task> current_task;
         sf::Text txt;
 
         bool has_work_time;
