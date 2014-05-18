@@ -22,7 +22,7 @@ bool Worker::assign_task(shared_ptr<Task> task) {
     if (!is_free()) return false;
 
     current_task = task;
-    L_("I have a task %s\n", task->to_string());
+    L_("I have a task %s\n", current_task->to_string());
     return true;
 
     /*

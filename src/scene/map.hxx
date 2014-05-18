@@ -1,7 +1,8 @@
 #pragma once
 
-#include "scene/floor.hxx"
 #include "pos.hxx"
+#include "scene/floor.hxx"
+#include "scene/path.hxx"
 
 namespace scene {
 
@@ -18,6 +19,8 @@ namespace scene {
     //private:
         Map();
         vector<shared_ptr<Floor>> floors;
+
+        Path pathfind(const MapPos &from, const MapPos &to) const;
     };
 
     // TODO encapsulate

@@ -32,7 +32,6 @@ void Selection::show_debug() const {
         D_.tmp("map sel: " + sel.to_string());
     }
 }
-
 void Selection::begin(const WorldPos &start) {
     active = true;
     area.start = start;

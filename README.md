@@ -12,19 +12,15 @@ Next steps:
 3. Refactor world task handling.  
     * Have tasks coming in, need to handle them.  
         Need pathfinding to check if it's possible.
-    * Handle tasks as unique pointers, not shared.
 4. Refactor world.  
     * Pathfinding in level/dimension, possibly other things.
     * Remove old position checks (related to pathfinding)
-    * Move current floor to gui.
     * Rename commands to events
     * Move task done/skip to events
     * Move build calculations to gui
 5. Refactor Worker.--
     * Migrate to new positions
     * Report back to world via events.
-5. Refactor tasks.  
-    * Use dynamic class hierarchy instead.
 5. Refactor Tile.  
     Readd objects, ability to change ground.
 5. Move ground definitions to object factory
@@ -41,7 +37,8 @@ Next steps:
         Should be able to specify actions. Need to expose functions C++ -> lua.
 10. Correct task handling for workers.
 11. Multilevel pathfinding.
-12. AreaSelection needs iterators over positions
+12. AreaSelection needs iterators over positions  
+    Annoying iterators.
 
 * remove typedef shared ptrs
 * unit tests

@@ -9,33 +9,29 @@ export CFLAGS = -std=gnu++0x -Wall -I$(SRCDIR)
 
 # All buildable source files
 SRC = $(wildcard $(SRCDIR)/*cxx) $(wildcard $(SRCDIR)/**/*cxx)
-HEADERS = $(wildcard $(SRCDIR)/*hxx) $(wildcard $(SRCDIR)/**/*hxx)
 
-# Place object files in an object dir
 OBJ = $(patsubst %,$(OBJDIR)/%,$(SRC:.cxx=.o))
-
-.PHONY: all game clean remake
+DEPS = $(patsubst %,$(OBJDIR)/%,$(SRC:.cxx=.d))
 
 EXE = $(BINDIR)/startme
 
-all: $(EXE)
+all: debug
 
-$(EXE): .depend $(OBJ)
+debug: $(EXE)
+
+$(EXE): $(OBJ)
 	$(CC) $(OBJ) -o $@ $(LIBS)
 
 $(OBJDIR)/%.o: %.cxx
 	@(mkdir -p $(@D))
-	$(CC) -c -o $@ $< $(CFLAGS)
-
-# Dependency information for files
-.depend: $(SRC)
-	@(rm -f ./.depend)
-	@($(CC) $(CFLAGS) -MM $^ >> ./.depend)
-	@(sed -i 's|\(^.*:\)|$(OBJDIR)/$(SRCDIR)/\1|g' ./.depend)
-
-include .depend
+	$(CC) $(CFLAGS) -MMD -c $< -o $@
 
 clean:
-	rm $(EXE) $(OBJDIR)/* .depend -rf
+	rm $(EXE) $(OBJDIR)/* -rf
 
 remake: clean all
+
+.PHONY: all clean remake debug
+
+-include $(DEPS)
+

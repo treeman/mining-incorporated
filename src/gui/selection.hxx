@@ -38,6 +38,7 @@ namespace gui {
                 return s.to_string() + " - " + e.to_string();
         }
 
+        // MapPos alternatively WorldPos
         T start, end;
     };
 
