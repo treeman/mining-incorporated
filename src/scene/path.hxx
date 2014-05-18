@@ -6,10 +6,20 @@ namespace scene {
 
     class World;
 
-    struct Path {
+    class Path {
+    public:
         void draw(sf::RenderWindow &w, World *world);
-        Path &operator << (const MapPos &p);
-        vector<MapPos> path;
+        void print();
+        bool empty() const;
+
+        unsigned size() const;
+        MapPos &operator[](unsigned i);
+        MapPos operator[](unsigned i) const;
+
+        MapPos goal() const;
+    private:
+        vector<MapPos> v;
+        friend class Floor;
     };
 
 };

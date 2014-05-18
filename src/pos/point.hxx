@@ -13,6 +13,7 @@ public:
     explicit Point(const sf::Vector2<S> &o) : x(o.x), y(o.y) { }
 
     operator sf::Vector2<T>() const { return sf::Vector2<T>(x, y); }
+    void set(T _x, T _y) { x = _x; y = _y; }
 
     bool operator < (const Point &p) const { return tie(x, y) < tie(p.x, p.y); }
     bool operator > (const Point &p) const { return p < *this; }

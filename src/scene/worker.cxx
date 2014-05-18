@@ -6,52 +6,62 @@
 
 namespace scene {
 
-Worker::Worker(int x, int y, World *_world) : pos(x, y), world(_world), current_task(nullptr) {
+Worker::Worker(const WorldPos &p, World *_world) : world(_world), p_ind(0),
+    world_pos(p), map_pos(world->world2map(world_pos)), current_task(nullptr)
+{
     spr = create_sprite("worker.png");
-    // TODO fix positions.
-    tile_pos = IPoint(world->world2map(WorldPos(x, y, 0)).pos);
     txt = create_txt("arial.ttf", 14);
     has_work_time = false;
     work_time = 0;
 }
 
-bool Worker::is_free() {
+WorldPos Worker::get_pos() const {
+    return world_pos;
+}
+int Worker::on_floor() const {
+    return world_pos.floor;
+}
+bool Worker::is_free() const {
     return current_task == nullptr;
 }
+
 bool Worker::assign_task(shared_ptr<Task> task) {
     if (!is_free()) return false;
 
-    current_task = task;
-    L_("I have a task %s\n", current_task->to_string());
-    return true;
+    if (auto t = dynamic_cast<BuildGroundTask*>(task.get())) {
+        L_("Building ground at %s\n", t->pos.to_string());
+        if (map_pos == t->pos) {
+            current_task = task;
+        }
+        else {
+            path = world->pathfind(map_pos, t->pos);
+            p_ind = 0;
+            path.print();
 
-    /*
-    if (tile_pos == task.pos) {
-        current_task = task;
+            if (path.empty()) return false;
+            current_task = task;
+        }
+        //has_work_time = false;
+        return true;
     }
     else {
-        path = world->pathfind(tile_pos, task.pos);
-        if (!path.size()) return false;
-        current_task = task;
+        L_("unknown task %s in worker\n", task->to_string());
+        return false;
     }
-    has_work_time = false;
-    */
-    //return true;
 }
 
 void Worker::update(const sf::Time &dt) {
     // TODO fix with new positions!
-#if 0
     if (!path.empty())
         follow_path(dt);
 
-    if (path.empty() && !is_free()) {
+    // TODO this causes a jump.
+    if (!path.empty() && map_pos == path.goal() && !is_free()) {
         // Align!
-        tile_pos = current_task.pos;
-        // TODO fix!
-        // pos = FPoint(world->tile2world(tile_pos));
+        //world_pos = world->map2world(map_pos);
 
         // Work on task, it's not instant.
+        /*
         if (!has_work_time) {
             has_work_time = true;
 
@@ -72,77 +82,60 @@ void Worker::update(const sf::Time &dt) {
             progressbar.set_target_time(work_time);
             progressbar.reset();
         }
+        */
 
-        float work_done = work_clock.getElapsedTime().asSeconds();
-        progressbar.set_completion(work_done);
+        //float work_done = work_clock.getElapsedTime().asSeconds();
+        //progressbar.set_completion(work_done);
 
-        if (work_done >= work_time) {
-            world->task_done(current_task);
-            current_task.is_done = true;
-            has_work_time = false;
-        }
+        //if (work_done >= work_time) {
+            //world->task_done(current_task);
+            //current_task.is_done = true;
+            //has_work_time = false;
+        //}
+        L_("Done!\n");
+        current_task = nullptr;
     }
 
-    progressbar.set_position(pos.x, pos.y - 11);
-#endif
+    //progressbar.set_position(pos.x, pos.y - 11);
 }
 void Worker::draw(sf::RenderWindow &w) {
-    spr.setPosition(pos.x, pos.y);
+    spr.setPosition(world_pos.pos.x, world_pos.pos.y);
     w.draw(spr);
     if (has_work_time && !is_free())
         progressbar.draw(w);
 
     // Debug things ^^
-#if 0
-    // Draw path
-    sf::VertexArray lines(sf::LinesStrip);
-    for (auto next : path) {
-        // Draw at center
-        auto p = world->tile2world(next);
-        auto pos = sf::Vector2f(p.x + tile_width / 2, p.y + tile_width / 2);
-        lines.append(sf::Vertex(pos, make_color(0x42F207)));
-    }
-    w.draw(lines);
+#if 1
+    path.draw(w, world);
 
     // Draw information
-    int x = pos.x + 25, y = pos.y - 10, dy = 16;
-    stringstream ss;
-    ss << "pos: " << pos;
-    txt.setString(ss.str());
-    txt.setPosition(x, y);
+    int x = world_pos.pos.x + 25, y = world_pos.pos.y - 10, dy = 16;
+    txt.setString("pos: " + world_pos.to_string());
+    txt.setPosition(x + 25, y - 10);
     w.draw(txt);
 
     y += dy;
-    ss.str("");
-    ss << "tile" << tile_pos;
-    txt.setString(ss.str());
+    txt.setString("map: " + map_pos.to_string());
     txt.setPosition(x, y);
     w.draw(txt);
 #endif
 }
 
+// TODO This is stuttering like crazy!
 void Worker::follow_path(const sf::Time &dt) {
-    // TODO fix with new points!
-#if 0
-    // Check for finish
-    FPoint a(pos), b(world->tile2world(path.back()));
-    if ((b - a).len() < 0.05) {
-        path.pop_back();
-        //printf("now path of length: %d\n", (int)path.size());
-        //for (auto p : path) printf(" %d,%d\n", p.x, p.y);
-    }
-    if (path.empty()) return;
+    if (path.empty() || map_pos == path.goal()) return;
+    if (p_ind >= path.size()) L_("!!!\n");
 
-    FPoint from(pos), to(world->tile2world(path.back()));
+    FPoint from(world_pos.pos), to(world->map2world(path[p_ind]).pos);
+    if (from.dist(to) < 0.001) {
+        ++p_ind;
+        to = world->map2world(path[p_ind]).pos;
+    }
+
     auto norm = (to - from).normalize();
     auto diff = norm * dt.asSeconds() * 100.0f;
-    pos = pos + diff;
-    tile_pos = IPoint(world->world2tile(sf::Vector2i(pos.x, pos.y)));
-#endif
-}
-
-WorkerPtr create_worker(int x, int y, World *world) {
-    return WorkerPtr(new Worker(x, y, world));
+    world_pos.pos = world_pos.pos + diff;
+    map_pos = world->world2map(world_pos);
 }
 
 } // Scene

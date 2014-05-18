@@ -10,6 +10,7 @@ template<typename T>
 class BasePos {
 public:
     BasePos(int _floor) : floor(_floor) { }
+    BasePos(Point<T> p, int _floor) : pos(p), floor(_floor) { }
     BasePos(int x, int y, int _floor) : pos(x, y), floor(_floor) { }
 
     bool operator == (const BasePos &p) const {

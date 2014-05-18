@@ -9,18 +9,15 @@ Todo
 
 Next steps:
 
-3. Refactor world task handling.  
-    * Have tasks coming in, need to handle them.  
-        Need pathfinding to check if it's possible.
 4. Refactor world.  
     * Pathfinding in level/dimension, possibly other things.
-    * Remove old position checks (related to pathfinding)
     * Rename commands to events
     * Move task done/skip to events
     * Move build calculations to gui
+    * Task handling
 5. Refactor Worker.--
-    * Migrate to new positions
     * Report back to world via events.
+    * Proper non-laggy movement
 5. Refactor Tile.  
     Readd objects, ability to change ground.
 5. Move ground definitions to object factory
@@ -39,6 +36,7 @@ Next steps:
 11. Multilevel pathfinding.
 12. AreaSelection needs iterators over positions  
     Annoying iterators.
+13. log.hxx
 
 * remove typedef shared ptrs
 * unit tests

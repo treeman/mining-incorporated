@@ -19,6 +19,8 @@ namespace scene {
         bool in_world(const WindowPos &p, int floor) const;
         bool in_world(const WorldPos &p) const;
 
+        // TODO to center positions for WorldPos and WindowPos
+        WorldPos map2world(const MapPos &p) const;
         WorldPos window2world(const WindowPos &p, int floor) const;
         MapPos window2map(const WindowPos &p, int floor) const;
         MapPos world2map(const WorldPos &p) const;
@@ -29,31 +31,22 @@ namespace scene {
 
         int num_floors() const;
 
-        // TODO remove
-        //bool in_world(sf::Vector2i worldpos);
-        //bool in_world(int x, int y);
-        //bool is_tile(int x, int y);
-
-        // TODO move to gui
-        //void set_curr_floor(int floor);
-        //int get_curr_floor() const;
-    //private:
-        //int curr_floor;
-
     public:
         void handle_input(const sf::Event &e);
         void update(const sf::Time &dt);
         void draw(int floor);
 
         void push_cmd(unique_ptr<Command> cmd);
-        void push_task(shared_ptr<Task> task); // TODO unique_ptr!
+        void push_task(shared_ptr<Task> task);
+
+        Path pathfind(const MapPos &from, const MapPos &to) const;
     private:
         deque<shared_ptr<Task>> pending_tasks;
         VisualDebug task_debug;
 
         // TODO move to commands/events
         void new_worker();
-        WorkerPtr choose_free_worker();
+        shared_ptr<Worker> choose_free_worker();
         void task_done(shared_ptr<Task> task);
         void skip_task(shared_ptr<Task> task);
         void assign_tasks();
@@ -72,7 +65,7 @@ namespace scene {
         shared_ptr<Tile> get_tile(sf::Vector2i pos);
 
         shared_ptr<Map> map;
-        vector<WorkerPtr> workers;
+        vector<shared_ptr<Worker>> workers;
 
         sf::Text stat_txt;
 

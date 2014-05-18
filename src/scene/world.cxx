@@ -37,6 +37,9 @@ bool World::in_world(const WorldPos &p) const {
         && 0 <= p.pos.y && p.pos.y < world_height
         && 0 <= p.floor && p.floor < map->num_floors();
 }
+WorldPos World::map2world(const MapPos &p) const {
+    return WorldPos(p.pos.x * tile_width, p.pos.y * tile_width, p.floor);
+}
 WorldPos World::window2world(const WindowPos &p, int floor) const {
     const WorldPos res(p.x  - view_xoff, p.y - view_yoff, floor);
     assert(in_world(res));
@@ -170,8 +173,12 @@ void World::push_cmd(unique_ptr<Command> cmd) {
 }
 
 void World::push_task(shared_ptr<Task> task) {
-    L_("new task: %s\n", task->to_string());
+    //L_("new task: %s\n", task->to_string());
     pending_tasks.push_back(move(task));
+}
+
+Path World::pathfind(const MapPos &from, const MapPos &to) const {
+    return map->pathfind(from, to);
 }
 
 void World::new_worker() {
@@ -179,17 +186,15 @@ void World::new_worker() {
     // Some marker that we can't hire? Or something?
     if ((int)workers.size() >= resources.max_workers) return;
 
-    auto worker = create_worker(0, 0, this);
-    workers.push_back(worker);
-    //free_workers.push_back(worker);
+    workers.push_back(shared_ptr<Worker>(new Worker(WorldPos(0, 0, 0), this)));
 }
 
 // TODO choose based on task and closeness.
-WorkerPtr World::choose_free_worker() {
+shared_ptr<Worker> World::choose_free_worker() {
     for (auto w : workers) {
         if (w->is_free()) return w;
     }
-    return WorkerPtr();
+    return nullptr;
 }
 
 int manhattan(int x1, int y1, int x2, int y2) {
@@ -360,7 +365,7 @@ shared_ptr<Worker> World::select_closest_worker(const WorldPos &p) {
     shared_ptr<Worker> res{ nullptr };
     float closest = numeric_limits<float>::infinity();
     for (auto w : workers) {
-        float d =  FPoint(w->get_pos()).dist(p.pos);
+        float d =  w->get_pos().pos.dist(p.pos);
         if (d < closest) {
             closest = d;
             res = w;

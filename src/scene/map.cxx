@@ -36,4 +36,11 @@ Map::Map() {
 
 }
 
+Path Map::pathfind(const MapPos &from, const MapPos &to) const {
+    // TODO currently only pathfind inside one floor.
+    assert(from.floor == to.floor);
+    return floor(from.floor)->pathfind(from.pos, to.pos);
+}
+
 } // Scene
+
