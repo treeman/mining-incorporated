@@ -51,7 +51,7 @@ int main()
     );
 
     Locator::provide_window(&window);
-    Locator::provide_debug(unique_ptr<VisualDebug>(new VisualDebug()));
+    Locator::provide_debug(unique_ptr<VisualDebug>(new VisualDebug({10, 10})));
 
     // TODO remove/move!
     // Yes it's happning here!

@@ -9,10 +9,9 @@ Todo
 
 Next steps:
 
-2. Handle current floor inside gui instead of inside world  
-    * floor in AreaSelection (also needs an iterator over positions)
 3. Refactor world task handling.  
-    * Have tasks coming in, need to handle them.
+    * Have tasks coming in, need to handle them.  
+        Need pathfinding to check if it's possible.
     * Handle tasks as unique pointers, not shared.
 4. Refactor world.  
     * Pathfinding in level/dimension, possibly other things.
@@ -42,6 +41,7 @@ Next steps:
         Should be able to specify actions. Need to expose functions C++ -> lua.
 10. Correct task handling for workers.
 11. Multilevel pathfinding.
+12. AreaSelection needs iterators over positions
 
 * remove typedef shared ptrs
 * unit tests

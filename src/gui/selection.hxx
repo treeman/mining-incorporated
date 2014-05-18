@@ -11,7 +11,6 @@ namespace gui {
     // TODO should be able to move selection even outside world border.
     // But clamp it to fit.
     // TODO iterator over it.
-    // TODO encapsulate level as well
     template<typename T>
     struct AreaSelection {
         AreaSelection() : start(-1), end(-1) { }
@@ -47,10 +46,13 @@ namespace gui {
 
     MapSelection to_map(scene::World *world, WorldSelection sel);
 
+    class Interface;
+
     class Selection {
     public:
         Selection(
             scene::World *world,
+            Interface *gui,
             function<void(WorldSelection)> on_build,
             function<void(WorldSelection)> on_remove
         );
@@ -81,6 +83,7 @@ namespace gui {
         void right_release(const WindowPos &p);
 
         scene::World *world;
+        Interface *gui;
         function<void(WorldSelection)> on_build, on_remove;
     };
 

@@ -1,5 +1,6 @@
 #include "locator.hxx"
 #include "gui/selection.hxx"
+#include "gui/interface.hxx"
 #include "scene/world.hxx"
 
 namespace gui {
@@ -10,9 +11,10 @@ MapSelection to_map(scene::World *world, WorldSelection sel) {
 
 Selection::Selection(
     scene::World *_world,
+    Interface *_gui,
     function<void(WorldSelection)> build,
     function<void(WorldSelection)> remove
-) : active(false), remove(false), world(_world), on_build(build), on_remove(remove)
+) : active(false), remove(false), world(_world), gui(_gui), on_build(build), on_remove(remove)
 { }
 
 WorldSelection Selection::get_area() const {
@@ -79,18 +81,22 @@ bool Selection::handle_input(const sf::Event &e) {
 }
 
 void Selection::move(const WindowPos &p) {
-    if (world->in_world(p))
-        extend(world->window2world(p));
+    if (world->in_world(p, gui->current_floor()))
+        extend(world->window2world(p, gui->current_floor()));
 }
 void Selection::left_click(const WindowPos &p) {
-    if (!sf::Mouse::isButtonPressed(sf::Mouse::Right) && world->in_world(p)) {
-        begin(world->window2world(p));
+    if (!sf::Mouse::isButtonPressed(sf::Mouse::Right)
+        && world->in_world(p, gui->current_floor()))
+    {
+        begin(world->window2world(p, gui->current_floor()));
         remove = false;
     }
 }
 void Selection::right_click(const WindowPos &p) {
-    if (!sf::Mouse::isButtonPressed(sf::Mouse::Left) && world->in_world(p)) {
-        begin(world->window2world(p));
+    if (!sf::Mouse::isButtonPressed(sf::Mouse::Left)
+        && world->in_world(p, gui->current_floor()))
+    {
+        begin(world->window2world(p, gui->current_floor()));
         remove = true;
     }
 }

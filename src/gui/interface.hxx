@@ -23,6 +23,7 @@ namespace gui {
 
         scene::World &get_world() const;
 
+        void handle_event(const Event &event);
         bool handle_input(const sf::Event &e);
         void update(const sf::Time &dt);
         void draw(sf::RenderWindow &w);
@@ -39,54 +40,11 @@ namespace gui {
         shared_ptr<State> current_state;
 
     public:
-        void handle_event(const Event &event);
-    private:
-        // Old things. To be refactored!
-        // TODO state transitions
-        /*
-        void handle_move(const WindowPos &p);
-        void handle_left_click(const WindowPos &p);
-        void handle_right_click(const WindowPos &p);
-        void handle_left_release(const WindowPos &p);
-        void handle_right_release(const WindowPos &p);
-        void build();
-        void build_room();
-        void build_object();
-        void handle_preview(const WindowPos &p);
-        */
-
-        /*
-        unique_ptr<List> categories;
-
-        // TODO subcategory class
-        vector<unique_ptr<List>> subcategory;
-        int curr_subcategory;
-
-        // TODO selection class
-        // TODO move to states
-        WorldPos selection_start, selection_end;
-        bool active_selection;
-
-        void clear_selection();
-        RoomInfo *room_to_build;
-        ObjectInfo *object_to_build;
-        int preview_cost;
-
-        sf::Text txt;
-        void draw_preview_cost();
-
-        // TODO draw other buttons/economy and things if this is true.
-        bool show_management;
-
-        // Selection pointer. Can select workers and objects.
-        void want_to_select();
-        bool want_select;
-        void try_select(const WindowPos &p);
-
-        void draw_floor_selection();
+        int current_floor() const;
         void set_floor(int floor);
-        */
-
+    private:
+        void draw_floor_selection();
+        int curr_floor;
     };
 
 };

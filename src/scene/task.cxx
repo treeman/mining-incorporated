@@ -6,7 +6,7 @@ BuildGroundTask::BuildGroundTask(shared_ptr<const Ground> o, MapPos p) : ground(
 { }
 
 string BuildGroundTask::to_string() const {
-    return "Task: build ground at " + pos.to_string();
+    return "build ground " + pos.to_string();
 }
 
 } // Scene

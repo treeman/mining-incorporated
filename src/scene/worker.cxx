@@ -1,4 +1,5 @@
 #include "butler.hxx"
+#include "locator.hxx"
 #include "constants.hxx"
 #include "scene/worker.hxx"
 #include "scene/world.hxx"
@@ -18,7 +19,11 @@ bool Worker::is_free() {
     return current_task == nullptr;
 }
 bool Worker::assign_task(shared_ptr<Task> task) {
-    //printf("I have a task type: %d\n", task.type);
+    if (!is_free()) return false;
+
+    current_task = task;
+    L_("I have a task %s\n", task->to_string());
+    return true;
 
     /*
     if (tile_pos == task.pos) {
@@ -31,7 +36,7 @@ bool Worker::assign_task(shared_ptr<Task> task) {
     }
     has_work_time = false;
     */
-    return true;
+    //return true;
 }
 
 void Worker::update(const sf::Time &dt) {

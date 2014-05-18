@@ -1,14 +1,15 @@
 #include "visualdebug.hxx"
 #include "locator.hxx"
 
-VisualDebug::VisualDebug() {
+VisualDebug::VisualDebug(IPoint p) : pos(p) {
     txt = create_txt("consola.ttf", 12);
     txt.setColor(sf::Color::White);
 }
 
 void VisualDebug::log() {
     sf::RenderWindow &w = Locator::get_window();
-    int x = 10, y = 10;
+    //int x = 10, y = 10;
+    int x = pos.x, y = pos.y;
     const int h = 14;
     for (auto &p : persistent) {
         txt.setString(p.first + ": " + p.second);

@@ -31,8 +31,9 @@ bool InfoState::handle_input(const sf::Event &e) {
 void InfoState::update(const sf::Time &dt) {
     D_.tmp("updating");
     const WindowPos wp(get_mpos());
-    if (world->in_world(wp)) {
-        const WorldPos world_pos(world->window2world(wp));
+    const int floor = gui->current_floor();
+    if (world->in_world(wp, floor)) {
+        const WorldPos world_pos(world->window2world(wp, floor));
         const MapPos dim_pos(world->world2map(world_pos));
 
         shared_ptr<scene::Tile> tile(world->get_tile(dim_pos));
@@ -58,7 +59,9 @@ void InfoState::draw(sf::RenderWindow &w) {
 }
 
 MaterialState::MaterialState(Interface *gui, scene::World *world) : State(gui, world), //obj(nullptr),
-    selection(new Selection(world,
+    selection(new Selection(
+        world,
+        gui,
         [this](WorldSelection sel) mutable {
             MapSelection mapsel = to_map(this->world, sel);
 
@@ -105,7 +108,9 @@ void MaterialState::draw(sf::RenderWindow &w) {
 }
 
 PlanningState::PlanningState(Interface *gui, scene::World *world) : State(gui, world), obj(nullptr),
-    selection(new Selection(world,
+    selection(new Selection(
+        world,
+        gui,
         [this](WorldSelection sel) mutable {
             MapSelection mapsel = to_map(this->world, sel);
 
@@ -143,7 +148,7 @@ void PlanningState::update(const sf::Time &dt) {
         MapSelection sel = to_map(world, selection->get_area());
         for (int x = sel.start.pos.x; x <= sel.end.pos.x; ++x) {
             for (int y = sel.start.pos.y; y <= sel.end.pos.y; ++y) {
-                auto tile = world->get_tile(MapPos(x, y, world->get_curr_floor()));
+                auto tile = world->get_tile(MapPos(x, y, sel.start.floor));
                 tile->suppress_preview();
             }
         }
@@ -158,7 +163,7 @@ void PlanningState::draw(sf::RenderWindow &w) {
         MapSelection sel = to_map(world, selection->get_area());
         for (int x = sel.start.pos.x; x <= sel.end.pos.x; ++x) {
             for (int y = sel.start.pos.y; y <= sel.end.pos.y; ++y) {
-                WindowPos p = world->map2window(MapPos(x, y, world->get_curr_floor()));
+                WindowPos p = world->map2window(MapPos(x, y, sel.start.floor));
                 obj->set_pos(p.x, p.y);
                 obj->draw(w);
             }

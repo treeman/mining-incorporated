@@ -13,14 +13,13 @@ namespace scene {
 const int view_xoff = (screen_width - world_width) / 2;
 const int view_yoff = (screen_height - world_height) / 2;
 
-World::World(sf::RenderWindow &_w) :
-    w(_w),
+World::World(sf::RenderWindow &_w) : task_debug({630, 145}), w(_w),
     view(sf::FloatRect(0, 0, screen_width, screen_height))
 {
     view.move(-view_xoff, -view_yoff);
 
     map = make_map();
-    set_curr_floor(0);
+    //set_curr_floor(0);
 
     new_worker();
     stat_txt = create_txt("consola.ttf", 14);
@@ -29,21 +28,22 @@ World::World(sf::RenderWindow &_w) :
     Locator::get_settings().register_bool("debug_positions", false);
 }
 
-bool World::in_world(const WindowPos &p) const {
-    const WorldPos wp(p.x  - view_xoff, p.y - view_yoff, curr_floor);
+bool World::in_world(const WindowPos &p, int floor) const {
+    const WorldPos wp(p.x  - view_xoff, p.y - view_yoff, floor);
     return in_world(wp);
 }
 bool World::in_world(const WorldPos &p) const {
     return 0 <= p.pos.x && p.pos.x < world_width
-        && 0 <= p.pos.y && p.pos.y < world_height;
+        && 0 <= p.pos.y && p.pos.y < world_height
+        && 0 <= p.floor && p.floor < map->num_floors();
 }
-WorldPos World::window2world(const WindowPos &p) const {
-    const WorldPos res(p.x  - view_xoff, p.y - view_yoff, curr_floor);
+WorldPos World::window2world(const WindowPos &p, int floor) const {
+    const WorldPos res(p.x  - view_xoff, p.y - view_yoff, floor);
     assert(in_world(res));
     return res;
 }
-MapPos World::window2map(const WindowPos &p) const {
-    return world2map(window2world(p));
+MapPos World::window2map(const WindowPos &p, int floor) const {
+    return world2map(window2world(p, floor));
 }
 MapPos World::world2map(const WorldPos &p) const {
     assert(in_world(p));
@@ -66,6 +66,7 @@ shared_ptr<Tile> World::get_tile(const MapPos &p) const {
     return map->tile(p);
 }
 
+/*
 bool World::in_world(sf::Vector2i wp) { return in_world(wp.x, wp.y); }
 bool World::in_world(int x, int y) {
     return 0 <= x && x <= world_width && 0 <= y && y <= world_height;
@@ -76,15 +77,16 @@ bool World::is_tile(int x, int y) {
     return 0 <= x && x < (int)map->floor(curr_floor)->grid[0].size()
         && 0 <= y && y < (int)map->floor(curr_floor)->grid.size();
 }
+*/
 
-int World::num_floors() const {
-    return map->num_floors();
-}
+int World::num_floors() const { return map->num_floors(); }
+/*
 void World::set_curr_floor(int floor) {
     assert(0 <= floor && floor < num_floors());
     curr_floor = floor;
 }
 int World::get_curr_floor() const { return curr_floor; }
+*/
 
 void World::handle_input(const sf::Event &e) { }
 void World::update(const sf::Time &dt) {
@@ -95,6 +97,7 @@ void World::update(const sf::Time &dt) {
         worker->update(dt);
     }
 
+    /*
     // Add in debug info
     if (Locator::get_settings().get_bool("debug_positions")) {
         WindowPos mp(get_mpos());
@@ -110,19 +113,20 @@ void World::update(const sf::Time &dt) {
             D_.set_key("map", "invalid");
         }
     }
+    */
 
     if (Locator::get_settings().get_bool("debug_tasks")) {
-        D_.tmp("pending tasks: " + to_string(pending_tasks.size()));
+        task_debug.tmp("pending tasks: " + to_string(pending_tasks.size()));
         for (auto &t : pending_tasks) {
-            D_.tmp(t->to_string());
+            task_debug.tmp(t->to_string());
         }
     }
 }
-void World::draw() {
+void World::draw(int floor) {
     sf::View curr = w.getView();
     w.setView(view);
 
-    map->draw(w, curr_floor);
+    map->draw(w, floor);
 
     for (auto &worker : workers) {
         worker->draw(w);
@@ -130,11 +134,12 @@ void World::draw() {
 
     w.setView(curr);
     draw_stats();
+
+    task_debug.update();
 }
 
 void World::push_cmd(unique_ptr<Command> cmd) {
     if (auto c = dynamic_cast<PlacePlanningCommand*>(cmd.get())) {
-        //L_("%s\n", c->to_string());
         for (int x = c->area.start.pos.x; x <= c->area.end.pos.x; ++x) {
             for (int y = c->area.start.pos.y; y <= c->area.end.pos.y; ++y) {
                 shared_ptr<Tile> tile(map->tile(MapPos(x, y, c->area.start.floor)));
@@ -143,7 +148,6 @@ void World::push_cmd(unique_ptr<Command> cmd) {
         }
     }
     else if (auto c = dynamic_cast<RemovePlanningCommand*>(cmd.get())) {
-        //L_("%s\n", c->to_string());
         for (int x = c->area.start.pos.x; x <= c->area.end.pos.x; ++x) {
             for (int y = c->area.start.pos.y; y <= c->area.end.pos.y; ++y) {
                 shared_ptr<Tile> tile(map->tile(MapPos(x, y, c->area.start.floor)));
@@ -156,7 +160,7 @@ void World::push_cmd(unique_ptr<Command> cmd) {
             for (int y = c->area.start.pos.y; y <= c->area.end.pos.y; ++y) {
                 // TODO some kind of check for possibility?
                 push_task(shared_ptr<Task>(new BuildGroundTask(c->material->ground,
-                                MapPos(x, y, curr_floor))));
+                                MapPos(x, y, c->area.start.floor))));
             }
         }
     }
@@ -193,8 +197,8 @@ int manhattan(int x1, int y1, int x2, int y2) {
 }
 
 // TODO floor??`
-vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t) {
-    const int rows = map->floor(curr_floor)->grid.size(), cols = map->floor(curr_floor)->grid[0].size();
+vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t, int floor) {
+    const int rows = map->floor(floor)->grid.size(), cols = map->floor(floor)->grid[0].size();
 
     //printf("Pathfinding %d,%d -> %d,%d\n", s.x, s.y, t.x, t.y);
 
@@ -233,7 +237,7 @@ vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t) {
             int nx = s.x + dx[d], ny = s.y + dy[d];
             if (nx < 0 || nx >= cols || ny < 0 || ny >= rows) continue;
             bool is_goal = nx == t.x && ny == t.y;
-            if (!map->floor(curr_floor)->grid.at(ny).at(nx)->is_walkable() && !is_goal) {
+            if (!map->floor(floor)->grid.at(ny).at(nx)->is_walkable() && !is_goal) {
                 //printf("skip %d %d\n", nx, ny);
                 continue;
             }
@@ -291,10 +295,12 @@ void World::assign_tasks() {
     pending_tasks.swap(unfinished);
 }
 
+/*
 shared_ptr<Tile> World::get_tile(int x, int y) {
     return map->tile(x, y, curr_floor);
 }
 shared_ptr<Tile> World::get_tile(sf::Vector2i pos) { return get_tile(pos.x, pos.y); }
+*/
 
 // TODO move to gui
 void World::draw_stats() {
