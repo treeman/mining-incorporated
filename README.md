@@ -9,22 +9,23 @@ Todo
 
 Next steps:
 
+4. Pending build actions previews
+5. Refactor Worker.--
+    * Report back to world via events.
+    * Mark buildings as complete
+    * Readd build times
+    * Correct task handling for workers.
 4. Refactor world.  
     * Rename commands to events
     * Move task done/skip to events
     * Move build calculations to gui
     * Task handling
-    * Move resource drawing to gui
-5. Refactor Worker.--
-    * Report back to world via events.
-    * Proper non-laggy movement
 5. Refactor Tile.  
     Readd objects, ability to change ground.
 5. Move ground definitions to object factory
 5. Move floor definitions to Locator
 6. Remove rooms the way they are now.
 7. Refactor objects.
-8. Add materials (look of the ground).
 9. Specify all data things from lua.  
     * Planning objects (currently in world, move?)
     * Sprites (set colors/alpha channels. load from tileset with indexes)
@@ -32,12 +33,11 @@ Next steps:
     * Colors and positions of gui elements.
     * What buttons in ButtonPanel and in what order.  
         Should be able to specify actions. Need to expose functions C++ -> lua.
-10. Correct task handling for workers.
-11. Multilevel pathfinding.
 12. AreaSelection needs iterators over positions  
     Annoying iterators.
 13. log.hxx
 14. Move away from main.cxx
+11. Multilevel pathfinding.
 
 * Don't lookup from settings at every frame,
     keep a pointer thing to fetch values.

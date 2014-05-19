@@ -11,6 +11,7 @@ namespace scene {
         void draw(sf::RenderWindow &w, World *world);
         void print();
         bool empty() const;
+        void clear();
 
         unsigned size() const;
         MapPos &operator[](unsigned i);

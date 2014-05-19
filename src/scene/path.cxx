@@ -26,6 +26,9 @@ void Path::print() {
 bool Path::empty() const {
     return v.empty();
 }
+void Path::clear() {
+    v.clear();
+}
 unsigned Path::size() const {
     return v.size();
 }

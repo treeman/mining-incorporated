@@ -32,11 +32,11 @@ bool Worker::assign_task(shared_ptr<Task> task) {
         L_("Building ground at %s\n", t->pos.to_string());
         if (map_pos == t->pos) {
             current_task = task;
+            path.clear();
         }
         else {
             path = world->pathfind(map_pos, t->pos);
             p_ind = 0;
-            path.print();
 
             if (path.empty()) return false;
             current_task = task;
@@ -51,14 +51,15 @@ bool Worker::assign_task(shared_ptr<Task> task) {
 }
 
 void Worker::update(const sf::Time &dt) {
-    // TODO fix with new positions!
     if (!path.empty())
         follow_path(dt);
 
-    // TODO this causes a jump.
-    if (!path.empty() && map_pos == path.goal() && !is_free()) {
+    if (p_ind == path.size() && !is_free()) {
         // Align!
-        //world_pos = world->map2world(map_pos);
+        if (!path.empty()) {
+            map_pos = path.goal();
+            world_pos = world->map2world(map_pos);
+        }
 
         // Work on task, it's not instant.
         /*
@@ -94,6 +95,7 @@ void Worker::update(const sf::Time &dt) {
         //}
         L_("Done!\n");
         current_task = nullptr;
+        path.clear();
     }
 
     //progressbar.set_position(pos.x, pos.y - 11);
@@ -105,8 +107,9 @@ void Worker::draw(sf::RenderWindow &w) {
         progressbar.draw(w);
 
     // Debug things ^^
-#if 1
-    path.draw(w, world);
+#if 0
+    if (current_task != nullptr)
+        path.draw(w, world);
 
     // Draw information
     int x = world_pos.pos.x + 25, y = world_pos.pos.y - 10, dy = 16;
@@ -121,19 +124,19 @@ void Worker::draw(sf::RenderWindow &w) {
 #endif
 }
 
-// TODO This is stuttering like crazy!
 void Worker::follow_path(const sf::Time &dt) {
-    if (path.empty() || map_pos == path.goal()) return;
-    if (p_ind >= path.size()) L_("!!!\n");
+    if (path.empty()) return;
+    if (p_ind == path.size()) return;
 
     FPoint from(world_pos.pos), to(world->map2world(path[p_ind]).pos);
-    if (from.dist(to) < 0.001) {
+    if (from.dist(to) < 0.05) {
         ++p_ind;
+        if (p_ind == path.size()) return;
         to = world->map2world(path[p_ind]).pos;
     }
 
-    auto norm = (to - from).normalize();
-    auto diff = norm * dt.asSeconds() * 100.0f;
+    FPoint norm = (to - from).normalize();
+    FPoint diff = norm * dt.asSeconds() * 100.0f;
     world_pos.pos = world_pos.pos + diff;
     map_pos = world->world2map(world_pos);
 }
