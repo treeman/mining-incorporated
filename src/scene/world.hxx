@@ -51,34 +51,21 @@ namespace scene {
         void skip_task(shared_ptr<Task> task);
         void assign_tasks();
 
-        // TODO move to map
-        vector<sf::Vector2i> pathfind(sf::Vector2i s, sf::Vector2i t, int floor);
-
+    public:
         // TODO some kind of bounding box for workers
         shared_ptr<Worker> select_closest_worker(const WorldPos &p);
+        int num_workers() const;
     private:
         sf::RenderWindow &w;
         sf::View view;
 
-        // TODO multiple levels
-        shared_ptr<Tile> get_tile(int x, int y);
-        shared_ptr<Tile> get_tile(sf::Vector2i pos);
-
         shared_ptr<Map> map;
         vector<shared_ptr<Worker>> workers;
 
-        sf::Text stat_txt;
-
         // Count money etc.
         Resources resources;
-
-        // TODO move to gui
-        void draw_stats();
-        void draw_stats(string pre, int &val, sf::Color color, int x, int y);
-
-        // TODO move to gui
-        // Levels
-        int current_level;
+    public:
+        const Resources &get_resources() const;
     };
 
 }; // Scene

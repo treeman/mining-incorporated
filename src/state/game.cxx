@@ -17,7 +17,7 @@ void GameState::update(const sf::Time &dt) {
 }
 void GameState::draw() {
     world.draw(gui.current_floor());
-    gui.draw(window);
+    gui.draw();
 }
 
 }

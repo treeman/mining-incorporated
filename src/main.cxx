@@ -51,7 +51,7 @@ int main()
     );
 
     Locator::provide_window(&window);
-    Locator::provide_debug(unique_ptr<VisualDebug>(new VisualDebug({10, 10})));
+    Locator::provide_debug(unique_ptr<VisualDebug>(new VisualDebug({10, 30})));
 
     // TODO remove/move!
     // Yes it's happning here!
@@ -70,6 +70,13 @@ int main()
 
     InputQueue input_queue;
     input_queue.add_handler(&console);
+
+    auto fps_txt = create_txt("lucon.ttf", 20);
+    fps_txt.setPosition(5, 3);
+
+    int fps_frame_count = 0;
+    float fps = 0;
+    sf::Clock fps_timer;
 
     // Start at "game" state.
     StateHandler &state_handler = Locator::get_statestack();
@@ -109,6 +116,16 @@ int main()
 
         sf::Time dt = clock.restart();
 
+        //simply update each second
+        //no need for anything more sophisticated
+        ++fps_frame_count;
+        const float fps_time = fps_timer.getElapsedTime().asSeconds();
+        if (fps_time >= 1.0) {
+            fps = fps_frame_count / fps_time;
+            fps_frame_count = 0;
+            fps_timer.restart();
+        }
+
         state->update(dt);
         console.update(dt);
 
@@ -125,6 +142,9 @@ int main()
 
         // Debugger logs and possibly draws last.
         Locator::get_debug().update();
+
+        fps_txt.setString(to_string((int)fps));
+        window.draw(fps_txt);
 
         // Well console is last, heh!
         console.draw();

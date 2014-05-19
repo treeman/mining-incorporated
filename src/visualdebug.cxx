@@ -8,7 +8,6 @@ VisualDebug::VisualDebug(IPoint p) : pos(p) {
 
 void VisualDebug::log() {
     sf::RenderWindow &w = Locator::get_window();
-    //int x = 10, y = 10;
     int x = pos.x, y = pos.y;
     const int h = 14;
     for (auto &p : persistent) {

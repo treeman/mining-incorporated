@@ -26,7 +26,7 @@ namespace gui {
         void handle_event(const Event &event);
         bool handle_input(const sf::Event &e);
         void update(const sf::Time &dt);
-        void draw(sf::RenderWindow &w);
+        void draw();
     private:
         scene::World *world;
         sf::RenderWindow &window;
@@ -45,6 +45,10 @@ namespace gui {
     private:
         void draw_floor_selection();
         int curr_floor;
+
+        void draw_resources();
+        void draw_stats(string pre, int &val, sf::Color color, int x, int y);
+        sf::Text stat_txt;
     };
 
 };

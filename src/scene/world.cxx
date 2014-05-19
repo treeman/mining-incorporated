@@ -17,12 +17,9 @@ World::World(sf::RenderWindow &_w) : task_debug({630, 145}), w(_w),
     view(sf::FloatRect(0, 0, screen_width, screen_height))
 {
     view.move(-view_xoff, -view_yoff);
-
     map = make_map();
-    //set_curr_floor(0);
 
     new_worker();
-    stat_txt = create_txt("consola.ttf", 14);
 
     Locator::get_settings().register_bool("debug_tasks", false);
     Locator::get_settings().register_bool("debug_positions", false);
@@ -136,8 +133,6 @@ void World::draw(int floor) {
     }
 
     w.setView(curr);
-    draw_stats();
-
     task_debug.update();
 }
 
@@ -197,83 +192,6 @@ shared_ptr<Worker> World::choose_free_worker() {
     return nullptr;
 }
 
-int manhattan(int x1, int y1, int x2, int y2) {
-    return abs(x1 - x2) + abs(y1 - y2);
-}
-
-// TODO floor??`
-vector<sf::Vector2i> World::pathfind(sf::Vector2i s, sf::Vector2i t, int floor) {
-    const int rows = map->floor(floor)->grid.size(), cols = map->floor(floor)->grid[0].size();
-
-    //printf("Pathfinding %d,%d -> %d,%d\n", s.x, s.y, t.x, t.y);
-
-    struct State {
-        State(int d, int _x, int _y, int mh) : dist(d), x(_x), y(_y), h(mh) { }
-
-        bool operator < (const State &s) const {
-            return dist + h > s.dist + s.h ;
-        }
-        int dist, x, y;
-        int h;
-    };
-
-    // cost / position
-    vector<vector<int>> dist(rows, vector<int>(cols, numeric_limits<int>::max()));
-    vector<vector<sf::Vector2i>> prev(rows, vector<sf::Vector2i>(cols, sf::Vector2i(-1, -1)));
-
-    const int dx[] = { 0, 1, 0, -1 };
-    const int dy[] = { 1, 0, -1, 0 };
-
-    priority_queue<State> pq;
-    pq.push(State(0, s.x, s.y, manhattan(s.x, s.y, t.x, t.y)));
-    dist[s.y][s.x] = 0;
-
-    while (!pq.empty()) {
-        State s = pq.top(); pq.pop();
-
-        if (s.dist > dist[s.y][s.x]) continue;
-        //printf("  cost %d at %d,%d (h %d) tot: %d\n", s.dist, s.x, s.y, s.h, s.dist + s.h);
-        //printf("  %s\n", grid[s.y][s.x]->is_walkable() ? "ok" : "NO");
-
-        // Goal check
-        if (s.x == t.x && s.y == t.y) break;
-
-        for (int d = 0; d < 4; ++d) {
-            int nx = s.x + dx[d], ny = s.y + dy[d];
-            if (nx < 0 || nx >= cols || ny < 0 || ny >= rows) continue;
-            bool is_goal = nx == t.x && ny == t.y;
-            if (!map->floor(floor)->grid.at(ny).at(nx)->is_walkable() && !is_goal) {
-                //printf("skip %d %d\n", nx, ny);
-                continue;
-            }
-
-            int next_cost = 1 + dist[s.y][s.x];
-            if (next_cost < dist[ny][nx]) {
-                dist[ny][nx] = next_cost;
-                prev[ny][nx] = sf::Vector2i(s.x, s.y);
-                pq.push(State(next_cost, nx, ny, manhattan(nx, ny, t.x, t.y)));
-            }
-        }
-    }
-
-    // Backtrack for path and transform to world coordinates.
-    vector<sf::Vector2i> res;
-
-    // Impossible!
-    if (dist[t.y][t.x] == numeric_limits<int>::max())
-        return res;
-
-    sf::Vector2i p(t);
-    while (p.x != -1) {
-        res.push_back(p);
-        p = prev[p.y][p.x];
-    }
-    res.pop_back(); // Temporary workaround, ignore start
-    //printf("path:\n");
-    //for (auto p : res) printf(" %d,%d\n", p.x, p.y);
-    return res;
-}
-
 void World::task_done(shared_ptr<Task> task) {
     L_("TODO world received a completed task: %s\n", task->to_string());
 }
@@ -300,65 +218,8 @@ void World::assign_tasks() {
     pending_tasks.swap(unfinished);
 }
 
-/*
-shared_ptr<Tile> World::get_tile(int x, int y) {
-    return map->tile(x, y, curr_floor);
-}
-shared_ptr<Tile> World::get_tile(sf::Vector2i pos) { return get_tile(pos.x, pos.y); }
-*/
-
-// TODO move to gui
-void World::draw_stats() {
-    // Draw current state
-    int xoff = 690;
-    int yoff = 10;
-
-    stringstream ss;
-
-    ss.str("");
-    stat_txt.setColor(sf::Color::White);
-    stat_txt.setPosition(600, yoff);
-    ss << "Workers: " << workers.size() << "/" << resources.max_workers;
-    stat_txt.setString(ss.str());
-    w.draw(stat_txt);
-
-
-    ss.str("");
-    ss << "$" << resources.money;
-    stat_txt.setColor(make_color(0x2F9C3F));
-    stat_txt.setPosition(740, yoff);
-    stat_txt.setString(ss.str());
-    w.draw(stat_txt);
-
-    // Draw collected resources.
-    int h = 16, curr_y = yoff + h + 5;
-    draw_stats("Aluminium: ", resources.aluminium, make_color(0xF6926D), xoff, curr_y);
-    curr_y += h;
-    draw_stats("Coal: ", resources.coal, make_color(0xB6926D), xoff, curr_y);
-    curr_y += h;
-    draw_stats("Copper: ", resources.copper, make_color(0x924924), xoff, curr_y);
-    curr_y += h;
-    draw_stats("Diamond: ", resources.diamond, make_color(0x0092DB), xoff, curr_y);
-    curr_y += h;
-    draw_stats("Gold: ", resources.gold, make_color(0xFFB600), xoff, curr_y);
-    curr_y += h;
-    draw_stats("Iron: ", resources.iron, make_color(0xFFFFFF), xoff, curr_y);
-    curr_y += h;
-}
-
-void World::draw_stats(string pre, int &val, sf::Color color, int x, int y) {
-    stat_txt.setColor(sf::Color::White);
-    stat_txt.setPosition(x, y);
-    stat_txt.setString(pre);
-    w.draw(stat_txt);
-    int off = stat_txt.getGlobalBounds().width;
-
-    stringstream ss;
-    ss << val;
-    stat_txt.setString(ss.str());
-    stat_txt.setColor(color);
-    stat_txt.setPosition(x + off, y);
-    w.draw(stat_txt);
+const Resources &World::get_resources() const {
+    return resources;
 }
 
 shared_ptr<Worker> World::select_closest_worker(const WorldPos &p) {
@@ -372,6 +233,10 @@ shared_ptr<Worker> World::select_closest_worker(const WorldPos &p) {
         }
     }
     return res;
+}
+
+int World::num_workers() const {
+    return workers.size();
 }
 
 }; // Scene

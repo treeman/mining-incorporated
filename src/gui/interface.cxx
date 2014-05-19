@@ -20,6 +20,8 @@ Interface::Interface(scene::World *w, sf::RenderWindow &win) : world(w), window(
     states[static_cast<unsigned>(GuiState::PLANNING)].reset(new PlanningState(this, world));
     set_state(GuiState::INFO);
     assert(current_state != nullptr);
+
+    stat_txt = create_txt("consola.ttf", 14);
 }
 
 scene::World &Interface::get_world() const {
@@ -54,9 +56,10 @@ void Interface::update(const sf::Time &dt) {
         }
     }
 }
-void Interface::draw(sf::RenderWindow &w) {
-    current_state->draw(w);
-    panel.draw(w);
+void Interface::draw() {
+    current_state->draw(window);
+    panel.draw(window);
+    draw_resources();
 }
 void Interface::set_state(GuiState state) {
     unsigned x = static_cast<unsigned>(state);
@@ -91,6 +94,53 @@ void Interface::draw_floor_selection() {
     txt.setColor(sf::Color::White);
     window.draw(txt);
     */
+}
+
+void Interface::draw_resources() {
+    // TODO specify from lua
+    // Draw current state
+    int xoff = 690;
+    int yoff = 10;
+
+    auto resources = world->get_resources();
+
+    stat_txt.setColor(sf::Color::White);
+    stat_txt.setPosition(510, yoff);
+    stat_txt.setString(fmt("workers: %d/%d", world->num_workers(), resources.max_workers));
+    window.draw(stat_txt);
+
+    stat_txt.setColor(make_color(0x2F9C3F));
+    stat_txt.setPosition(660, yoff);
+    stat_txt.setString("$" + to_string(resources.money));
+    window.draw(stat_txt);
+
+    // Draw collected resources.
+    int h = 16, curr_y = yoff + h + 5;
+    draw_stats("Aluminium: ", resources.aluminium, make_color(0xF6926D), xoff, curr_y);
+    curr_y += h;
+    draw_stats("Coal: ", resources.coal, make_color(0xB6926D), xoff, curr_y);
+    curr_y += h;
+    draw_stats("Copper: ", resources.copper, make_color(0x924924), xoff, curr_y);
+    curr_y += h;
+    draw_stats("Diamond: ", resources.diamond, make_color(0x0092DB), xoff, curr_y);
+    curr_y += h;
+    draw_stats("Gold: ", resources.gold, make_color(0xFFB600), xoff, curr_y);
+    curr_y += h;
+    draw_stats("Iron: ", resources.iron, make_color(0xFFFFFF), xoff, curr_y);
+    curr_y += h;
+}
+
+void Interface::draw_stats(string pre, int &val, sf::Color color, int x, int y) {
+    stat_txt.setColor(sf::Color::White);
+    stat_txt.setPosition(x, y);
+    stat_txt.setString(pre);
+    window.draw(stat_txt);
+    int off = stat_txt.getGlobalBounds().width;
+
+    stat_txt.setString(to_string(val));
+    stat_txt.setColor(color);
+    stat_txt.setPosition(x + off, y);
+    window.draw(stat_txt);
 }
 
 // Old stuff

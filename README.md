@@ -10,11 +10,11 @@ Todo
 Next steps:
 
 4. Refactor world.  
-    * Pathfinding in level/dimension, possibly other things.
     * Rename commands to events
     * Move task done/skip to events
     * Move build calculations to gui
     * Task handling
+    * Move resource drawing to gui
 5. Refactor Worker.--
     * Report back to world via events.
     * Proper non-laggy movement
@@ -37,7 +37,11 @@ Next steps:
 12. AreaSelection needs iterators over positions  
     Annoying iterators.
 13. log.hxx
+14. Move away from main.cxx
 
+* Don't lookup from settings at every frame,
+    keep a pointer thing to fetch values.
+* Lazy state change (after drawing)
 * remove typedef shared ptrs
 * unit tests
     for fmt at least
