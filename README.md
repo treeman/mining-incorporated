@@ -25,6 +25,12 @@ Next steps:
     * Move task done/skip to events
     * Move build calculations to gui
     * Task handling
+    * World could be split into Components  
+        1. Coordinate mappings
+        2. Event handling
+        3. Task handling
+        4. Worker handling (map to tasks etc)
+        5. Resource handling (can be inside resources)
 5. Refactor Tile.  
     Readd objects, ability to change ground.
 5. Move ground definitions to object factory
