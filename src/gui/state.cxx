@@ -4,7 +4,7 @@
 #include "gui/interface.hxx"
 #include "scene/world.hxx"
 #include "scene/ore.hxx"
-#include "scene/command.hxx"
+#include "scene/event.hxx"
 
 namespace gui {
 
@@ -66,8 +66,8 @@ MaterialState::MaterialState(Interface *gui, scene::World *world) : State(gui, w
             MapSelection mapsel = to_map(this->world, sel);
 
             assert(material != nullptr);
-            unique_ptr<scene::Command> cmd(new scene::BuildMaterialCommand(material, mapsel));
-            this->world->push_cmd(std::move(cmd));
+            unique_ptr<scene::Event> cmd(new scene::BuildMaterialEvent(material, mapsel));
+            this->world->push_event(std::move(cmd));
         },
         [](WorldSelection sel) { }))
 {
@@ -116,14 +116,14 @@ PlanningState::PlanningState(Interface *gui, scene::World *world) : State(gui, w
         [this](WorldSelection sel) mutable {
             MapSelection mapsel = to_map(this->world, sel);
 
-            unique_ptr<scene::Command> cmd(new scene::PlacePlanningCommand(obj, mapsel));
-            this->world->push_cmd(std::move(cmd));
+            unique_ptr<scene::Event> cmd(new scene::PlacePlanningEvent(obj, mapsel));
+            this->world->push_event(std::move(cmd));
         },
         [this](WorldSelection sel) mutable {
             MapSelection mapsel = to_map(this->world, sel);
 
-            unique_ptr<scene::Command> cmd(new scene::RemovePlanningCommand(mapsel));
-            this->world->push_cmd(std::move(cmd));
+            unique_ptr<scene::Event> cmd(new scene::RemovePlanningEvent(mapsel));
+            this->world->push_event(std::move(cmd));
         }))
 {
 }

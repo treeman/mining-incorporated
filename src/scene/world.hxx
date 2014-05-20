@@ -8,7 +8,7 @@
 #include "scene/tile.hxx"
 #include "scene/task.hxx"
 #include "scene/map.hxx"
-#include "scene/command.hxx"
+#include "scene/event.hxx"
 
 namespace scene {
 
@@ -36,7 +36,7 @@ namespace scene {
         void update(const sf::Time &dt);
         void draw(int floor);
 
-        void push_cmd(unique_ptr<Command> cmd);
+        void push_event(unique_ptr<Event> cmd);
         void push_task(shared_ptr<Task> task);
 
         Path pathfind(const MapPos &from, const MapPos &to) const;

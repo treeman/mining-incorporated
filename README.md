@@ -9,6 +9,8 @@ Todo
 
 Next steps:
 
+3. Handle TaskDoneEvent in world  
+    Will have a *lot* of logic in world regarding tasks. Split into files/classes/functions?
 4. Build actions  
     * Preview pending
     * Ability to remove pending builds

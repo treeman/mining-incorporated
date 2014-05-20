@@ -83,8 +83,7 @@ void Worker::update(const sf::Time &dt) {
         progressbar.set_completion(work_done);
 
         if (work_done >= work_time) {
-            // TODO send task done event.
-            //world->task_done(current_task);
+            world->push_event(move(unique_ptr<Event>(new TaskDoneEvent(current_task))));
             has_work_time = false;
 
             L_("Done!\n");
@@ -93,13 +92,14 @@ void Worker::update(const sf::Time &dt) {
         }
     }
 
-    //progressbar.set_position(pos.x, pos.y - 11);
 }
 void Worker::draw(sf::RenderWindow &w) {
     spr.setPosition(world_pos.pos.x, world_pos.pos.y);
     w.draw(spr);
-    if (has_work_time && !is_free())
+    if (has_work_time && !is_free()) {
+        progressbar.set_position(world_pos.pos.x, world_pos.pos.y - 11);
         progressbar.draw(w);
+    }
 
     // Debug things ^^
 #if 0

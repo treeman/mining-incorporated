@@ -1,12 +1,12 @@
+#include "constants.hxx"
+#include "butler.hxx"
+#include "locator.hxx"
 #include "util/ext.hxx"
 #include "util/rand.hxx"
 #include "scene/world.hxx"
 #include "scene/map.hxx"
 #include "scene/task.hxx"
-#include "constants.hxx"
-#include "butler.hxx"
-//#include "assert.h"
-#include "locator.hxx"
+#include "scene/material.hxx"
 
 namespace scene {
 
@@ -56,37 +56,11 @@ WindowPos World::world2window(const WorldPos &p) const {
     return map2window(world2map(p));
 }
 
-/*
-shared_ptr<Tile> World::get_tile(const WorldPos &p) const {
-    assert(in_world(p));
-    return map->tile(world2map(p));
-}
-*/
 shared_ptr<Tile> World::get_tile(const MapPos &p) const {
     return map->tile(p);
 }
 
-/*
-bool World::in_world(sf::Vector2i wp) { return in_world(wp.x, wp.y); }
-bool World::in_world(int x, int y) {
-    return 0 <= x && x <= world_width && 0 <= y && y <= world_height;
-}
-
-// TODO move to floor
-bool World::is_tile(int x, int y) {
-    return 0 <= x && x < (int)map->floor(curr_floor)->grid[0].size()
-        && 0 <= y && y < (int)map->floor(curr_floor)->grid.size();
-}
-*/
-
 int World::num_floors() const { return map->num_floors(); }
-/*
-void World::set_curr_floor(int floor) {
-    assert(0 <= floor && floor < num_floors());
-    curr_floor = floor;
-}
-int World::get_curr_floor() const { return curr_floor; }
-*/
 
 void World::handle_input(const sf::Event &e) { }
 void World::update(const sf::Time &dt) {
@@ -136,8 +110,9 @@ void World::draw(int floor) {
     task_debug.update();
 }
 
-void World::push_cmd(unique_ptr<Command> cmd) {
-    if (auto c = dynamic_cast<PlacePlanningCommand*>(cmd.get())) {
+void World::push_event(unique_ptr<Event> e) {
+    assert(e != nullptr);
+    if (auto c = dynamic_cast<PlacePlanningEvent*>(e.get())) {
         for (int x = c->area.start.pos.x; x <= c->area.end.pos.x; ++x) {
             for (int y = c->area.start.pos.y; y <= c->area.end.pos.y; ++y) {
                 shared_ptr<Tile> tile(map->tile(MapPos(x, y, c->area.start.floor)));
@@ -145,7 +120,7 @@ void World::push_cmd(unique_ptr<Command> cmd) {
             }
         }
     }
-    else if (auto c = dynamic_cast<RemovePlanningCommand*>(cmd.get())) {
+    else if (auto c = dynamic_cast<RemovePlanningEvent*>(e.get())) {
         for (int x = c->area.start.pos.x; x <= c->area.end.pos.x; ++x) {
             for (int y = c->area.start.pos.y; y <= c->area.end.pos.y; ++y) {
                 shared_ptr<Tile> tile(map->tile(MapPos(x, y, c->area.start.floor)));
@@ -153,7 +128,7 @@ void World::push_cmd(unique_ptr<Command> cmd) {
             }
         }
     }
-    else if (auto c = dynamic_cast<BuildMaterialCommand*>(cmd.get())) {
+    else if (auto c = dynamic_cast<BuildMaterialEvent*>(e.get())) {
         for (int x = c->area.start.pos.x; x <= c->area.end.pos.x; ++x) {
             for (int y = c->area.start.pos.y; y <= c->area.end.pos.y; ++y) {
                 // TODO some kind of check for possibility?
@@ -162,8 +137,11 @@ void World::push_cmd(unique_ptr<Command> cmd) {
             }
         }
     }
+    // TODO
+    //else if (auto c = dynamic_cast<TaskDoneEvent*>(e.get())) {
+    //}
     else {
-        L_("unknown command in world: %s\n", c->to_string());
+        L_("unknown command in world: %s\n", e->to_string());
     }
 }
 
