@@ -69,6 +69,7 @@ namespace gui {
     private:
         shared_ptr<scene::Material> material;
         unique_ptr<Selection> selection;
+        unique_ptr<sf::Sprite> preview_spr;
     };
 
     class PlanningState : public State {

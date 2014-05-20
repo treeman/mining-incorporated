@@ -33,6 +33,7 @@ bool Worker::assign_task(shared_ptr<Task> task) {
         if (map_pos == t->pos) {
             current_task = task;
             path.clear();
+            p_ind = 0;
         }
         else {
             path = world->pathfind(map_pos, t->pos);
@@ -41,7 +42,7 @@ bool Worker::assign_task(shared_ptr<Task> task) {
             if (path.empty()) return false;
             current_task = task;
         }
-        //has_work_time = false;
+        has_work_time = false;
         return true;
     }
     else {
@@ -62,40 +63,34 @@ void Worker::update(const sf::Time &dt) {
         }
 
         // Work on task, it's not instant.
-        /*
         if (!has_work_time) {
             has_work_time = true;
 
             work_time = 0;
 
-            if (current_task.type == BuildRoom) {
-                // Need to remove current tile
-                RoomType curr_type = world->get_tile_type(tile_pos.x, tile_pos.y);
-                work_time += get_info(curr_type)->remove_time;
-                // Time to build current tile
-                work_time += get_info(current_task.room_type)->build_time;
-            }
-            else if (current_task.type == PlaceObject) {
-                // TODO
+            if (auto t = dynamic_cast<BuildGroundTask*>(current_task.get())) {
+                // TODO factor in remove time?
+                // Or that is a separate task?
+                work_time += t->ground->build_time;
             }
 
             work_clock.restart();
             progressbar.set_target_time(work_time);
             progressbar.reset();
         }
-        */
 
-        //float work_done = work_clock.getElapsedTime().asSeconds();
-        //progressbar.set_completion(work_done);
+        float work_done = work_clock.getElapsedTime().asSeconds();
+        progressbar.set_completion(work_done);
 
-        //if (work_done >= work_time) {
+        if (work_done >= work_time) {
+            // TODO send task done event.
             //world->task_done(current_task);
-            //current_task.is_done = true;
-            //has_work_time = false;
-        //}
-        L_("Done!\n");
-        current_task = nullptr;
-        path.clear();
+            has_work_time = false;
+
+            L_("Done!\n");
+            current_task = nullptr;
+            path.clear();
+        }
     }
 
     //progressbar.set_position(pos.x, pos.y - 11);

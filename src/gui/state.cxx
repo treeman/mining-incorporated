@@ -80,6 +80,7 @@ void MaterialState::reset() {
 void MaterialState::handle_event(const gui::Event &e) {
     if (auto p = dynamic_cast<const GroundMaterialObjectEvent*>(&e)) {
         material = p->obj;
+        preview_spr.reset(new sf::Sprite(create_sprite(material->ground->spr)));
     }
 }
 
@@ -92,19 +93,20 @@ void MaterialState::update(const sf::Time &dt) {
     selection->show_debug();
 }
 void MaterialState::draw(sf::RenderWindow &w) {
-    /*if (!selection->want_remove() && selection->is_active()) {
-        assert(obj != nullptr);
+    if (!selection->want_remove() && selection->is_active()) {
+        assert(material != nullptr);
+        assert(preview_spr != nullptr);
 
         MapSelection sel = to_map(world, selection->get_area());
         for (int x = sel.start.pos.x; x <= sel.end.pos.x; ++x) {
             for (int y = sel.start.pos.y; y <= sel.end.pos.y; ++y) {
-                WindowPos p = world->map2window(MapPos(x, y, world->get_curr_floor()));
-                obj->set_pos(p.x, p.y);
-                obj->draw(w);
+                WindowPos p = world->map2window(MapPos(x, y, gui->current_floor()));
+                preview_spr->setPosition(p.x, p.y);
+                preview_spr->setColor(make_color(255, 255, 255, 150));
+                w.draw(*preview_spr);
             }
         }
     }
-    */
 }
 
 PlanningState::PlanningState(Interface *gui, scene::World *world) : State(gui, world), obj(nullptr),

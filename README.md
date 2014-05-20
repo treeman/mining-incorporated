@@ -9,7 +9,10 @@ Todo
 
 Next steps:
 
-4. Pending build actions previews
+4. Build actions  
+    * Preview pending
+    * Ability to remove pending builds
+    * Remove pending when building on same spot
 5. Refactor Worker.--
     * Report back to world via events.
     * Mark buildings as complete
