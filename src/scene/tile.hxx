@@ -31,8 +31,8 @@ namespace scene {
         // TODO should be able to change ground
         Tile(const Ground *ground);
         const Ground *ground;
-
     public:
+        void set_ground(const Ground *ground);
         const Ground *get_ground() const;
 
         friend class Ground;

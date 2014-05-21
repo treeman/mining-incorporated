@@ -6,10 +6,9 @@ namespace scene {
 
 // Tile class
 Tile::Tile(const Ground *_ground) : preview(nullptr),
-    tmp_suppress_preview(false), ground(_ground)
+    tmp_suppress_preview(false)
 {
-    // TODO move to set_ground
-    ground_spr = create_sprite(ground->spr);
+    set_ground(_ground);
 }
 void Tile::set_pos(int x, int y) {
     pos.x = x; pos.y = y;
@@ -42,6 +41,12 @@ void Tile::remove_preview() {
 
 bool Tile::is_walkable() {
     return ground->is_walkable;
+}
+
+void Tile::set_ground(const Ground *_ground) {
+    ground = _ground;
+    ground_spr = create_sprite(ground->spr);
+    ground_spr.setPosition(pos.x, pos.y);
 }
 
 const Ground *Tile::get_ground() const {

@@ -29,7 +29,7 @@ bool Worker::assign_task(shared_ptr<Task> task) {
     if (!is_free()) return false;
 
     if (auto t = dynamic_cast<BuildGroundTask*>(task.get())) {
-        L_("Building ground at %s\n", t->pos.to_string());
+        //L_("Building ground at %s\n", t->pos.to_string());
         if (map_pos == t->pos) {
             current_task = task;
             path.clear();
@@ -74,6 +74,11 @@ void Worker::update(const sf::Time &dt) {
                 work_time += t->ground->build_time;
             }
 
+            // TODO this may crash if setting is missing.
+            if (Locator::get_settings().get_bool("build_fast")) {
+                work_time /= 20;
+            }
+
             work_clock.restart();
             progressbar.set_target_time(work_time);
             progressbar.reset();
@@ -86,12 +91,11 @@ void Worker::update(const sf::Time &dt) {
             world->push_event(move(unique_ptr<Event>(new TaskDoneEvent(current_task))));
             has_work_time = false;
 
-            L_("Done!\n");
+            //L_("Done!\n");
             current_task = nullptr;
             path.clear();
         }
     }
-
 }
 void Worker::draw(sf::RenderWindow &w) {
     spr.setPosition(world_pos.pos.x, world_pos.pos.y);
