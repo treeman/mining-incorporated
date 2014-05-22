@@ -37,7 +37,6 @@ Next steps:
         Should be able to specify actions. Need to expose functions C++ -> lua.
 12. AreaSelection needs iterators over positions  
     Annoying iterators.
-14. Move away from main.cxx
 11. Multilevel pathfinding.
 
 * Don't lookup from settings at every frame,
