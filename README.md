@@ -13,16 +13,8 @@ Next steps:
     * Preview pending
     * Ability to remove pending builds
     * Remove pending when building on same spot
-5. Refactor Worker.--
-    * Report back to world via events.
-    * Mark buildings as complete
-    * Readd build times
-    * Correct task handling for workers.
 4. Refactor world.  
-    * Rename commands to events
-    * Move task done/skip to events
     * Move build calculations to gui
-    * Task handling
     * World could be split into Components  
         1. Coordinate mappings
         2. Event handling
@@ -30,11 +22,12 @@ Next steps:
         4. Worker handling (map to tasks etc)
         5. Resource handling (can be inside resources)
 5. Refactor Tile.  
-    Readd objects, ability to change ground.
+    Readd objects.
 5. Move ground definitions to object factory
 5. Move floor definitions to Locator
 6. Remove rooms the way they are now.
 7. Refactor objects.
+8. Remove constants.hxx
 9. Specify all data things from lua.  
     * Planning objects (currently in world, move?)
     * Sprites (set colors/alpha channels. load from tileset with indexes)
@@ -44,7 +37,6 @@ Next steps:
         Should be able to specify actions. Need to expose functions C++ -> lua.
 12. AreaSelection needs iterators over positions  
     Annoying iterators.
-13. log.hxx
 14. Move away from main.cxx
 11. Multilevel pathfinding.
 

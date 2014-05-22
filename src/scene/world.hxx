@@ -44,12 +44,11 @@ namespace scene {
         deque<shared_ptr<Task>> pending_tasks;
         VisualDebug task_debug;
 
-        // TODO move to commands/events
         void new_worker();
         shared_ptr<Worker> choose_free_worker();
         void task_done(shared_ptr<Task> task);
-        void skip_task(shared_ptr<Task> task);
         void assign_tasks();
+        //void skip_task(shared_ptr<Task> task);
 
     public:
         // TODO some kind of bounding box for workers

@@ -1,6 +1,6 @@
 #include "settings.hxx"
+#include "log.hxx"
 #include "util/string.hxx"
-#include "locator.hxx"
 
 Settings::Settings() {
 }

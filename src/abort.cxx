@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <SFML/Graphics.hpp>
 #include "abort.hxx"
-#include "locator.hxx"
+#include "log.hxx"
 
 void abort_game(string msg) {
     L_("\nAborting due to critical error.\n%s\n", msg.c_str());

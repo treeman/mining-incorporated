@@ -1,4 +1,4 @@
-#include "locator.hxx"
+#include "log.hxx"
 #include "constants.hxx"
 #include "util/ext.hxx"
 #include "scene/path.hxx"

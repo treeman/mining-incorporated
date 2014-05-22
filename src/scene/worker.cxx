@@ -1,5 +1,5 @@
 #include "butler.hxx"
-#include "locator.hxx"
+#include "log.hxx"
 #include "constants.hxx"
 #include "scene/worker.hxx"
 #include "scene/world.hxx"
@@ -29,7 +29,6 @@ bool Worker::assign_task(shared_ptr<Task> task) {
     if (!is_free()) return false;
 
     if (auto t = dynamic_cast<BuildGroundTask*>(task.get())) {
-        //L_("Building ground at %s\n", t->pos.to_string());
         if (map_pos == t->pos) {
             current_task = task;
             path.clear();

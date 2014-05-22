@@ -1,7 +1,7 @@
 #include <cassert>
-#include "ore.hxx"
-#include "locator.hxx"
+#include "log.hxx"
 #include "lua.hxx"
+#include "scene/ore.hxx"
 
 namespace scene {
 

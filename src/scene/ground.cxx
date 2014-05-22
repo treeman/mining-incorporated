@@ -1,8 +1,8 @@
 #include <cassert>
-#include "ground.hxx"
-#include "locator.hxx"
+#include "log.hxx"
 #include "lua.hxx"
 #include "abort.hxx"
+#include "scene/ground.hxx"
 
 namespace scene {
 

@@ -1,4 +1,4 @@
-#include "locator.hxx"
+#include "log.hxx"
 #include "gui/buttonpanel.hxx"
 #include "gui/picbutton.hxx"
 #include "gui/interface.hxx"

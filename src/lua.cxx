@@ -1,5 +1,5 @@
 #include "lua.hxx"
-#include "locator.hxx"
+#include "log.hxx"
 
 unordered_set<string> lua_ignored_keys = {
     "string",

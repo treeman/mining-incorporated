@@ -1,6 +1,6 @@
 #include "butler.hxx"
 #include "constants.hxx"
-#include "locator.hxx"
+#include "log.hxx"
 #include "util/ext.hxx"
 #include "scene/world.hxx"
 #include "gui/interface.hxx"

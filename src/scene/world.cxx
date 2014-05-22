@@ -135,10 +135,10 @@ shared_ptr<Worker> World::choose_free_worker() {
     return nullptr;
 }
 
-void World::skip_task(shared_ptr<Task> task) {
-    L_("TODO world received a skipped task: %s\n", task->to_string());
+//void World::skip_task(shared_ptr<Task> task) {
+    //L_("TODO world received a skipped task: %s\n", task->to_string());
     //tasks.push_back(task);
-}
+//}
 void World::assign_tasks() {
     // TODO make something better...
     // 1. Take into account time for workers doing tasks, might be able to do tasks close.

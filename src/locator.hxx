@@ -9,7 +9,6 @@
 #include "state/state.hxx"
 #include "scene/objectfactory.hxx"
 
-#define L_ (Locator::get_logger())
 #define D_ (Locator::get_debug())
 
 class Locator {
