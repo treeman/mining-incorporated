@@ -228,16 +228,13 @@ Path Floor::pathfind(const TilePos &from, const TilePos &to) const {
             if (next_pos.x < 0 || next_pos.x >= cols ||
                 next_pos.y < 0 || next_pos.y >= rows) continue;
 
-            //if (grid[next_pos.y][next_pos.x]->is_walkable() && next_pos != to) {
-            //if (next_pos != to) {
-                //continue;
-            //}
-
-            int next_cost = 1 + dist[s.p.y][s.p.x];
-            if (next_cost < dist[next_pos.y][next_pos.x]) {
-                dist[next_pos.y][next_pos.x] = next_cost;
-                prev[next_pos.y][next_pos.x] = s.p;
-                pq.push(State(next_pos, next_cost, h(next_pos)));
+            if (grid[next_pos.y][next_pos.x]->is_walkable() || next_pos == to) {
+                int next_cost = 1 + dist[s.p.y][s.p.x];
+                if (next_cost < dist[next_pos.y][next_pos.x]) {
+                    dist[next_pos.y][next_pos.x] = next_cost;
+                    prev[next_pos.y][next_pos.x] = s.p;
+                    pq.push(State(next_pos, next_cost, h(next_pos)));
+                }
             }
         }
     }
