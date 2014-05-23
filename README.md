@@ -9,6 +9,9 @@ Todo
 
 Next steps:
 
+3. Bounding box for workers
+3. Worker stats
+3. Worker selection
 4. Build actions  
     * Preview pending
     * Ability to remove pending builds
