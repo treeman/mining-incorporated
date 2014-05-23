@@ -38,25 +38,19 @@ Next steps:
 12. AreaSelection needs iterators over positions  
     Annoying iterators.
 11. Multilevel pathfinding.
+13. Rework base object. Not used??
 
 * Don't lookup from settings at every frame,
     keep a pointer thing to fetch values.
 * Lazy state change (after drawing)
-* remove typedef shared ptrs
 * unit tests
     for fmt at least
 * Refactor RoomType into OreType or similar
-* Multiple levels
 * Use lua for constants and definitions
     Would be cool to be able to change some things via console (colors etc?)
 * Create a console where we can set settings and cheat etc.
-* General refactoring
 * Prettier worker sprites
 * Simulation and interaction of objects
-* Logging  
-    * Cannot `<< endl` to it, but maybe that's ok?
-* Move global state to Locator
-    * Butler
 * Make independent of screen size!
 * Remove constants.hxx. Move to lua settings file instead.
 * Scrollable history

@@ -14,11 +14,6 @@ namespace scene {
     public:
         Worker(const WorldPos &pos, World *world);
 
-        // TODO change to our own positions
-        // TODO position in center of worker
-        // TODO some kind of bounding box?
-        //sf::Vector2f get_pos() const { return pos; }
-        //
         WorldPos get_pos() const;
         int on_floor() const;
 

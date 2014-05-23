@@ -1,34 +1,33 @@
 #include <memory>
 using namespace std;
 
+#include "abort.hxx"
 #include "butler.hxx"
 
-map<string, FontPtr> fnts;
-map<string, TexPtr> texs;
+map<string, shared_ptr<sf::Font>> fnts;
+map<string, shared_ptr<sf::Texture>> texs;
 
-FontPtr get_font(string path) {
+shared_ptr<sf::Font> get_font(string path) {
     auto it = fnts.find(path);
     if (it != fnts.end()) return it->second;
 
-    FontPtr fnt(new sf::Font);
+    shared_ptr<sf::Font> fnt(new sf::Font);
     string realpath = "fnt/" + path;
     if (!fnt->loadFromFile(realpath)) {
-        printf("Error! Couldn't load font: %s\n", realpath.c_str());
-        exit(-1);
+        abort_game("Error! Couldn't load font: %s\n", realpath);
     }
     fnts.insert(make_pair(path, fnt));
     return fnt;
 }
 
-TexPtr get_sprite(string path) {
+shared_ptr<sf::Texture> get_sprite(string path) {
     auto it = texs.find(path);
     if (it != texs.end()) return it->second;
 
-    TexPtr tex(new sf::Texture);
+    shared_ptr<sf::Texture> tex(new sf::Texture);
     string realpath = "gfx/" + path;
     if (!tex->loadFromFile(realpath)) {
-        printf("Error! Couldn't load texture: %s\n", realpath.c_str());
-        return TexPtr();
+        abort_game("Error! Couldn't load texture: %s\n", realpath);
     }
     texs.insert(make_pair(path, tex));
     return tex;

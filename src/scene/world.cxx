@@ -71,24 +71,6 @@ void World::update(const sf::Time &dt) {
         worker->update(dt);
     }
 
-    /*
-    // Add in debug info
-    if (Locator::get_settings().get_bool("debug_positions")) {
-        WindowPos mp(get_mpos());
-        if (in_world(mp)) {
-            WorldPos wpos(window2world(mp));
-            MapPos map_pos(world2map(wpos));
-            // Treat as int position, prevent unnecessary decimals
-            D_.set_key("world", IPoint(wpos.pos).to_string() + " (" + to_string(wpos.floor) + ")");
-            D_.set_key("map", map_pos.to_string());
-        }
-        else {
-            D_.set_key("world", "invalid");
-            D_.set_key("map", "invalid");
-        }
-    }
-    */
-
     if (Locator::get_settings().get_bool("debug_tasks")) {
         task_debug.tmp("pending tasks: " + to_string(pending_tasks.size()));
         for (auto &t : pending_tasks) {
@@ -103,7 +85,8 @@ void World::draw(int floor) {
     map->draw(w, floor);
 
     for (auto &worker : workers) {
-        worker->draw(w);
+        if (worker->get_pos().floor == floor)
+            worker->draw(w);
     }
 
     w.setView(curr);

@@ -34,6 +34,15 @@ bool Interface::handle_input(const sf::Event &e) {
     panel.handle_input(e);
     current_state->handle_input(e);
 
+    switch (e.type) {
+        case sf::Event::TextEntered:
+            if ('1' <= e.text.unicode && e.text.unicode <= '9') {
+                set_floor(e.text.unicode - '1');
+            }
+            break;
+        default: break;
+    }
+
     return true;
 }
 void Interface::update(const sf::Time &dt) {
@@ -60,6 +69,7 @@ void Interface::draw() {
     current_state->draw(window);
     panel.draw(window);
     draw_resources();
+    draw_floor_selection();
 }
 void Interface::set_state(GuiState state) {
     unsigned x = static_cast<unsigned>(state);
@@ -87,13 +97,11 @@ void Interface::set_floor(int floor) {
     }
 }
 void Interface::draw_floor_selection() {
-    /*
     // TODO draw other floors as well.
-    txt.setString("floor: " + to_string(curr_floor));
-    txt.setPosition(155, 15);
-    txt.setColor(sf::Color::White);
-    window.draw(txt);
-    */
+    stat_txt.setString("floor: " + to_string(curr_floor + 1) + "/" + to_string(world->num_floors()));
+    stat_txt.setPosition(155, 15);
+    stat_txt.setColor(sf::Color::White);
+    window.draw(stat_txt);
 }
 
 void Interface::draw_resources() {
