@@ -21,6 +21,15 @@ WorldPos Worker::get_pos() const {
 int Worker::on_floor() const {
     return world_pos.floor;
 }
+bool Worker::is_on(const WorldPos &p) const {
+    if (p.floor != world_pos.floor) return false;
+
+    auto rect = spr.getLocalBounds();
+    rect.left = world_pos.pos.x;
+    rect.top = world_pos.pos.y;
+
+    return rect.contains(p.pos);
+}
 bool Worker::is_free() const {
     return current_task == nullptr;
 }

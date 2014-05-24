@@ -51,8 +51,8 @@ namespace scene {
         //void skip_task(shared_ptr<Task> task);
 
     public:
-        // TODO some kind of bounding box for workers
         shared_ptr<Worker> select_closest_worker(const WorldPos &p);
+        shared_ptr<Worker> select_worker(const WorldPos &p);
         int num_workers() const;
     private:
         sf::RenderWindow &w;

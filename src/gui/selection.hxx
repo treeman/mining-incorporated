@@ -38,6 +38,13 @@ namespace gui {
                 return s.to_string() + " - " + e.to_string();
         }
 
+        template<typename S>
+        S area() const {
+            S dx = abs(start.pos.x - end.pos.x) + 1;
+            S dy = abs(start.pos.y - end.pos.y) + 1;
+            return dx * dy;
+        }
+
         T start, end;
     };
 
@@ -58,6 +65,7 @@ namespace gui {
         );
 
         WorldSelection get_area() const;
+        WindowPos get_outside_txt_pos() const;
 
         string to_string() const;
         void show_debug() const;

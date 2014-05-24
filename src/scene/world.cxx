@@ -145,6 +145,7 @@ const Resources &World::get_resources() const {
     return resources;
 }
 
+// TODO smarter later?
 shared_ptr<Worker> World::select_closest_worker(const WorldPos &p) {
     shared_ptr<Worker> res{ nullptr };
     float closest = numeric_limits<float>::infinity();
@@ -156,6 +157,12 @@ shared_ptr<Worker> World::select_closest_worker(const WorldPos &p) {
         }
     }
     return res;
+}
+shared_ptr<Worker> World::select_worker(const WorldPos &p) {
+    for (auto w : workers) {
+        if (w->is_on(p)) return w;
+    }
+    return nullptr;
 }
 
 int World::num_workers() const {

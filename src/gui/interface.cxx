@@ -151,39 +151,5 @@ void Interface::draw_stats(string pre, int &val, sf::Color color, int x, int y) 
     window.draw(stat_txt);
 }
 
-// Old stuff
-
-#if 0
-
-void Interface::draw_preview_cost() {
-    // Draw preview cost
-    // TODO better position
-    WindowPos wp(get_mpos());
-    if (!world->in_world(wp)) return;
-
-    auto curr = world->window2world(wp).pos;
-    int x = 0, y = 0;
-    if (object_to_build || (!active_selection && room_to_build)) {
-        x = curr.x + 20;
-        y = curr.y - 30;
-    }
-    else {
-        auto sel = selection_start.pos;
-        //auto sel = world->tile2window(selection_start);
-        //printf("%d,%d -> %d,%d\n", selection_start.x, selection_start.y, sel.x, sel.y);
-        int left = min((int)sel.x, (int)curr.x);
-        int top = min((int)sel.y, (int)curr.y);
-        x = left + 20;
-        y = top - 30;
-    }
-    txt.setPosition(x, y);
-    txt.setColor(sf::Color::White);
-    stringstream ss; ss << "$" << preview_cost;
-    txt.setString(ss.str());
-    window.draw(txt);
-}
-
-#endif
-
 } // Gui
 

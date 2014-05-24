@@ -22,10 +22,18 @@ string type2string(GuiState type) {
     }
 }
 
-InfoState::InfoState(Interface *gui, scene::World *world) : State(gui, world) {
+InfoState::InfoState(Interface *gui, scene::World *world) : State(gui, world), selected_worker{nullptr} {
 
 }
 bool InfoState::handle_input(const sf::Event &e) {
+    switch (e.type) {
+        case sf::Event::MouseButtonPressed:
+            if (e.mouseButton.button == sf::Mouse::Button::Left) {
+                left_click(WindowPos(e.mouseButton.x, e.mouseButton.y));
+            }
+            break;
+        default: break;
+    }
     return true;
 }
 void InfoState::update(const sf::Time &dt) {
@@ -47,15 +55,25 @@ void InfoState::update(const sf::Time &dt) {
             D_.tmp(fmt("ground: %s", ground->key));
         }
 
-        // TODO should select worker by bounding box
-        //shared_ptr<scene::Worker> worker(world->select_closest_worker(world_pos));
-        //if (worker != nullptr) {
-            //D_.tmp("Some worker!");
-        //}
+        // TODO more printouts!
+        shared_ptr<scene::Worker> worker(world->select_worker(world_pos));
+        if (worker != nullptr) {
+            D_.tmp("Hovering over worker!");
+        }
+        if (selected_worker != nullptr) {
+            D_.tmp("worker selected");
+        }
     }
 }
 void InfoState::draw(sf::RenderWindow &w) {
 
+}
+void InfoState::left_click(const WindowPos &p) {
+    const int f = gui->current_floor();
+    if (world->in_world(p, f)) {
+        auto wpos = world->window2world(p, f);
+        selected_worker = world->select_worker(wpos);
+    }
 }
 
 MaterialState::MaterialState(Interface *gui, scene::World *world) : State(gui, world), //obj(nullptr),
@@ -71,6 +89,7 @@ MaterialState::MaterialState(Interface *gui, scene::World *world) : State(gui, w
         },
         [](WorldSelection sel) { }))
 {
+    txt.reset(new sf::Text(create_txt("consola.ttf", 14)));
 }
 void MaterialState::reset() {
     selection->clear();
@@ -105,6 +124,14 @@ void MaterialState::draw(sf::RenderWindow &w) {
                 preview_spr->setColor(make_color(255, 255, 255, 150));
                 w.draw(*preview_spr);
             }
+        }
+
+        int preview_cost = sel.area<int>() * material->cost;
+        if (preview_cost > 0) {
+            WindowPos preview_pos = selection->get_outside_txt_pos();
+            txt->setPosition(preview_pos);
+            txt->setString("$" + to_string(preview_cost));
+            w.draw(*txt);
         }
     }
 }

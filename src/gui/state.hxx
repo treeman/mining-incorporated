@@ -7,6 +7,7 @@
 
 namespace scene {
     class World;
+    class Worker;
 };
 
 namespace gui {
@@ -53,6 +54,9 @@ namespace gui {
         bool handle_input(const sf::Event &e) override;
         void update(const sf::Time &dt) override;
         void draw(sf::RenderWindow &w) override;
+    private:
+        void left_click(const WindowPos &p);
+        shared_ptr<scene::Worker> selected_worker;
     };
 
     class MaterialState : public State {
@@ -70,6 +74,7 @@ namespace gui {
         shared_ptr<scene::Material> material;
         unique_ptr<Selection> selection;
         unique_ptr<sf::Sprite> preview_spr;
+        unique_ptr<sf::Text> txt;
     };
 
     class PlanningState : public State {

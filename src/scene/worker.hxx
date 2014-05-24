@@ -17,6 +17,9 @@ namespace scene {
         WorldPos get_pos() const;
         int on_floor() const;
 
+        // TODO move to bounding box?
+        bool is_on(const WorldPos &p) const;
+
         bool is_free() const;
         bool assign_task(shared_ptr<Task> task);
 

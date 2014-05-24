@@ -9,9 +9,7 @@ Todo
 
 Next steps:
 
-3. Bounding box for workers
-3. Worker stats
-3. Worker selection
+3. world2map assertion errors sometimes
 4. Build actions  
     * Preview pending
     * Ability to remove pending builds
@@ -42,6 +40,7 @@ Next steps:
     Annoying iterators.
 11. Multilevel pathfinding.
 13. Rework base object. Not used??
+3. Worker stats
 
 * Don't lookup from settings at every frame,
     keep a pointer thing to fetch values.

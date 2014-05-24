@@ -1,4 +1,5 @@
 #include "locator.hxx"
+#include "util/ext.hxx"
 #include "gui/selection.hxx"
 #include "gui/interface.hxx"
 #include "scene/world.hxx"
@@ -19,6 +20,15 @@ Selection::Selection(
 
 WorldSelection Selection::get_area() const {
     return WorldSelection(area);
+}
+WindowPos Selection::get_outside_txt_pos() const {
+    auto area = get_area();
+    WindowPos mpos = get_mpos();
+    WindowPos top_left = world->world2window(area.start);
+    WindowPos res;
+    res.x = min(top_left.x, mpos.x) + 20;
+    res.y = min(top_left.y, mpos.y) - 30;
+    return res;
 }
 
 string Selection::to_string() const {
