@@ -107,6 +107,14 @@ Inspiration taken from Evil Genius, Theme Hospital, Rollercoaster Tycoon, Prison
     Everything ordinary in Black/White
     Ores and things produced by ores are the only things with color.
 
+* Mining rock should be expensive and you should go minus
+* Water pockets may flood your floors
+* Only robots can work in lower floors
+* Level up workers + items
+* Locator on floors above are able to see down through the rocks, but not through empty space
+* Things shall cost both money + minerals
+* Need to add wood etc on sides of mines to keep them from falling in
+
 Ground
 ------
 
