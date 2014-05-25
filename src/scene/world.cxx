@@ -56,6 +56,12 @@ WindowPos World::world2window(const WorldPos &p) const {
     return map2window(world2map(p));
 }
 
+WorldPos World::clamp(const WorldPos &p) const {
+    WorldPos res(p);
+    res.pos = p.pos.clamp(0, world_width, 0, world_height);
+    return res;
+}
+
 shared_ptr<Tile> World::get_tile(const MapPos &p) const {
     return map->tile(p);
 }
@@ -89,6 +95,8 @@ void World::draw(int floor) {
             worker->draw(w);
     }
 
+    draw_pending_tasks();
+
     w.setView(curr);
     task_debug.update();
 }
@@ -100,6 +108,18 @@ void World::push_task(shared_ptr<Task> task) {
 
 Path World::pathfind(const MapPos &from, const MapPos &to) const {
     return map->pathfind(from, to);
+}
+void World::draw_pending_tasks() {
+    // Draw unhandler
+    for (auto &t : pending_tasks) {
+        t->draw_preview(w, this);
+    }
+
+    // Draw currently handling
+    for (auto &worker : workers) {
+        if (worker->has_task())
+            worker->get_task()->draw_preview(w, this);
+    }
 }
 
 void World::new_worker() {

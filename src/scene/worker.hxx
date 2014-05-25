@@ -22,6 +22,8 @@ namespace scene {
 
         bool is_free() const;
         bool assign_task(shared_ptr<Task> task);
+        bool has_task() const;
+        shared_ptr<Task> get_task() const;
 
         void update(const sf::Time &dt);
         void draw(sf::RenderWindow &w);

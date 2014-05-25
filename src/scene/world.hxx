@@ -27,6 +27,8 @@ namespace scene {
         WindowPos map2window(const MapPos &p) const;
         WindowPos world2window(const WorldPos &p) const;
 
+        WorldPos clamp(const WorldPos &p) const;
+
         shared_ptr<Tile> get_tile(const MapPos &p) const;
 
         int num_floors() const;
@@ -41,6 +43,7 @@ namespace scene {
 
         Path pathfind(const MapPos &from, const MapPos &to) const;
     private:
+        void draw_pending_tasks();
         deque<shared_ptr<Task>> pending_tasks;
         VisualDebug task_debug;
 

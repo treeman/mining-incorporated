@@ -6,11 +6,14 @@
 // A task is something for workers to do,
 // verified by the world so it works.
 namespace scene {
+    class World;
+
     class Task {
     public:
-        virtual ~Task() = default;
+        virtual ~Task() { }
 
         virtual string to_string() const = 0;
+        virtual void draw_preview(sf::RenderWindow &, World *) { }
     };
 
     class BuildGroundTask : public Task {
@@ -21,6 +24,10 @@ namespace scene {
 
         shared_ptr<const Ground> ground;
         MapPos pos;
+
+        void draw_preview(sf::RenderWindow &w, World *world) override;
+    private:
+        sf::Sprite spr;
     };
 
 } // Scene

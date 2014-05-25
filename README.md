@@ -114,6 +114,11 @@ Inspiration taken from Evil Genius, Theme Hospital, Rollercoaster Tycoon, Prison
 * Locator on floors above are able to see down through the rocks, but not through empty space
 * Things shall cost both money + minerals
 * Need to add wood etc on sides of mines to keep them from falling in
+* Journalists will visit
+* Cover up accidents?
+* Newspaper with articles writing about the corporation
+* Bribe journalists?
+* Genetically manipulated workers
 
 Ground
 ------

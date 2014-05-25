@@ -40,6 +40,16 @@ public:
         const float l = len();
         return l == 0 ? *this : *this * (1.0f / l);
     }
+    Point<T> clamp(T x1, T x2, T y1, T y2) const {
+        if (x1 > x2) swap(x1, x2);
+        if (y1 > y2) swap(y1, y2);
+        Point<T> res(*this);
+        if (res.x < x1) res.x = x1;
+        if (res.x > x2) res.x = x2;
+        if (res.y < y1) res.y = y1;
+        if (res.y > y2) res.y = y2;
+        return res;
+    }
 
     void print(const char *s = "") const {
         cout << "(" << x << ", " << y << ")" << s << flush;

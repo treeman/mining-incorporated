@@ -58,6 +58,12 @@ bool Worker::assign_task(shared_ptr<Task> task) {
         return false;
     }
 }
+bool Worker::has_task() const {
+    return get_task() != nullptr;
+}
+shared_ptr<Task> Worker::get_task() const {
+    return current_task;
+}
 
 void Worker::update(const sf::Time &dt) {
     if (!path.empty())
@@ -145,6 +151,7 @@ void Worker::follow_path(const sf::Time &dt) {
     FPoint norm = (to - from).normalize();
     FPoint diff = norm * dt.asSeconds() * 100.0f;
     world_pos.pos = world_pos.pos + diff;
+    world_pos = world->clamp(world_pos);
     map_pos = world->world2map(world_pos);
 }
 
