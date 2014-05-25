@@ -9,36 +9,39 @@ Todo
 
 Next steps:
 
-4. Build actions  
+1. Proper mine actions, first mine then build
+1. Build actions  
     * Ability to remove pending builds
     * Remove pending when building on same spot
-4. Refactor world.  
-    * Move build calculations to gui
+2. Fog of War
+3. Buildable objectst
+4. Top floor is overworld
+8. Refactor world.  
     * World could be split into Components  
         1. Coordinate mappings
         2. Event handling
         3. Task handling
         4. Worker handling (map to tasks etc)
         5. Resource handling (can be inside resources)
-5. Refactor Tile.  
+8. Refactor Tile.  
     Readd objects.
-5. Move ground definitions to object factory
-5. Move floor definitions to Locator
-6. Remove rooms the way they are now.
-7. Refactor objects.
+8. Move ground definitions to object factory
+8. Move floor definitions to Locator
+8. Remove rooms the way they are now.
+8. Refactor objects.
 8. Remove constants.hxx
-9. Specify all data things from lua.  
+8. Specify all data things from lua.  
     * Planning objects (currently in world, move?)
     * Sprites (set colors/alpha channels. load from tileset with indexes)
     * Buildable materials, with costs and what ground it is.
     * Colors and positions of gui elements.
     * What buttons in ButtonPanel and in what order.  
         Should be able to specify actions. Need to expose functions C++ -> lua.
-12. AreaSelection needs iterators over positions  
+10. AreaSelection needs iterators over positions  
     Annoying iterators.
-11. Multilevel pathfinding.
-13. Rework base object. Not used??
-3. Worker stats
+10. Multilevel pathfinding.
+10. Rework base object. Not used??
+10. Worker stats
 
 * Don't lookup from settings at every frame,
     keep a pointer thing to fetch values.
