@@ -15,7 +15,10 @@ ButtonPanel::ButtonPanel(Interface &_gui) : gui(_gui), curr(Categories::UNSELECT
 
     subcategories.resize(static_cast<int>(Categories::NUM_CATEGORIES));
     categories->add(shared_ptr<BoundedObject>(
-        new PicButton(make_category_selector(Categories::UNSELECTED), "mine"))
+        new PicButton([this](BaseButton &button) mutable {
+                deselect_categories();
+                gui.set_state(GuiState::MINE);
+            }, "mine"))
     );
 
     init_material_button();
@@ -130,10 +133,7 @@ void ButtonPanel::init_material_button() {
 
         shared_ptr<scene::Material> material(new scene::Material(scene::get_ground(ground), cost));
 
-        //L_("%s: %s\n", key, material->to_string());
-
         cat->add(shared_ptr<BoundedObject>(new PicButton([this, material, key](BaseButton &button) {
-            L_("Build %s\n", key);
             gui.set_state(GuiState::MATERIAL);
             gui.handle_event(GroundMaterialObjectEvent(material));
         }, key)));

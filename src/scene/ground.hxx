@@ -26,7 +26,7 @@ namespace scene {
         friend void load_ground_definitions(string);
     };
 
+    // TODO change from shared to strict pointer
     shared_ptr<const Ground> get_ground(string key);
-
 };
 

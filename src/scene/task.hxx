@@ -16,6 +16,19 @@ namespace scene {
         virtual void draw_preview(sf::RenderWindow &, World *) { }
     };
 
+    class MineTask : public Task {
+    public:
+        MineTask(MapPos pos);
+
+        string to_string() const override;
+
+        MapPos pos;
+
+        void draw_preview(sf::RenderWindow &w, World *world) override;
+    private:
+        sf::Sprite spr;
+    };
+
     class BuildGroundTask : public Task {
     public:
         BuildGroundTask(shared_ptr<const Ground> o, MapPos pos);

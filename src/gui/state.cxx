@@ -17,6 +17,7 @@ string type2string(GuiState type) {
         case GuiState::INFO: return "Info";
         case GuiState::MATERIAL: return "Material";
         case GuiState::PLANNING: return "Planning";
+        case GuiState::MINE: return "Mine";
         case GuiState::NUM_STATES: return "Invalid GuiState";
         default: return "Unknown GuiState";
     }
@@ -154,6 +155,7 @@ PlanningState::PlanningState(Interface *gui, scene::World *world) : State(gui, w
         }))
 {
 }
+
 void PlanningState::reset() {
     selection->clear();
     obj = nullptr;
@@ -195,6 +197,48 @@ void PlanningState::draw(sf::RenderWindow &w) {
                 WindowPos p = world->map2window(MapPos(x, y, sel.start.floor));
                 obj->set_pos(p.x, p.y);
                 obj->draw(w);
+            }
+        }
+    }
+}
+
+MineState::MineState(Interface *gui, scene::World *world) : State(gui, world),
+    selection(new Selection(
+        world,
+        gui,
+        [this](WorldSelection sel) mutable {
+            MapSelection mapsel = to_map(this->world, sel);
+
+            unique_ptr<scene::Event> cmd(new scene::MineEvent(mapsel));
+            this->world->push_event(std::move(cmd));
+        },
+        [](WorldSelection) {}
+    ))
+{
+    preview_spr.reset(new sf::Sprite(create_sprite("mine_selection_preview.png")));
+    preview_spr->setColor(sf::Color(255, 255, 255, 100));
+}
+
+void MineState::reset() {
+    selection->clear();
+}
+
+bool MineState::handle_input(const sf::Event &e) {
+    selection->handle_input(e);
+    return true;
+}
+
+void MineState::update(const sf::Time &dt) {
+    selection->show_debug();
+}
+void MineState::draw(sf::RenderWindow &w) {
+    if (!selection->want_remove() && selection->is_active()) {
+        MapSelection sel = to_map(world, selection->get_area());
+        for (int x = sel.start.pos.x; x <= sel.end.pos.x; ++x) {
+            for (int y = sel.start.pos.y; y <= sel.end.pos.y; ++y) {
+                WindowPos p = world->map2window(MapPos(x, y, sel.start.floor));
+                preview_spr->setPosition(p.x, p.y);
+                w.draw(*preview_spr);
             }
         }
     }

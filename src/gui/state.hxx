@@ -41,6 +41,7 @@ namespace gui {
         INFO,
         MATERIAL,
         PLANNING,
+        MINE,
 
         NUM_STATES,
     };
@@ -91,6 +92,22 @@ namespace gui {
     private:
         shared_ptr<scene::PlanningObject> obj;
         unique_ptr<Selection> selection;
+    };
+
+    class MineState : public State {
+    public:
+        MineState(Interface *gui, scene::World *world);
+
+        void reset() override;
+
+        bool handle_input(const sf::Event &e) override;
+
+        void update(const sf::Time &dt) override;
+        void draw(sf::RenderWindow &w) override;
+    private:
+        unique_ptr<Selection> selection;
+        unique_ptr<sf::Text> txt;
+        unique_ptr<sf::Sprite> preview_spr;
     };
 
 }

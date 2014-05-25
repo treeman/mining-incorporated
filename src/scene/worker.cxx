@@ -53,6 +53,22 @@ bool Worker::assign_task(shared_ptr<Task> task) {
         has_work_time = false;
         return true;
     }
+    else if (auto t = dynamic_cast<MineTask*>(task.get())) {
+        if (map_pos == t->pos) {
+            current_task = task;
+            path.clear();
+            p_ind = 0;
+        }
+        else {
+            path = world->pathfind(map_pos, t->pos);
+            p_ind = 0;
+
+            if (path.empty()) return false;
+            current_task = task;
+        }
+        has_work_time = false;
+        return true;
+    }
     else {
         L_("unknown task %s in worker\n", task->to_string());
         return false;
@@ -86,6 +102,13 @@ void Worker::update(const sf::Time &dt) {
                 // TODO factor in remove time?
                 // Or that is a separate task?
                 work_time += t->ground->build_time;
+            }
+            else if (auto t = dynamic_cast<MineTask*>(current_task.get())) {
+                // TODO something?
+                work_time += 2;
+            }
+            else {
+                L_("handling unknown task %s in worker\n", current_task->to_string());
             }
 
             // TODO this may crash if setting is missing.

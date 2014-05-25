@@ -18,6 +18,7 @@ Interface::Interface(scene::World *w, sf::RenderWindow &win) : world(w), window(
     states[static_cast<unsigned>(GuiState::INFO)].reset(new InfoState(this, world));
     states[static_cast<unsigned>(GuiState::MATERIAL)].reset(new MaterialState(this, world));
     states[static_cast<unsigned>(GuiState::PLANNING)].reset(new PlanningState(this, world));
+    states[static_cast<unsigned>(GuiState::MINE)].reset(new MineState(this, world));
     set_state(GuiState::INFO);
     assert(current_state != nullptr);
 

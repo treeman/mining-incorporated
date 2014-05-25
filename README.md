@@ -9,9 +9,7 @@ Todo
 
 Next steps:
 
-3. world2map assertion errors sometimes
 4. Build actions  
-    * Preview pending
     * Ability to remove pending builds
     * Remove pending when building on same spot
 4. Refactor world.  

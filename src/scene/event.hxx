@@ -54,5 +54,14 @@ namespace scene {
 
         shared_ptr<Task> task;
     };
+
+    class MineEvent : public Event {
+    public:
+        MineEvent(gui::MapSelection area);
+
+        string to_string() const override;
+
+        gui::MapSelection area;
+    };
 }
 
