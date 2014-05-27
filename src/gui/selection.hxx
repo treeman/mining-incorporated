@@ -13,25 +13,28 @@ namespace gui {
     // TODO iterator over it.
     template<typename T>
     struct AreaSelection {
-        AreaSelection() : start(-1), end(-1) { }
-        AreaSelection(T x, T y) : start(x), end(y) { normalize(); }
-        AreaSelection(const AreaSelection &o) : start(o.start), end(o.end) {
+        AreaSelection() : first(-1), last(-1) { }
+        AreaSelection(T x, T y) : first(x), last(y) {
+            assert(x.floor == y.floor);
+            normalize();
+        }
+        AreaSelection(const AreaSelection &o) : first(o.first), last(o.last) {
             normalize();
         }
         AreaSelection &operator = (const AreaSelection &o) {
-            start = o.start;
-            end = o.end;
+            first = o.first;
+            last = o.last;
             normalize();
             return *this;
         }
 
         void normalize() {
-            if (start.pos.x > end.pos.x) swap(start.pos.x, end.pos.x);
-            if (start.pos.y > end.pos.y) swap(start.pos.y, end.pos.y);
+            if (first.pos.x > last.pos.x) swap(first.pos.x, last.pos.x);
+            if (first.pos.y > last.pos.y) swap(first.pos.y, last.pos.y);
         }
 
         string to_string() const {
-            IPoint s(start.pos), e(end.pos);
+            IPoint s(first.pos), e(last.pos);
             if (s == e)
                 return s.to_string();
             else
@@ -40,12 +43,53 @@ namespace gui {
 
         template<typename S>
         S area() const {
-            S dx = abs(start.pos.x - end.pos.x) + 1;
-            S dy = abs(start.pos.y - end.pos.y) + 1;
+            S dx = abs(first.pos.x - last.pos.x) + 1;
+            S dy = abs(first.pos.y - last.pos.y) + 1;
             return dx * dy;
         }
 
-        T start, end;
+        int floor() const {
+            assert(first.floor == last.floor);
+            return first.floor;
+        }
+
+        T first, last;
+
+        class my_it : public iterator<forward_iterator_tag, T> {
+        public:
+            my_it(T _pos, T _first, T _last) : pos(_pos), first(_first), last(_last) { }
+
+            const T &operator*() const { return pos; }
+            my_it &operator++() {
+                pos = next();
+                return *this;
+            }
+            my_it operator++(int) {
+                my_it res(pos, first, last);
+                pos = next();
+                return res;
+            }
+
+            bool operator == (const my_it &it) const { return pos == it.pos; }
+            bool operator != (const my_it &it) const { return pos != it.pos; }
+        private:
+            T next() const {
+                T res(pos);
+                ++res.pos.x;
+                if (res.pos.x > last.pos.x) {
+                    res.pos.x = first.pos.x;
+                    ++res.pos.y;
+                }
+                return res;
+            }
+            T pos;
+            const T first, last;
+        };
+
+        using iterator = my_it;
+
+        iterator begin() const { return my_it(first, first, last); }
+        iterator end() const { return ++my_it(last, first, last); }
     };
 
     typedef AreaSelection<MapPos> MapSelection;
@@ -70,8 +114,8 @@ namespace gui {
         string to_string() const;
         void show_debug() const;
 
-        void begin(const WorldPos &start);
-        void extend(const WorldPos &end);
+        void begin(const WorldPos &first);
+        void extend(const WorldPos &last);
         void clear();
         bool is_active() const;
         bool want_remove() const;

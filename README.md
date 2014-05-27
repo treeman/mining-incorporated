@@ -37,8 +37,6 @@ Next steps:
         Should be able to specify actions. Need to expose functions C++ -> lua.
     * First floor
     * Selection preview color
-10. AreaSelection needs iterators over positions  
-    Annoying iterators.
 10. Multilevel pathfinding.
 10. Rework base object. Not used??
 10. Worker stats

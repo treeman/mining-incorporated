@@ -118,20 +118,17 @@ void MaterialState::draw(sf::RenderWindow &w) {
         assert(preview_spr != nullptr);
 
         MapSelection sel = to_map(world, selection->get_area());
-        for (int x = sel.start.pos.x; x <= sel.end.pos.x; ++x) {
-            for (int y = sel.start.pos.y; y <= sel.end.pos.y; ++y) {
-                MapPos mp(x, y, gui->current_floor());
-                WindowPos winpos = world->map2window(mp);
-                preview_spr->setPosition(winpos.x, winpos.y);
-                if (world->can_build(mp, material)) {
-                    preview_spr->setColor(make_color(255, 255, 255, 150));
-                }
-                else {
-                    // TODO move color to lua
-                    preview_spr->setColor(make_color(0xFF9E9E, 150));
-                }
-                w.draw(*preview_spr);
+        for (MapPos mp : sel) {
+            WindowPos winpos = world->map2window(mp);
+            preview_spr->setPosition(winpos.x, winpos.y);
+            if (world->can_build(mp, material)) {
+                preview_spr->setColor(make_color(255, 255, 255, 150));
             }
+            else {
+                // TODO move color to lua
+                preview_spr->setColor(make_color(0xFF9E9E, 150));
+            }
+            w.draw(*preview_spr);
         }
 
         int preview_cost = sel.area<int>() * material->cost;
@@ -184,11 +181,9 @@ void PlanningState::update(const sf::Time &dt) {
     // Suppress drawing of preview objects if we want to delete
     if (selection->want_remove() && selection->is_active()) {
         MapSelection sel = to_map(world, selection->get_area());
-        for (int x = sel.start.pos.x; x <= sel.end.pos.x; ++x) {
-            for (int y = sel.start.pos.y; y <= sel.end.pos.y; ++y) {
-                auto tile = world->get_tile(MapPos(x, y, sel.start.floor));
-                tile->suppress_preview();
-            }
+        for (MapPos mp : sel) {
+            auto tile = world->get_tile(mp);
+            tile->suppress_preview();
         }
     }
 
@@ -199,12 +194,10 @@ void PlanningState::draw(sf::RenderWindow &w) {
         assert(obj != nullptr);
 
         MapSelection sel = to_map(world, selection->get_area());
-        for (int x = sel.start.pos.x; x <= sel.end.pos.x; ++x) {
-            for (int y = sel.start.pos.y; y <= sel.end.pos.y; ++y) {
-                WindowPos p = world->map2window(MapPos(x, y, sel.start.floor));
-                obj->set_pos(p.x, p.y);
-                obj->draw(w);
-            }
+        for (MapPos mp : sel) {
+            WindowPos p = world->map2window(mp);
+            obj->set_pos(p.x, p.y);
+            obj->draw(w);
         }
     }
 }
@@ -240,20 +233,17 @@ void MineState::update(const sf::Time &dt) {
 void MineState::draw(sf::RenderWindow &w) {
     if (!selection->want_remove() && selection->is_active()) {
         MapSelection sel = to_map(world, selection->get_area());
-        for (int x = sel.start.pos.x; x <= sel.end.pos.x; ++x) {
-            for (int y = sel.start.pos.y; y <= sel.end.pos.y; ++y) {
-                MapPos mp(x, y, gui->current_floor());
-                WindowPos p = world->map2window(MapPos(x, y, sel.start.floor));
-                preview_spr->setPosition(p.x, p.y);
-                if (world->can_mine(mp)) {
-                    preview_spr->setColor(sf::Color(255, 255, 255, 100));
-                }
-                else {
-                    // TODO move color to lua
-                    preview_spr->setColor(make_color(0xFF9E9E, 150));
-                }
-                w.draw(*preview_spr);
+        for (MapPos mp : sel) {
+            WindowPos p = world->map2window(mp);
+            preview_spr->setPosition(p.x, p.y);
+            if (world->can_mine(mp)) {
+                preview_spr->setColor(sf::Color(255, 255, 255, 100));
             }
+            else {
+                // TODO move color to lua
+                preview_spr->setColor(make_color(0xFF9E9E, 150));
+            }
+            w.draw(*preview_spr);
         }
     }
 }
