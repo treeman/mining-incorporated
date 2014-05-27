@@ -1,5 +1,4 @@
-#include <cstdlib>
-#include <SFML/Graphics.hpp>
+#include "std.hxx"
 #include "abort.hxx"
 #include "log.hxx"
 

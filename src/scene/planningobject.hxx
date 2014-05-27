@@ -1,9 +1,6 @@
 #pragma once
 
-#include <string>
-using namespace std;
-
-#include <SFML/Graphics.hpp>
+#include "std.hxx"
 
 namespace scene {
 

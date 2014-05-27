@@ -98,12 +98,13 @@ void Worker::update(const sf::Time &dt) {
 
             work_time = 0;
 
+            // TODO move to dynamic dispatch
             if (auto t = dynamic_cast<BuildGroundTask*>(current_task.get())) {
                 // TODO factor in remove time?
                 // Or that is a separate task?
                 work_time += t->ground->build_time;
             }
-            else if (auto t = dynamic_cast<MineTask*>(current_task.get())) {
+            else if (dynamic_cast<MineTask*>(current_task.get())) {
                 // TODO something?
                 work_time += 2;
             }

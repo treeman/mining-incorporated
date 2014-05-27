@@ -25,9 +25,10 @@ void World::push_event(unique_ptr<Event> e) {
     else if (auto c = dynamic_cast<BuildMaterialEvent*>(e.get())) {
         for (int x = c->area.start.pos.x; x <= c->area.end.pos.x; ++x) {
             for (int y = c->area.start.pos.y; y <= c->area.end.pos.y; ++y) {
-                // TODO some kind of check for possibility?
-                push_task(shared_ptr<Task>(new BuildGroundTask(c->material->ground,
-                                MapPos(x, y, c->area.start.floor))));
+                MapPos mp(x, y, c->area.start.floor);
+                if (can_build(mp, c->material)) {
+                    push_task(shared_ptr<Task>(new BuildGroundTask(c->material->ground, mp)));
+                }
             }
         }
     }
@@ -38,7 +39,10 @@ void World::push_event(unique_ptr<Event> e) {
         for (int x = c->area.start.pos.x; x <= c->area.end.pos.x; ++x) {
             for (int y = c->area.start.pos.y; y <= c->area.end.pos.y; ++y) {
                 // TODO some kind of check for possibility?
-                push_task(shared_ptr<Task>(new MineTask(MapPos(x, y, c->area.start.floor))));
+                MapPos mp(x, y, c->area.start.floor);
+                if (can_mine(mp)) {
+                    push_task(shared_ptr<Task>(new MineTask(mp)));
+                }
             }
         }
     }

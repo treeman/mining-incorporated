@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include "std.hxx"
 #include "settings.hxx"
 #include "butler.hxx"
 #include "logger.hxx"

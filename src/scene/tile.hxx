@@ -1,7 +1,6 @@
 #pragma once
 
-//#include "roomtype.hxx"
-#include "object.hxx"
+#include "std.hxx"
 #include "scene/planningobject.hxx"
 
 namespace scene {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "basicincludes.hxx"
+#include "std.hxx"
 
 template<typename T>
 class Point {

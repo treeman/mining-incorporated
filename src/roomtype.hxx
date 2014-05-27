@@ -1,6 +1,6 @@
 #pragma once
 
-#include "basicincludes.hxx"
+#include "std.hxx"
 
 enum RoomType {
     Rock, // Also serves as unpassable

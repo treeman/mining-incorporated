@@ -1,8 +1,6 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
-
+#include "std.hxx"
 #include "settings.hxx"
 #include "gui/historybox.hxx"
 #include "gui/inputbox.hxx"

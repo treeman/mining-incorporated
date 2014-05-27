@@ -1,6 +1,6 @@
 #pragma once
 
-#include "basicincludes.hxx"
+#include "std.hxx"
 #include "inputhandler.hxx"
 
 class InputQueue : public InputHandler {

@@ -120,9 +120,16 @@ void MaterialState::draw(sf::RenderWindow &w) {
         MapSelection sel = to_map(world, selection->get_area());
         for (int x = sel.start.pos.x; x <= sel.end.pos.x; ++x) {
             for (int y = sel.start.pos.y; y <= sel.end.pos.y; ++y) {
-                WindowPos p = world->map2window(MapPos(x, y, gui->current_floor()));
-                preview_spr->setPosition(p.x, p.y);
-                preview_spr->setColor(make_color(255, 255, 255, 150));
+                MapPos mp(x, y, gui->current_floor());
+                WindowPos winpos = world->map2window(mp);
+                preview_spr->setPosition(winpos.x, winpos.y);
+                if (world->can_build(mp, material)) {
+                    preview_spr->setColor(make_color(255, 255, 255, 150));
+                }
+                else {
+                    // TODO move color to lua
+                    preview_spr->setColor(make_color(0xFF9E9E, 150));
+                }
                 w.draw(*preview_spr);
             }
         }
@@ -216,7 +223,6 @@ MineState::MineState(Interface *gui, scene::World *world) : State(gui, world),
     ))
 {
     preview_spr.reset(new sf::Sprite(create_sprite("mine_selection_preview.png")));
-    preview_spr->setColor(sf::Color(255, 255, 255, 100));
 }
 
 void MineState::reset() {
@@ -236,8 +242,16 @@ void MineState::draw(sf::RenderWindow &w) {
         MapSelection sel = to_map(world, selection->get_area());
         for (int x = sel.start.pos.x; x <= sel.end.pos.x; ++x) {
             for (int y = sel.start.pos.y; y <= sel.end.pos.y; ++y) {
+                MapPos mp(x, y, gui->current_floor());
                 WindowPos p = world->map2window(MapPos(x, y, sel.start.floor));
                 preview_spr->setPosition(p.x, p.y);
+                if (world->can_mine(mp)) {
+                    preview_spr->setColor(sf::Color(255, 255, 255, 100));
+                }
+                else {
+                    // TODO move color to lua
+                    preview_spr->setColor(make_color(0xFF9E9E, 150));
+                }
                 w.draw(*preview_spr);
             }
         }

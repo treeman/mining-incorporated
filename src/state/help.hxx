@@ -1,5 +1,4 @@
-#include <SFML/Graphics.hpp>
-
+#include "std.hxx"
 #include "state/state.hxx"
 
 namespace state {

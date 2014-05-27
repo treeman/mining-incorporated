@@ -1,10 +1,9 @@
 #include <memory>
 using namespace std;
 
+#include "std.hxx"
 #include "console.hxx"
 #include "input/inputqueue.hxx"
-
-#include <SFML/Graphics.hpp>
 
 class Game {
 public:

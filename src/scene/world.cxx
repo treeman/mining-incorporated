@@ -7,6 +7,7 @@
 #include "scene/map.hxx"
 #include "scene/task.hxx"
 #include "scene/material.hxx"
+#include "scene/ore.hxx"
 
 namespace scene {
 
@@ -64,6 +65,20 @@ WorldPos World::clamp(const WorldPos &p) const {
 
 shared_ptr<Tile> World::get_tile(const MapPos &p) const {
     return map->tile(p);
+}
+bool World::can_build(const MapPos &p, shared_ptr<Material>) const {
+    // TODO move to lua
+    auto ground = get_tile(p)->get_ground();
+    if (dynamic_cast<const Ore*>(ground))
+        return false;
+    return ground->key != "rock";
+}
+bool World::can_mine(const MapPos &p) const {
+    auto ground = get_tile(p)->get_ground();
+    if (dynamic_cast<const Ore*>(ground))
+        return true;
+    // TODO don't hardcode?
+    return ground->key == "rock";
 }
 
 int World::num_floors() const { return map->num_floors(); }

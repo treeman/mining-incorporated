@@ -1,6 +1,6 @@
 #pragma once
 
-#include "basicincludes.hxx"
+#include "std.hxx"
 #include "pos.hxx"
 
 // Some extensions to sfml.
