@@ -80,6 +80,13 @@ bool World::can_mine(const MapPos &p) const {
     // TODO don't hardcode?
     return ground->key == "rock";
 }
+bool World::can_build(const MapPos &p, shared_ptr<RoomType>) const {
+    // TODO move to lua
+    auto ground = get_tile(p)->get_ground();
+    if (dynamic_cast<const Ore*>(ground))
+        return false;
+    return ground->key != "rock";
+}
 
 int World::num_floors() const { return map->num_floors(); }
 

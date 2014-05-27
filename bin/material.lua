@@ -1,8 +1,4 @@
 material = {
-    stone = {
-        ground = "stone",
-        cost = 10,
-    },
     wood = {
         ground = "wood",
         cost = 20,

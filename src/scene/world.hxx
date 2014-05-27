@@ -9,6 +9,7 @@
 #include "scene/task.hxx"
 #include "scene/map.hxx"
 #include "scene/event.hxx"
+#include "scene/roomtype.hxx"
 
 namespace scene {
 
@@ -31,6 +32,7 @@ namespace scene {
 
         shared_ptr<Tile> get_tile(const MapPos &p) const;
         bool can_build(const MapPos &p, shared_ptr<Material> material) const;
+        bool can_build(const MapPos &p, shared_ptr<RoomType> roomtype) const;
         bool can_mine(const MapPos &p) const;
 
         int num_floors() const;

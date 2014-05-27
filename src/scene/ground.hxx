@@ -1,10 +1,7 @@
 #pragma once
 
-#include <memory>
-#include <string>
-using namespace std;
-
-#include "tile.hxx"
+#include "std.hxx"
+#include "scene/tile.hxx"
 
 namespace scene {
 

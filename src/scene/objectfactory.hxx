@@ -7,6 +7,7 @@ using namespace std;
 
 namespace scene {
 
+    // TODO Handle ground and materials here as well.
     // Create objects of different types.
     class ObjectFactory {
     public:

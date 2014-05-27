@@ -10,8 +10,11 @@ Todo
 Next steps
 ----------
 
-3. Buildable objects
-4. Rooms
+1. Rooms  
+    * List of rooms
+    * Pointer from tile to included room
+    * Building info about rooms when currently building
+3. Buildable/Non-buildable objects
 5. Properly mine ores and move to storage room
 8. Refactor world.  
     * World could be split into Components  
@@ -68,7 +71,6 @@ Random
 * Console should function
 * Develop guiobjects and collections
     Need to be able to style everything in collection
-* Cool pixelated graphics.
 * Extend fmt to allow precision and long types, possibly.
 * Smarter level generation
     Better algorithm
@@ -93,6 +95,13 @@ Refactor
 * World, cut up into components
 * Sprite handling via lua + sprite collection
 * Constants from lua
+
+Larger changes
+--------------
+
+* Specify object behaviour from lua  
+    Quite a large undertaking? Need to expose an interface to lua.
+* Cool pixelated graphics.
 
 Ideas
 =====

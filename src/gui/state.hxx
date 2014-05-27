@@ -8,6 +8,7 @@
 namespace scene {
     class World;
     class Worker;
+    class RoomType;
 };
 
 namespace gui {
@@ -40,6 +41,7 @@ namespace gui {
     enum class GuiState : unsigned {
         INFO,
         MATERIAL,
+        ROOM,
         PLANNING,
         MINE,
 
@@ -76,6 +78,25 @@ namespace gui {
         unique_ptr<Selection> selection;
         unique_ptr<sf::Sprite> preview_spr;
         unique_ptr<sf::Text> txt;
+    };
+
+    class RoomState : public State {
+    public:
+        RoomState(Interface *gui, scene::World *world);
+
+        void reset() override;
+
+        void handle_event(const gui::Event &) override;
+        bool handle_input(const sf::Event &e) override;
+
+        void update(const sf::Time &dt) override;
+        void draw(sf::RenderWindow &w) override;
+    private:
+        bool can_build() const;
+
+        shared_ptr<scene::RoomType> type;
+        unique_ptr<Selection> selection;
+        unique_ptr<sf::Sprite> preview_spr;
     };
 
     class PlanningState : public State {

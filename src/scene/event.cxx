@@ -2,6 +2,7 @@
 #include "scene/planningobject.hxx"
 #include "scene/material.hxx"
 #include "scene/task.hxx"
+#include "scene/roomtype.hxx"
 
 namespace scene {
 
@@ -25,6 +26,14 @@ BuildMaterialEvent::BuildMaterialEvent(shared_ptr<Material> o, gui::MapSelection
 
 string BuildMaterialEvent::to_string() const {
     return "Build " + material->to_string() + " at " + area.to_string();
+}
+
+BuildRoomEvent::BuildRoomEvent(shared_ptr<RoomType> o, gui::MapSelection sel) :
+    type(o), area(sel)
+{ }
+
+string BuildRoomEvent::to_string() const {
+    return "Place " + type->to_string() + " at " + area.to_string();
 }
 
 TaskDoneEvent::TaskDoneEvent(shared_ptr<Task> o) : task(o) { }

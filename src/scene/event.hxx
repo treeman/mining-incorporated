@@ -7,6 +7,7 @@ namespace scene {
     class PlanningObject;
     class Material;
     class Task;
+    class RoomType;
 
     // Use built-in type system for switch case.
     // Testing out how it works.
@@ -43,6 +44,16 @@ namespace scene {
         string to_string() const override;
 
         shared_ptr<Material> material;
+        gui::MapSelection area;
+    };
+
+    class BuildRoomEvent : public Event {
+    public:
+        BuildRoomEvent(shared_ptr<RoomType> o, gui::MapSelection area);
+
+        string to_string() const override;
+
+        shared_ptr<RoomType> type;
         gui::MapSelection area;
     };
 

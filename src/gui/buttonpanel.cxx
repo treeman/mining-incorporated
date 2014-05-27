@@ -1,9 +1,11 @@
 #include "log.hxx"
+#include "gui/selection.hxx"
 #include "gui/buttonpanel.hxx"
 #include "gui/picbutton.hxx"
 #include "gui/interface.hxx"
 #include "scene/world.hxx"
 #include "scene/material.hxx"
+#include "scene/roomtype.hxx"
 
 using PType = scene::PlanningType;
 
@@ -22,9 +24,7 @@ ButtonPanel::ButtonPanel(Interface &_gui) : gui(_gui), curr(Categories::UNSELECT
     );
 
     init_material_button();
-    categories->add(shared_ptr<BoundedObject>(
-        new PicButton(make_category_selector(Categories::UNSELECTED), "rooms"))
-    );
+    init_room_button();
     categories->add(shared_ptr<BoundedObject>(
         new PicButton(make_category_selector(Categories::UNSELECTED), "objects"))
     );
@@ -142,6 +142,38 @@ void ButtonPanel::init_material_button() {
     assert(L.stack_size() == 0);
 
     subcategories[static_cast<int>(Categories::MATERIAL)].swap(cat);
+}
+void ButtonPanel::init_room_button() {
+    categories->add(shared_ptr<BoundedObject>(
+        new PicButton(make_category_selector(Categories::ROOM), "rooms"))
+    );
+    unique_ptr<List> cat(new List(12, 525));
+
+    string path = "rooms.lua";
+    LuaState L;
+    L.dofile(path);
+
+    lua_getglobal(L, "rooms");
+    if (!lua_istable(L, -1))
+        throw lua_parse_error(path, fmt("rooms not a table."));
+
+    for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+        string key = lua_tostring(L, -2);
+        if (!lua_istable(L, -1))
+            throw lua_parse_error(path, fmt("rooms: %s not a table.", key));
+
+        shared_ptr<scene::RoomType> type(new scene::RoomType());
+        type->name = key;
+
+        cat->add(shared_ptr<BoundedObject>(new PicButton([this, type, key](BaseButton &) {
+            gui.set_state(GuiState::ROOM);
+            gui.handle_event(RoomTypeEvent(type));
+        }, key)));
+    }
+    lua_pop(L, 1);
+    assert(L.stack_size() == 0);
+
+    subcategories[static_cast<int>(Categories::ROOM)].swap(cat);
 }
 void ButtonPanel::init_planning_button() {
     categories->add(shared_ptr<BoundedObject>(
