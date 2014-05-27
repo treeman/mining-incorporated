@@ -9,13 +9,11 @@ Todo
 
 Next steps:
 
-1. Proper mine actions, first mine then build
 1. Build actions  
     * Ability to remove pending builds
     * Remove pending when building on same spot
 2. Fog of War
 3. Buildable objects
-4. Top floor is overworld
 8. Refactor world.  
     * World could be split into Components  
         1. Coordinate mappings
@@ -37,6 +35,8 @@ Next steps:
     * Colors and positions of gui elements.
     * What buttons in ButtonPanel and in what order.  
         Should be able to specify actions. Need to expose functions C++ -> lua.
+    * First floor
+    * Selection preview color
 10. AreaSelection needs iterators over positions  
     Annoying iterators.
 10. Multilevel pathfinding.
@@ -44,6 +44,7 @@ Next steps:
 10. Worker stats
 11. Load first floor via lua
 12. Save games
+13. After mining, build support on edges
 
 * Don't lookup from settings at every frame,
     keep a pointer thing to fetch values.
