@@ -1,11 +1,13 @@
-#include "floor.hxx"
+#include "log.hxx"
 #include "constants.hxx"
 #include "util/rand.hxx"
-#include "ore.hxx"
+#include "scene/ore.hxx"
+#include "scene/floor.hxx"
 
 namespace scene {
 
-/*
+// TODO
+// load from lua!
 string first_floor[num_tiles_high] = {
     "sssss.............aa",
     "sssss............aa.",
@@ -25,35 +27,31 @@ string first_floor[num_tiles_high] = {
     ".....i..............",
 };
 
-vector<vector<shared_ptr<Tile>>> make_first_floor() {
-    vector<vector<shared_ptr<Tile>>> grid(num_tiles_high, vector<shared_ptr<Tile>>(num_tiles_wide));
+shared_ptr<Floor> make_first_floor() {
+    shared_ptr<Floor> res(new Floor(0));
+    res->grid.assign(num_tiles_high, vector<shared_ptr<Tile>>(num_tiles_wide));
     for (int i = 0; i < num_tiles_high; ++i) {
         for (int j = 0; j < num_tiles_wide; ++j) {
-            RoomType type;
+            shared_ptr<const Ground> ground;
             switch (first_floor[i][j]) {
-                case 's':
-                    type = Mine; break;
-                case 'a':
-                    type = AluminiumOre; break;
-                case 'k':
-                    type = CoalOre; break;
-                case 'c':
-                    type = CopperOre; break;
-                case 'd':
-                    type = DiamondOre; break;
-                case 'g':
-                    type = GoldOre; break;
-                case 'i':
-                    type = IronOre; break;
-                default:
-                    type = Rock;
+                case 's': ground = get_ground("stone"); break;
+                case 'a': ground = get_ore("aluminium"); break;
+                case 'k': ground = get_ore("coal"); break;
+                case 'c': ground = get_ore("copper"); break;
+                case 'd': ground = get_ore("diamond"); break;
+                case 'g': ground = get_ore("gold"); break;
+                case 'i': ground = get_ore("iron"); break;
+                case '.': ground = get_ground("rock"); break;
+                default: L_("missing ground def for %c\n", first_floor[i][j]);
             }
-            //grid[i][j] = create_tile(type, j * tile_width, i * tile_width);
+
+            assert(ground != nullptr);
+            res->grid[i][j] = ground->create_tile(j * tile_width, i * tile_width);
         }
     }
-    return grid;
+
+    return res;
 }
-*/
 
 string randomize_ore_type(int) {
     // TODO take from lua
@@ -143,7 +141,7 @@ shared_ptr<Floor> make_random_floor(int num) {
 }
 
 shared_ptr<Floor> make_floor(int floor) {
-    //if (floor == 1) return make_first_floor();
+    if (floor == 0) return make_first_floor();
     return make_random_floor(floor);
 }
 

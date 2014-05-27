@@ -14,7 +14,7 @@ Next steps:
     * Ability to remove pending builds
     * Remove pending when building on same spot
 2. Fog of War
-3. Buildable objectst
+3. Buildable objects
 4. Top floor is overworld
 8. Refactor world.  
     * World could be split into Components  
@@ -42,6 +42,8 @@ Next steps:
 10. Multilevel pathfinding.
 10. Rework base object. Not used??
 10. Worker stats
+11. Load first floor via lua
+12. Save games
 
 * Don't lookup from settings at every frame,
     keep a pointer thing to fetch values.

@@ -32,6 +32,9 @@ namespace safe_fmt {
                 case 's':
                     assert((is_same<T, const char*>::value) || (is_same<T, char*>::value));
                     break;
+                case 'c':
+                    assert((is_same<T, char>::value));
+                    break;
                 default:
                     throw fmt_error("unknown format '%" + string({*f}) + "'");
             }
