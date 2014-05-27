@@ -7,13 +7,12 @@ This is a continunation of my unfinished game, [Mining Incorporated](https://git
 Todo
 ====
 
-Next steps:
+Next steps
+----------
 
-1. Build actions  
-    * Ability to remove pending builds
-    * Remove pending when building on same spot
-2. Fog of War
 3. Buildable objects
+4. Rooms
+5. Properly mine ores and move to storage room
 8. Refactor world.  
     * World could be split into Components  
         1. Coordinate mappings
@@ -37,12 +36,19 @@ Next steps:
         Should be able to specify actions. Need to expose functions C++ -> lua.
     * First floor
     * Selection preview color
+8. Fog of War
 10. Multilevel pathfinding.
 10. Rework base object. Not used??
 10. Worker stats
 11. Load first floor via lua
 12. Save games
 13. After mining, build support on edges
+14. Build actions  
+    * Ability to remove pending builds
+    * Remove pending when building on same spot
+
+Random
+------
 
 * Don't lookup from settings at every frame,
     keep a pointer thing to fetch values.
@@ -67,6 +73,10 @@ Next steps:
 * Smarter level generation
     Better algorithm
     Use levels and specify vein size for each ores etc..
+* Prettier buttons
+
+Considerations
+--------------
 
 * Consider Command pattern with actors to handle input
 * Flyweight pattern for tile handling?
@@ -77,12 +87,12 @@ Next steps:
     Tile *rock->create_tile(...)
 
 Refactor
-========
+--------
 
 * Tile, cut up into components
 * World, cut up into components
-* Levels, not as a simple array of array of shared pointers to tiles
-* Ores. How to handle?
+* Sprite handling via lua + sprite collection
+* Constants from lua
 
 Ideas
 =====
