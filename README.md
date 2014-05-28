@@ -25,7 +25,6 @@ Next steps
         5. Resource handling (can be inside resources)
 8. Refactor Tile.  
     Readd objects.
-8. Move floor definitions to Locator
 8. Remove rooms the way they are now.
 8. Refactor objects.
 8. Remove constants.hxx
@@ -100,6 +99,8 @@ Larger changes
 * Specify object behaviour from lua  
     Quite a large undertaking? Need to expose an interface to lua.
 * Cool pixelated graphics.
+* Chunking levels?
+* Move around camera
 
 Ideas
 =====
