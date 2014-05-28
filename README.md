@@ -14,6 +14,9 @@ Next steps
     * List of rooms
     * Pointer from tile to included room
     * Building info about rooms when currently building
+    * Increase/Remove from a room
+    * Name of room
+    * Preview size of room
 3. Buildable/Non-buildable objects
 5. Properly mine ores and move to storage room
 8. Refactor world.  
