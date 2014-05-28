@@ -3,7 +3,7 @@
 
 namespace scene {
 
-Material::Material(shared_ptr<const Ground> _ground, int _cost) : ground(_ground), cost(_cost) {
+Material::Material(const Ground *_ground, int _cost) : ground(_ground), cost(_cost) {
 
 }
 

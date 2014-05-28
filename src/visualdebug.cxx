@@ -1,5 +1,6 @@
 #include "visualdebug.hxx"
 #include "locator.hxx"
+#include "butler.hxx"
 
 VisualDebug::VisualDebug(IPoint p) : pos(p) {
     txt = create_txt("consola.ttf", 12);

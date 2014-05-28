@@ -4,10 +4,7 @@
 #include "scene/tile.hxx"
 
 namespace scene {
-
-    // TODO encapsulate
-    void load_ground_definitions(string lua_file);
-
+    // TODO change to GroundType
     class Ground {
     public:
         virtual ~Ground() { }
@@ -20,11 +17,7 @@ namespace scene {
         string spr;
     protected:
         Ground();
-        friend void load_ground_definitions(string);
+        friend class ObjectFactory;
     };
-
-    // TODO merge with ore?
-    // TODO change from shared to strict pointer
-    shared_ptr<const Ground> get_ground(string key);
 };
 

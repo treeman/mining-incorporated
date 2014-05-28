@@ -27,7 +27,6 @@ namespace scene {
         sf::Sprite ground_spr;
         sf::Vector2i pos;
 
-        // TODO should be able to change ground
         Tile(const Ground *ground);
         const Ground *ground;
     public:

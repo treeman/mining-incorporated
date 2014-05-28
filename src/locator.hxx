@@ -2,12 +2,11 @@
 
 #include "std.hxx"
 #include "settings.hxx"
-#include "butler.hxx"
 #include "logger.hxx"
 #include "debug.hxx"
-#include "state/statestack.hxx"
-#include "state/state.hxx"
 #include "scene/objectfactory.hxx"
+#include "state/state.hxx"
+#include "state/statestack.hxx"
 
 #define D_ (Locator::get_debug())
 

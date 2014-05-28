@@ -131,7 +131,8 @@ void ButtonPanel::init_material_button() {
         string ground = L.require_string("ground", fmt("ground missing from %s", key));
         int cost = (int)L.require_num("cost", fmt("cost missing from %s", key));
 
-        shared_ptr<scene::Material> material(new scene::Material(scene::get_ground(ground), cost));
+        shared_ptr<scene::Material> material(new scene::Material(
+                    Locator::get_object_factory().get_ground(ground), cost));
 
         cat->add(shared_ptr<BoundedObject>(new PicButton([this, material, key](BaseButton &button) {
             gui.set_state(GuiState::MATERIAL);

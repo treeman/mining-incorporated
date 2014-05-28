@@ -1,5 +1,6 @@
-#include <cassert>
 #include "locator.hxx"
+#include "settings.hxx"
+#include "butler.hxx"
 
 //void Locator::init() {
     //unique_ptr<Settings>(new Settings()).swap(settings);

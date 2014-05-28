@@ -50,6 +50,7 @@ void Tile::set_ground(const Ground *_ground) {
 }
 
 const Ground *Tile::get_ground() const {
+    assert(ground != nullptr);
     return ground;
 }
 

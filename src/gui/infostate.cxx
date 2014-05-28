@@ -1,3 +1,4 @@
+#include "log.hxx"
 #include "locator.hxx"
 #include "util/ext.hxx"
 #include "gui/state.hxx"
@@ -31,7 +32,9 @@ void InfoState::update(const sf::Time &dt) {
         const MapPos dim_pos(world->world2map(world_pos));
 
         shared_ptr<scene::Tile> tile(world->get_tile(dim_pos));
-        auto ground = tile->get_ground();
+        const scene::Ground *ground = tile->get_ground();
+        assert(ground != nullptr);
+        //L_("Have ground!!\n");
 
         // TODO make something more persistent.
         if (auto ore = dynamic_cast<const scene::Ore*>(ground)) {
@@ -40,6 +43,8 @@ void InfoState::update(const sf::Time &dt) {
         else {
             D_.tmp(fmt("ground: %s", ground->key));
         }
+
+        //L_("Converting ok\n");
 
         // TODO more printouts!
         shared_ptr<scene::Worker> worker(world->select_worker(world_pos));

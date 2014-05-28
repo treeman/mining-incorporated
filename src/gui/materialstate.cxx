@@ -1,4 +1,5 @@
 #include "locator.hxx"
+#include "butler.hxx"
 #include "util/ext.hxx"
 #include "gui/state.hxx"
 #include "gui/interface.hxx"

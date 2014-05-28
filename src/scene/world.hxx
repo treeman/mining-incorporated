@@ -10,6 +10,7 @@
 #include "scene/map.hxx"
 #include "scene/event.hxx"
 #include "scene/roomtype.hxx"
+#include "scene/room.hxx"
 
 namespace scene {
 
@@ -72,6 +73,9 @@ namespace scene {
         Resources resources;
     public:
         const Resources &get_resources() const;
+
+    private:
+        vector<shared_ptr<Room>> rooms;
     };
 
 }; // Scene

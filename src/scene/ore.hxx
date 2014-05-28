@@ -7,9 +7,6 @@ using namespace std;
 #include "ground.hxx"
 
 namespace scene {
-
-    void load_ore_definitions(string lua_file);
-
     class Ore : public Ground {
     public:
         virtual ~Ore() { }
@@ -22,10 +19,7 @@ namespace scene {
         int money_per_ore;
     private:
         Ore();
-        friend void load_ore_definitions(string);
+        friend class ObjectFactory;
     };
-
-    shared_ptr<const Ore> get_ore(string key);
-
 }
 

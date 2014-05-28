@@ -4,7 +4,7 @@
 
 namespace scene {
 
-BuildGroundTask::BuildGroundTask(shared_ptr<const Ground> o, MapPos p) : ground(o), pos(p)
+BuildGroundTask::BuildGroundTask(const Ground *o, MapPos p) : ground(o), pos(p)
 {
     spr = create_sprite(ground->spr);
     spr.setColor(sf::Color(255, 255, 255, 100));

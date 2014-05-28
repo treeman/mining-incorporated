@@ -31,11 +31,11 @@ namespace scene {
 
     class BuildGroundTask : public Task {
     public:
-        BuildGroundTask(shared_ptr<const Ground> o, MapPos pos);
+        BuildGroundTask(const Ground *o, MapPos pos);
 
         string to_string() const override;
 
-        shared_ptr<const Ground> ground;
+        const Ground *ground;
         MapPos pos;
 
         void draw_preview(sf::RenderWindow &w, World *world) override;

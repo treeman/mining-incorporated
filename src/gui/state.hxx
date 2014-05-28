@@ -1,7 +1,7 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-
+#include "std.hxx"
+#include "butler.hxx"
 #include "gui/event.hxx"
 #include "gui/selection.hxx"
 

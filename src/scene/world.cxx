@@ -68,13 +68,13 @@ shared_ptr<Tile> World::get_tile(const MapPos &p) const {
 }
 bool World::can_build(const MapPos &p, shared_ptr<Material>) const {
     // TODO move to lua
-    auto ground = get_tile(p)->get_ground();
+    const Ground *ground = get_tile(p)->get_ground();
     if (dynamic_cast<const Ore*>(ground))
         return false;
     return ground->key != "rock";
 }
 bool World::can_mine(const MapPos &p) const {
-    auto ground = get_tile(p)->get_ground();
+    const Ground *ground = get_tile(p)->get_ground();
     if (dynamic_cast<const Ore*>(ground))
         return true;
     // TODO don't hardcode?
@@ -82,7 +82,7 @@ bool World::can_mine(const MapPos &p) const {
 }
 bool World::can_build(const MapPos &p, shared_ptr<RoomType>) const {
     // TODO move to lua
-    auto ground = get_tile(p)->get_ground();
+    const Ground *ground = get_tile(p)->get_ground();
     if (dynamic_cast<const Ore*>(ground))
         return false;
     return ground->key != "rock";

@@ -30,18 +30,19 @@ string first_floor[num_tiles_high] = {
 shared_ptr<Floor> make_first_floor() {
     shared_ptr<Floor> res(new Floor(0));
     res->grid.assign(num_tiles_high, vector<shared_ptr<Tile>>(num_tiles_wide));
+    auto f = Locator::get_object_factory();
     for (int i = 0; i < num_tiles_high; ++i) {
         for (int j = 0; j < num_tiles_wide; ++j) {
-            shared_ptr<const Ground> ground;
+            const Ground *ground{ nullptr };
             switch (first_floor[i][j]) {
-                case 's': ground = get_ground("stone"); break;
-                case 'a': ground = get_ore("aluminium"); break;
-                case 'k': ground = get_ore("coal"); break;
-                case 'c': ground = get_ore("copper"); break;
-                case 'd': ground = get_ore("diamond"); break;
-                case 'g': ground = get_ore("gold"); break;
-                case 'i': ground = get_ore("iron"); break;
-                case '.': ground = get_ground("rock"); break;
+                case 's': ground = f.get_ground("stone"); break;
+                case 'a': ground = f.get_ground("aluminium"); break;
+                case 'k': ground = f.get_ground("coal"); break;
+                case 'c': ground = f.get_ground("copper"); break;
+                case 'd': ground = f.get_ground("diamond"); break;
+                case 'g': ground = f.get_ground("gold"); break;
+                case 'i': ground = f.get_ground("iron"); break;
+                case '.': ground = f.get_ground("rock"); break;
                 default: L_("missing ground def for %c\n", first_floor[i][j]);
             }
 
@@ -82,6 +83,7 @@ const int dc[4] = { 1, 0, -1, 0 };
 shared_ptr<Floor> make_random_floor(int num) {
     shared_ptr<Floor> floor(new Floor(num));
     floor->grid.assign(num_tiles_high, vector<shared_ptr<Tile>>(num_tiles_wide));
+    auto f = Locator::get_object_factory();
 
     // TODO better randomization, with things more common at different floors
     // Randomize some ore strips
@@ -90,7 +92,7 @@ shared_ptr<Floor> make_random_floor(int num) {
 
     for (int k = 0; k < num_strips; ++k) {
         string type = randomize_ore_type(num);
-        auto ore = get_ore(type);
+        auto ore = f.get_ground(type);
         int num_ores = rand_int(3, 8);
 
         // Floodfill with randomization to place ores xD
@@ -129,7 +131,7 @@ shared_ptr<Floor> make_random_floor(int num) {
         }
     }
 
-    auto rock = get_ground("rock");
+    auto rock = f.get_ground("rock");
     for (int i = 0; i < num_tiles_high; ++i) {
         for (int j = 0; j < num_tiles_wide; ++j) {
             if (!floor->grid[i][j]) {

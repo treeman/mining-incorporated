@@ -6,9 +6,11 @@
 #include "game.hxx"
 #include "stdoutlogger.hxx"
 #include "visualdebug.hxx"
+#include "butler.hxx"
 #include "util/rand.hxx"
 #include "state/help.hxx"
 #include "state/game.hxx"
+#include "scene/objectfactory.hxx"
 
 // TODO remove later
 #include "scene/ground.hxx"
@@ -36,10 +38,6 @@ Game::Game() {
     // TODO make something more general?
     // Should all be settings?
     settings.load_from_file("gui.lua");
-
-    // TODO move
-    scene::load_ground_definitions("ground.lua");
-    scene::load_ore_definitions("ore.lua");
 
     window.reset(new sf::RenderWindow(
         sf::VideoMode(
