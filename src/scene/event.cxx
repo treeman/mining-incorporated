@@ -57,7 +57,7 @@ string BuildRoomEvent::to_string() const {
     return "Place " + type->to_string() + " at " + area.to_string();
 }
 void BuildRoomEvent::handle(World *world) {
-    L_("Handling BuildRoomEvent\n");
+    world->mark_room(type, area);
 }
 
 TaskDoneEvent::TaskDoneEvent(shared_ptr<Task> o) : task(o) { }

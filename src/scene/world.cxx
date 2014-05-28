@@ -1,3 +1,4 @@
+#include "log.hxx"
 #include "constants.hxx"
 #include "butler.hxx"
 #include "locator.hxx"
@@ -117,6 +118,11 @@ void World::draw(int floor) {
             worker->draw(w);
     }
 
+    for (auto &room : rooms) {
+        if (room->get_floor() == floor)
+            room->draw(w);
+    }
+
     draw_pending_tasks();
 
     w.setView(curr);
@@ -214,6 +220,10 @@ shared_ptr<Worker> World::select_worker(const WorldPos &p) {
 
 int World::num_workers() const {
     return workers.size();
+}
+
+void World::mark_room(shared_ptr<RoomType> type, gui::MapSelection area) {
+    L_("room %s!\n", type->to_string());
 }
 
 }; // Scene

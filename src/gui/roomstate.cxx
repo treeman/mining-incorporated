@@ -17,8 +17,6 @@ RoomState::RoomState(Interface *gui, scene::World *world) : State(gui, world), t
         [this](WorldSelection sel) mutable {
             MapSelection mapsel = to_map(this->world, sel);
 
-            L_("Marking!\n");
-
             assert(type != nullptr);
             unique_ptr<scene::Event> cmd(new scene::BuildRoomEvent(type, mapsel));
             this->world->push_event(std::move(cmd));

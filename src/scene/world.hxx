@@ -1,7 +1,6 @@
 #pragma once
 
 #include "visualdebug.hxx"
-#include "objecttype.hxx"
 #include "resources.hxx"
 #include "scene/worker.hxx"
 #include "scene/world.hxx"
@@ -37,7 +36,6 @@ namespace scene {
         bool can_mine(const MapPos &p) const;
 
         int num_floors() const;
-
     public:
         void handle_input(const sf::Event &e);
         void update(const sf::Time &dt);
@@ -77,6 +75,8 @@ namespace scene {
 
     private:
         vector<shared_ptr<Room>> rooms;
+    public:
+        void mark_room(shared_ptr<RoomType> type, gui::MapSelection area);
     };
 
 }; // Scene
