@@ -1,7 +1,5 @@
 #pragma once
 
-#include "roomtype.hxx"
-#include "objecttype.hxx"
 #include "pos.hxx"
 #include "input/inputhandler.hxx"
 #include "gui/list.hxx"

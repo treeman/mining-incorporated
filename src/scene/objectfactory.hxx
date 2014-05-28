@@ -6,8 +6,6 @@
 
 namespace scene {
 
-    // TODO Handle ground and materials here as well.
-    // TODO and rooms
     // Create objects of different types.
     class ObjectFactory {
     public:

@@ -123,6 +123,11 @@ void World::draw(int floor) {
     task_debug.update();
 }
 
+void World::push_event(unique_ptr<Event> e) {
+    assert(e != nullptr);
+    e->handle(this);
+}
+
 void World::push_task(shared_ptr<Task> task) {
     //L_("new task: %s\n", task->to_string());
     pending_tasks.push_back(move(task));

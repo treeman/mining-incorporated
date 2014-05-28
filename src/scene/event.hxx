@@ -16,6 +16,9 @@ namespace scene {
         virtual ~Event() = default;
 
         virtual string to_string() const = 0;
+
+        // World will call this whenever the event has rached the world.
+        virtual void handle(World *world) = 0;
     };
 
     class PlacePlanningEvent : public Event {
@@ -23,6 +26,7 @@ namespace scene {
         PlacePlanningEvent(shared_ptr<PlanningObject> o, gui::MapSelection area);
 
         string to_string() const override;
+        void handle(World *world) override;
 
         shared_ptr<PlanningObject> obj;
         gui::MapSelection area;
@@ -33,6 +37,7 @@ namespace scene {
         RemovePlanningEvent(gui::MapSelection area);
 
         string to_string() const override;
+        void handle(World *world) override;
 
         gui::MapSelection area;
     };
@@ -42,6 +47,7 @@ namespace scene {
         BuildMaterialEvent(shared_ptr<Material> o, gui::MapSelection area);
 
         string to_string() const override;
+        void handle(World *world) override;
 
         shared_ptr<Material> material;
         gui::MapSelection area;
@@ -52,6 +58,7 @@ namespace scene {
         BuildRoomEvent(shared_ptr<RoomType> o, gui::MapSelection area);
 
         string to_string() const override;
+        void handle(World *world) override;
 
         shared_ptr<RoomType> type;
         gui::MapSelection area;
@@ -62,6 +69,7 @@ namespace scene {
         TaskDoneEvent(shared_ptr<Task> o);
 
         string to_string() const override;
+        void handle(World *world) override;
 
         shared_ptr<Task> task;
     };
@@ -71,6 +79,7 @@ namespace scene {
         MineEvent(gui::MapSelection area);
 
         string to_string() const override;
+        void handle(World *world) override;
 
         gui::MapSelection area;
     };

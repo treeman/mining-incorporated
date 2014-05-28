@@ -10,7 +10,7 @@
 
 namespace gui {
 
-RoomState::RoomState(Interface *gui, scene::World *world) : State(gui, world), //obj(nullptr),
+RoomState::RoomState(Interface *gui, scene::World *world) : State(gui, world), type(nullptr),
     selection(new Selection(
         world,
         gui,
@@ -20,14 +20,12 @@ RoomState::RoomState(Interface *gui, scene::World *world) : State(gui, world), /
             L_("Marking!\n");
 
             assert(type != nullptr);
-            if (can_build()) {
-                unique_ptr<scene::Event> cmd(new scene::BuildRoomEvent(type, mapsel));
-                this->world->push_event(std::move(cmd));
-            }
+            unique_ptr<scene::Event> cmd(new scene::BuildRoomEvent(type, mapsel));
+            this->world->push_event(std::move(cmd));
         },
         [](WorldSelection sel) { }))
 {
-    preview_spr.reset(new sf::Sprite(create_sprite("room_preview.png")));
+    preview_spr.reset(new sf::Sprite(create_sprite("room_build_preview.png")));
 }
 void RoomState::reset() {
     selection->clear();
@@ -53,22 +51,23 @@ void RoomState::draw(sf::RenderWindow &w) {
         assert(type != nullptr);
         assert(preview_spr != nullptr);
 
-        if (can_build()) {
-            preview_spr->setColor(make_color(255, 255, 255, 150));
-        }
-        else {
-            preview_spr->setColor(make_color(0xFF9E9E, 150));
-        }
 
         MapSelection sel = to_map(world, selection->get_area());
         for (MapPos mp : sel) {
             WindowPos winpos = world->map2window(mp);
             preview_spr->setPosition(winpos.x, winpos.y);
+            if (world->can_build(mp, type)) {
+                preview_spr->setColor(make_color(255, 255, 255, 150));
+            }
+            else {
+                preview_spr->setColor(make_color(0xFF9E9E, 150));
+            }
             w.draw(*preview_spr);
         }
     }
 }
 
+// TODO remove?
 bool RoomState::can_build() const {
     MapSelection sel = to_map(world, selection->get_area());
     for (MapPos mp : sel) {
