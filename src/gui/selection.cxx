@@ -6,20 +6,16 @@
 
 namespace gui {
 
-MapSelection to_map(scene::World *world, WorldSelection sel) {
-    return MapSelection(world->world2map(sel.first), world->world2map(sel.last));
-}
-
 Selection::Selection(
     scene::World *_world,
     Interface *_gui,
-    function<void(WorldSelection)> build,
-    function<void(WorldSelection)> remove
+    function<void(scene::WorldArea)> build,
+    function<void(scene::WorldArea)> remove
 ) : active(false), remove(false), world(_world), gui(_gui), on_build(build), on_remove(remove)
 { }
 
-WorldSelection Selection::get_area() const {
-    return WorldSelection(area);
+scene::WorldArea Selection::get_area() const {
+    return scene::WorldArea(area);
 }
 WindowPos Selection::get_outside_txt_pos() const {
     auto area = get_area();
@@ -38,7 +34,7 @@ string Selection::to_string() const {
 void Selection::show_debug() const {
     D_.tmp("world sel: " + to_string());
     if (is_active()) {
-        MapSelection sel = to_map(world, get_area());
+        scene::MapArea sel = to_map(world, get_area());
         D_.tmp("map sel: " + sel.to_string());
     }
 }

@@ -13,14 +13,14 @@ PlanningState::PlanningState(Interface *gui, scene::World *world) : State(gui, w
     selection(new Selection(
         world,
         gui,
-        [this](WorldSelection sel) mutable {
-            MapSelection mapsel = to_map(this->world, sel);
+        [this](scene::WorldArea sel) mutable {
+            scene::MapArea mapsel = to_map(this->world, sel);
 
             unique_ptr<scene::Event> cmd(new scene::PlacePlanningEvent(obj, mapsel));
             this->world->push_event(std::move(cmd));
         },
-        [this](WorldSelection sel) mutable {
-            MapSelection mapsel = to_map(this->world, sel);
+        [this](scene::WorldArea sel) mutable {
+            scene::MapArea mapsel = to_map(this->world, sel);
 
             unique_ptr<scene::Event> cmd(new scene::RemovePlanningEvent(mapsel));
             this->world->push_event(std::move(cmd));
@@ -48,7 +48,7 @@ bool PlanningState::handle_input(const sf::Event &e) {
 void PlanningState::update(const sf::Time &dt) {
     // Suppress drawing of preview objects if we want to delete
     if (selection->want_remove() && selection->is_active()) {
-        MapSelection sel = to_map(world, selection->get_area());
+        scene::MapArea sel = to_map(world, selection->get_area());
         for (MapPos mp : sel) {
             auto tile = world->get_tile(mp);
             tile->suppress_preview();
@@ -61,7 +61,7 @@ void PlanningState::draw(sf::RenderWindow &w) {
     if (!selection->want_remove() && selection->is_active()) {
         assert(obj != nullptr);
 
-        MapSelection sel = to_map(world, selection->get_area());
+        scene::MapArea sel = to_map(world, selection->get_area());
         for (MapPos mp : sel) {
             WindowPos p = world->map2window(mp);
             obj->set_pos(p.x, p.y);

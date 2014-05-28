@@ -76,7 +76,7 @@ namespace scene {
     private:
         vector<shared_ptr<Room>> rooms;
     public:
-        void mark_room(shared_ptr<RoomType> type, gui::MapSelection area);
+        void mark_room(shared_ptr<RoomType> type, MapArea area);
     };
 
 }; // Scene

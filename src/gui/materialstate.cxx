@@ -13,14 +13,14 @@ MaterialState::MaterialState(Interface *gui, scene::World *world) : State(gui, w
     selection(new Selection(
         world,
         gui,
-        [this](WorldSelection sel) mutable {
-            MapSelection mapsel = to_map(this->world, sel);
+        [this](scene::WorldArea sel) mutable {
+            scene::MapArea mapsel = to_map(this->world, sel);
 
             assert(material != nullptr);
             unique_ptr<scene::Event> cmd(new scene::BuildMaterialEvent(material, mapsel));
             this->world->push_event(std::move(cmd));
         },
-        [](WorldSelection sel) { }))
+        [](scene::WorldArea sel) { }))
 {
     txt.reset(new sf::Text(create_txt("consola.ttf", 14)));
 }
@@ -49,7 +49,7 @@ void MaterialState::draw(sf::RenderWindow &w) {
         assert(material != nullptr);
         assert(preview_spr != nullptr);
 
-        MapSelection sel = to_map(world, selection->get_area());
+        scene::MapArea sel = to_map(world, selection->get_area());
         for (MapPos mp : sel) {
             WindowPos winpos = world->map2window(mp);
             preview_spr->setPosition(winpos.x, winpos.y);

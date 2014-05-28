@@ -222,7 +222,7 @@ int World::num_workers() const {
     return workers.size();
 }
 
-void World::mark_room(shared_ptr<RoomType> type, gui::MapSelection area) {
+void World::mark_room(shared_ptr<RoomType> type, MapArea area) {
     L_("room %s!\n", type->to_string());
 }
 

@@ -8,7 +8,7 @@
 
 namespace scene {
 
-PlacePlanningEvent::PlacePlanningEvent(shared_ptr<PlanningObject> o, gui::MapSelection sel) :
+PlacePlanningEvent::PlacePlanningEvent(shared_ptr<PlanningObject> o, MapArea sel) :
     obj(o), area(sel)
 { }
 
@@ -22,7 +22,7 @@ void PlacePlanningEvent::handle(World *world) {
     }
 }
 
-RemovePlanningEvent::RemovePlanningEvent(gui::MapSelection sel) : area(sel) { }
+RemovePlanningEvent::RemovePlanningEvent(MapArea sel) : area(sel) { }
 
 string RemovePlanningEvent::to_string() const {
     return "Remove planning: " + area.to_string();
@@ -34,7 +34,7 @@ void RemovePlanningEvent::handle(World *world) {
     }
 }
 
-BuildMaterialEvent::BuildMaterialEvent(shared_ptr<Material> o, gui::MapSelection sel) :
+BuildMaterialEvent::BuildMaterialEvent(shared_ptr<Material> o, MapArea sel) :
     material(o), area(sel)
 { }
 
@@ -49,7 +49,7 @@ void BuildMaterialEvent::handle(World *world) {
     }
 }
 
-BuildRoomEvent::BuildRoomEvent(shared_ptr<RoomType> o, gui::MapSelection sel) :
+BuildRoomEvent::BuildRoomEvent(shared_ptr<RoomType> o, MapArea sel) :
     type(o), area(sel)
 { }
 
@@ -69,7 +69,7 @@ void TaskDoneEvent::handle(World *world) {
     world->task_done(task);
 }
 
-MineEvent::MineEvent(gui::MapSelection sel) : area(sel) { }
+MineEvent::MineEvent(MapArea sel) : area(sel) { }
 
 string MineEvent::to_string() const {
     return "Mine " + area.to_string();

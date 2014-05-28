@@ -23,45 +23,45 @@ namespace scene {
 
     class PlacePlanningEvent : public Event {
     public:
-        PlacePlanningEvent(shared_ptr<PlanningObject> o, gui::MapSelection area);
+        PlacePlanningEvent(shared_ptr<PlanningObject> o, MapArea area);
 
         string to_string() const override;
         void handle(World *world) override;
 
         shared_ptr<PlanningObject> obj;
-        gui::MapSelection area;
+        MapArea area;
     };
 
     class RemovePlanningEvent : public Event {
     public:
-        RemovePlanningEvent(gui::MapSelection area);
+        RemovePlanningEvent(MapArea area);
 
         string to_string() const override;
         void handle(World *world) override;
 
-        gui::MapSelection area;
+        MapArea area;
     };
 
     class BuildMaterialEvent : public Event {
     public:
-        BuildMaterialEvent(shared_ptr<Material> o, gui::MapSelection area);
+        BuildMaterialEvent(shared_ptr<Material> o, MapArea area);
 
         string to_string() const override;
         void handle(World *world) override;
 
         shared_ptr<Material> material;
-        gui::MapSelection area;
+        MapArea area;
     };
 
     class BuildRoomEvent : public Event {
     public:
-        BuildRoomEvent(shared_ptr<RoomType> o, gui::MapSelection area);
+        BuildRoomEvent(shared_ptr<RoomType> o, MapArea area);
 
         string to_string() const override;
         void handle(World *world) override;
 
         shared_ptr<RoomType> type;
-        gui::MapSelection area;
+        MapArea area;
     };
 
     class TaskDoneEvent : public Event {
@@ -76,12 +76,12 @@ namespace scene {
 
     class MineEvent : public Event {
     public:
-        MineEvent(gui::MapSelection area);
+        MineEvent(MapArea area);
 
         string to_string() const override;
         void handle(World *world) override;
 
-        gui::MapSelection area;
+        MapArea area;
     };
 }
 

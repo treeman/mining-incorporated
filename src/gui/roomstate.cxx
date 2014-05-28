@@ -14,14 +14,14 @@ RoomState::RoomState(Interface *gui, scene::World *world) : State(gui, world), t
     selection(new Selection(
         world,
         gui,
-        [this](WorldSelection sel) mutable {
-            MapSelection mapsel = to_map(this->world, sel);
+        [this](scene::WorldArea sel) mutable {
+            scene::MapArea mapsel = to_map(this->world, sel);
 
             assert(type != nullptr);
             unique_ptr<scene::Event> cmd(new scene::BuildRoomEvent(type, mapsel));
             this->world->push_event(std::move(cmd));
         },
-        [](WorldSelection sel) { }))
+        [](scene::WorldArea sel) { }))
 {
     preview_spr.reset(new sf::Sprite(create_sprite("room_build_preview.png")));
 }
@@ -50,7 +50,7 @@ void RoomState::draw(sf::RenderWindow &w) {
         assert(preview_spr != nullptr);
 
 
-        MapSelection sel = to_map(world, selection->get_area());
+        scene::MapArea sel = to_map(world, selection->get_area());
         for (MapPos mp : sel) {
             WindowPos winpos = world->map2window(mp);
             preview_spr->setPosition(winpos.x, winpos.y);
@@ -67,7 +67,7 @@ void RoomState::draw(sf::RenderWindow &w) {
 
 // TODO remove?
 bool RoomState::can_build() const {
-    MapSelection sel = to_map(world, selection->get_area());
+    scene::MapArea sel = to_map(world, selection->get_area());
     for (MapPos mp : sel) {
         if (!world->can_build(mp, type)) return false;
     }

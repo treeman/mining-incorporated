@@ -13,13 +13,13 @@ MineState::MineState(Interface *gui, scene::World *world) : State(gui, world),
     selection(new Selection(
         world,
         gui,
-        [this](WorldSelection sel) mutable {
-            MapSelection mapsel = to_map(this->world, sel);
+        [this](scene::WorldArea sel) mutable {
+            scene::MapArea mapsel = to_map(this->world, sel);
 
             unique_ptr<scene::Event> cmd(new scene::MineEvent(mapsel));
             this->world->push_event(std::move(cmd));
         },
-        [](WorldSelection) {}
+        [](scene::WorldArea) {}
     ))
 {
     preview_spr.reset(new sf::Sprite(create_sprite("mine_selection_preview.png")));
@@ -39,7 +39,7 @@ void MineState::update(const sf::Time &dt) {
 }
 void MineState::draw(sf::RenderWindow &w) {
     if (!selection->want_remove() && selection->is_active()) {
-        MapSelection sel = to_map(world, selection->get_area());
+        scene::MapArea sel = to_map(world, selection->get_area());
         for (MapPos mp : sel) {
             WindowPos p = world->map2window(mp);
             preview_spr->setPosition(p.x, p.y);
