@@ -25,7 +25,6 @@ Next steps
         5. Resource handling (can be inside resources)
 8. Refactor Tile.  
     Readd objects.
-8. Move ground definitions to object factory
 8. Move floor definitions to Locator
 8. Remove rooms the way they are now.
 8. Refactor objects.
@@ -58,7 +57,6 @@ Random
 * Lazy state change (after drawing)
 * unit tests
     for fmt at least
-* Refactor RoomType into OreType or similar
 * Use lua for constants and definitions
     Would be cool to be able to change some things via console (colors etc?)
 * Create a console where we can set settings and cheat etc.

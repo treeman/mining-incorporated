@@ -18,7 +18,7 @@ World::World(sf::RenderWindow &_w) : task_debug({630, 145}), w(_w),
     view(sf::FloatRect(0, 0, screen_width, screen_height))
 {
     view.move(-view_xoff, -view_yoff);
-    map = make_map();
+    map = Locator::get_object_factory().make_map();
 
     new_worker();
 
