@@ -11,11 +11,10 @@ Next steps
 ----------
 
 1. Rooms  
-    * List of rooms
     * Pointer from tile to included room
     * Building info about rooms when currently building
     * Increase/Remove from a room
-    * Name of room
+    * Prettier name of room
     * Preview size of room
 3. Buildable/Non-buildable objects
 5. Properly mine ores and move to storage room

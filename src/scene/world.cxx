@@ -119,7 +119,7 @@ void World::draw(int floor) {
     }
 
     for (auto &room : rooms) {
-        if (room->get_floor() == floor)
+        //if (room->get_floor() == floor)
             room->draw(w);
     }
 
@@ -223,7 +223,10 @@ int World::num_workers() const {
 }
 
 void World::mark_room(shared_ptr<RoomType> type, MapArea area) {
-    L_("room %s!\n", type->to_string());
+    // TODO split and check for possible rooms, merging etc
+    L_("room %s at %s\n", type->to_string(), area.to_string());
+    shared_ptr<Room> room(new Room(type, area, this));
+    rooms.push_back(room);
 }
 
 }; // Scene
