@@ -34,7 +34,6 @@ void InfoState::update(const sf::Time &dt) {
         shared_ptr<scene::Tile> tile(world->get_tile(dim_pos));
         const scene::Ground *ground = tile->get_ground();
         assert(ground != nullptr);
-        //L_("Have ground!!\n");
 
         // TODO make something more persistent.
         if (auto ore = dynamic_cast<const scene::Ore*>(ground)) {
@@ -44,7 +43,10 @@ void InfoState::update(const sf::Time &dt) {
             D_.tmp(fmt("ground: %s", ground->key));
         }
 
-        //L_("Converting ok\n");
+        auto room = world->get_room(dim_pos);
+        if (room != nullptr) {
+            D_.tmp(fmt("room: %s", room->to_string()));
+        }
 
         // TODO more printouts!
         shared_ptr<scene::Worker> worker(world->select_worker(world_pos));

@@ -6,6 +6,7 @@
 namespace scene {
 
     class Ground;
+    class Room;
 
     class Tile {
     public:
@@ -35,6 +36,11 @@ namespace scene {
 
         friend class Ground;
         friend class Ore;
+
+        shared_ptr<Room> get_room() const;
+        void set_room(shared_ptr<Room> room);
+    private:
+        shared_ptr<Room> room;
     };
 
 }

@@ -43,6 +43,29 @@ namespace scene {
             return dx * dy;
         }
 
+        bool inside(T p) const {
+            if (p.floor != floor()) return false;
+
+            return first.pos.x <= p.pos.x && p.pos.x <= last.pos.x
+                && first.pos.y <= p.pos.y && p.pos.y <= last.pos.y;
+        }
+
+        // Grid distance
+        int dist(T p) const {
+            if (p.floor != floor()) return numeric_limits<int>::max();
+
+            if (inside(p)) return 0;
+            int dx = 0, dy = 0;
+            if (first.pos.x > p.pos.x || p.pos.x > last.pos.x) {
+                dx = min(abs(first.pos.x - p.pos.x), abs(p.pos.x - last.pos.x));
+            }
+            if (first.pos.y > p.pos.y || p.pos.y > last.pos.y) {
+                dy = min(abs(first.pos.y - p.pos.y), abs(p.pos.y - last.pos.y));
+            }
+
+            return dx + dy;
+        }
+
         int floor() const {
             assert(first.floor == last.floor);
             return first.floor;

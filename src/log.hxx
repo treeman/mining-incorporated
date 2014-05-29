@@ -1,3 +1,5 @@
+#pragma once
+
 #include "logger.hxx"
 #include "locator.hxx"
 

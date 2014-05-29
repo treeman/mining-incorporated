@@ -3,6 +3,7 @@
 #include "std.hxx"
 #include "scene/roomtype.hxx"
 #include "scene/area.hxx"
+#include "scene/world.hxx"
 
 namespace scene {
 
@@ -11,8 +12,14 @@ namespace scene {
         Room(shared_ptr<RoomType> type, MapArea area, World *world);
 
         int get_floor() const;
-        void increase(MapArea area);
+        void extend(MapPos pos);
+        void remove(MapPos pos);
+        void extend(MapArea area);
         void remove(MapArea area);
+        bool can_extend(shared_ptr<RoomType> type, MapArea area) const;
+        bool empty() const;
+
+        string to_string() const;
 
         void draw(sf::RenderWindow &w);
     private:
@@ -25,7 +32,7 @@ namespace scene {
         int floor;
         sf::ConvexShape tile1, tile2;
 
-        vector<MapPos> tiles;
+        set<MapPos> tiles;
         shared_ptr<RoomType> type;
     };
 }

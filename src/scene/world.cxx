@@ -222,11 +222,49 @@ int World::num_workers() const {
     return workers.size();
 }
 
+// TODO not always ok...
 void World::mark_room(shared_ptr<RoomType> type, MapArea area) {
-    // TODO split and check for possible rooms, merging etc
-    L_("room %s at %s\n", type->to_string(), area.to_string());
-    shared_ptr<Room> room(new Room(type, area, this));
-    rooms.push_back(room);
+    //L_("room %s at %s\n", type->to_string(), area.to_string());
+
+    shared_ptr<Room> room;
+    bool create_new = true;
+    for (auto r : rooms) {
+        if (r->can_extend(type, area)) {
+            //L_("extending...\n");
+            r->extend(area);
+            create_new = false;
+            room = r;
+        }
+        else {
+            r->remove(area);
+        }
+    }
+
+    // Find and remove empty rooms
+    vector<shared_ptr<Room>> next_rooms;
+    next_rooms.reserve(rooms.size());
+    for (auto r : rooms) {
+        if (!r->empty())
+            next_rooms.push_back(r);
+        //else
+            //L_("Removing room!\n");
+    }
+    rooms.swap(next_rooms);
+
+    if (create_new) {
+        //L_("New room\n");
+        room.reset(new Room(type, area, this));
+        rooms.push_back(room);
+    }
+
+    // Repoint tiles
+    for (MapPos p : area) {
+        get_tile(p)->set_room(room);
+    }
+}
+
+shared_ptr<Room> World::get_room(const MapPos &p) const {
+    return get_tile(p)->get_room();
 }
 
 }; // Scene

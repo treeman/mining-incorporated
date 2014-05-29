@@ -19,6 +19,9 @@ public:
     bool operator != (const BasePos &p) const {
         return !(*this == p);
     }
+    bool operator < (const BasePos &p) const {
+        return tie(floor, pos) < tie(p.floor, p.pos);
+    }
 
     string to_string() const {
         return pos.to_string() + " (" + std::to_string(floor) + ")";

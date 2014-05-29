@@ -31,6 +31,7 @@ namespace scene {
         WorldPos clamp(const WorldPos &p) const;
 
         shared_ptr<Tile> get_tile(const MapPos &p) const;
+
         bool can_build(const MapPos &p, shared_ptr<Material> material) const;
         bool can_build(const MapPos &p, shared_ptr<RoomType> roomtype) const;
         bool can_mine(const MapPos &p) const;
@@ -77,6 +78,7 @@ namespace scene {
         vector<shared_ptr<Room>> rooms;
     public:
         void mark_room(shared_ptr<RoomType> type, MapArea area);
+        shared_ptr<Room> get_room(const MapPos &p) const;
     };
 
 }; // Scene

@@ -6,7 +6,7 @@ namespace scene {
 
 // Tile class
 Tile::Tile(const Ground *_ground) : preview(nullptr),
-    tmp_suppress_preview(false)
+    tmp_suppress_preview(false), room(nullptr)
 {
     set_ground(_ground);
 }
@@ -52,6 +52,13 @@ void Tile::set_ground(const Ground *_ground) {
 const Ground *Tile::get_ground() const {
     assert(ground != nullptr);
     return ground;
+}
+
+shared_ptr<Room> Tile::get_room() const {
+    return room;
+}
+void Tile::set_room(shared_ptr<Room> _room) {
+    room = _room;
 }
 
 } // scene

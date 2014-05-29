@@ -1,7 +1,7 @@
 #pragma once
 
-#include "scene/ground.hxx"
 #include "pos.hxx"
+#include "scene/ground.hxx"
 
 // A task is something for workers to do,
 // verified by the world so it works.
