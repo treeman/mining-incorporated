@@ -20,6 +20,7 @@ namespace scene {
         bool empty() const;
 
         string to_string() const;
+        int size() const;
 
         void draw(sf::RenderWindow &w);
     private:

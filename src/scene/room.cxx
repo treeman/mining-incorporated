@@ -75,8 +75,12 @@ bool Room::empty() const {
     return tiles.empty();
 }
 
+// TODO this is ugly
 string Room::to_string() const {
-    return fmt("Room of type %s, size: %d", type->to_string(), tiles.size());
+    return fmt("type %s, size: %d", type->to_string(), tiles.size());
+}
+int Room::size() const {
+    return tiles.size();
 }
 
 void Room::draw(sf::RenderWindow &w) {

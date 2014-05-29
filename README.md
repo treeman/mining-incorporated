@@ -11,11 +11,11 @@ Next steps
 ----------
 
 1. Rooms  
-    * Pointer from tile to included room
-    * Building info about rooms when currently building
-    * Increase/Remove from a room
+    * Ability to remove rooms with right click
     * Prettier name of room
     * Preview size of room
+    * Sometimes marking double rooms
+    * Name is not repositioned
 3. Buildable/Non-buildable objects
 5. Properly mine ores and move to storage room
 8. Refactor world.  
