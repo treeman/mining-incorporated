@@ -281,9 +281,6 @@ shared_ptr<Floor> make_random_floor(int num) {
 
             ++placed;
             seen[r][c] = 1;
-            // Place ore here!
-            // TODO
-            //grid[r][c] = create_tile(type, c * tile_width, r * tile_width);
             floor->grid[r][c] = ore->create_tile(WorldPos(c * tile_width, r * tile_width, num));
 
             for (int d = 0; d < 4; ++d) {

@@ -10,12 +10,6 @@ Todo
 Next steps
 ----------
 
-1. Rooms  
-    * Prettier name of room
-    * Preview size of room
-    * Sometimes marking double rooms
-    * Name is not repositioned
-    * Split rooms
 3. Buildable/Non-buildable objects
 5. Properly mine ores and move to storage room
 8. Refactor world.  
@@ -53,6 +47,12 @@ Next steps
 Random
 ------
 
+* Rooms  
+    * Prettier name of room
+    * Preview size of room
+    * Sometimes marking double rooms
+    * Name is not repositioned
+    * Split rooms
 * Don't lookup from settings at every frame,
     keep a pointer thing to fetch values.
 * Lazy state change (after drawing)
