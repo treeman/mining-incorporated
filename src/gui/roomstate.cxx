@@ -21,9 +21,16 @@ RoomState::RoomState(Interface *gui, scene::World *world) : State(gui, world), t
             unique_ptr<scene::Event> cmd(new scene::BuildRoomEvent(type, mapsel));
             this->world->push_event(std::move(cmd));
         },
-        [](scene::WorldArea sel) { }))
+        [this](scene::WorldArea sel) mutable {
+            scene::MapArea mapsel = to_map(this->world, sel);
+
+            unique_ptr<scene::Event> cmd(new scene::RemoveRoomEvent(mapsel));
+            this->world->push_event(std::move(cmd));
+        }))
 {
     preview_spr.reset(new sf::Sprite(create_sprite("room_build_preview.png")));
+    remove_spr.reset(new sf::Sprite(create_sprite("room_build_preview.png")));
+    remove_spr->setColor(make_color(0xfaa5a5, 100));
 }
 void RoomState::reset() {
     selection->clear();
@@ -45,10 +52,11 @@ void RoomState::update(const sf::Time &dt) {
     selection->show_debug();
 }
 void RoomState::draw(sf::RenderWindow &w) {
-    if (!selection->want_remove() && selection->is_active()) {
+    if (!selection->is_active()) return;
+
+    if (!selection->want_remove()) {
         assert(type != nullptr);
         assert(preview_spr != nullptr);
-
 
         scene::MapArea sel = to_map(world, selection->get_area());
         for (MapPos mp : sel) {
@@ -61,6 +69,18 @@ void RoomState::draw(sf::RenderWindow &w) {
                 preview_spr->setColor(make_color(0xFF9E9E, 150));
             }
             w.draw(*preview_spr);
+        }
+    }
+    else {
+        assert(remove_spr != nullptr);
+
+        scene::MapArea sel = to_map(world, selection->get_area());
+        for (MapPos mp : sel) {
+            if (world->get_room(mp) != nullptr) {
+                WindowPos winpos = world->map2window(mp);
+                remove_spr->setPosition(winpos.x, winpos.y);
+                w.draw(*remove_spr);
+            }
         }
     }
 }

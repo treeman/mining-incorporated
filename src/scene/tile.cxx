@@ -6,15 +6,24 @@ namespace scene {
 
 // Tile class
 Tile::Tile(const Ground *_ground) : preview(nullptr),
-    tmp_suppress_preview(false), room(nullptr)
+    tmp_suppress_preview(false), pos(-1, -1, -1), room(nullptr)
 {
     set_ground(_ground);
 }
-void Tile::set_pos(int x, int y) {
-    pos.x = x; pos.y = y;
-    ground_spr.setPosition(x, y);
+//void Tile::set_pos(int x, int y) {
+    //pos.x = x; pos.y = y;
+    //ground_spr.setPosition(x, y);
+    //if (preview != nullptr)
+        //preview->set_pos(x, y);
+//}
+void Tile::set_pos(const WorldPos &p) {
+    pos = p;
+    ground_spr.setPosition(pos.pos);
     if (preview != nullptr)
-        preview->set_pos(x, y);
+        preview->set_pos(pos.pos.x, pos.pos.y);
+}
+WorldPos Tile::get_pos() const {
+    return pos;
 }
 
 void Tile::draw(sf::RenderWindow &w) {
@@ -33,7 +42,7 @@ void Tile::suppress_preview() {
 void Tile::set_preview(shared_ptr<PlanningObject> o) {
     assert(o != nullptr);
     preview.reset(new PlanningObject(*o));
-    preview->set_pos(pos.x, pos.y);
+    preview->set_pos(pos.pos.x, pos.pos.y);
 }
 void Tile::remove_preview() {
     preview = nullptr;
@@ -46,7 +55,7 @@ bool Tile::is_walkable() {
 void Tile::set_ground(const Ground *_ground) {
     ground = _ground;
     ground_spr = create_sprite(ground->spr);
-    ground_spr.setPosition(pos.x, pos.y);
+    ground_spr.setPosition(pos.pos.x, pos.pos.y);
 }
 
 const Ground *Tile::get_ground() const {

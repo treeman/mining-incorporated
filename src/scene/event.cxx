@@ -60,6 +60,16 @@ void BuildRoomEvent::handle(World *world) {
     world->mark_room(type, area);
 }
 
+RemoveRoomEvent::RemoveRoomEvent(MapArea _area) : area(_area)
+{ }
+
+string RemoveRoomEvent::to_string() const {
+    return "Remove rooms at " + area.to_string();
+}
+void RemoveRoomEvent::handle(World *world) {
+    world->remove_room(area);
+}
+
 TaskDoneEvent::TaskDoneEvent(shared_ptr<Task> o) : task(o) { }
 
 string TaskDoneEvent::to_string() const {

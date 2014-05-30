@@ -8,7 +8,7 @@ namespace scene {
     class Ground {
     public:
         virtual ~Ground() { }
-        virtual unique_ptr<Tile> create_tile(int x, int y) const;
+        virtual unique_ptr<Tile> create_tile(const WorldPos &p) const;
 
         string key;
         bool is_walkable;

@@ -20,7 +20,7 @@ namespace scene {
         PlanningType get_type() const;
         string to_string() const;
 
-        void set_pos(int x, int y);
+        void set_pos(int x, int y); // TODO change
         void draw(sf::RenderWindow &w);
     private:
         sf::Sprite spr;

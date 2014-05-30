@@ -213,7 +213,7 @@ shared_ptr<Floor> make_first_floor() {
             }
 
             assert(ground != nullptr);
-            res->grid[i][j] = ground->create_tile(j * tile_width, i * tile_width);
+            res->grid[i][j] = ground->create_tile(WorldPos(j * tile_width, i * tile_width, 0));
         }
     }
 
@@ -284,7 +284,7 @@ shared_ptr<Floor> make_random_floor(int num) {
             // Place ore here!
             // TODO
             //grid[r][c] = create_tile(type, c * tile_width, r * tile_width);
-            floor->grid[r][c] = ore->create_tile(c * tile_width, r * tile_width);
+            floor->grid[r][c] = ore->create_tile(WorldPos(c * tile_width, r * tile_width, num));
 
             for (int d = 0; d < 4; ++d) {
                 int nr = r + dr[d];
@@ -301,7 +301,7 @@ shared_ptr<Floor> make_random_floor(int num) {
     for (int i = 0; i < num_tiles_high; ++i) {
         for (int j = 0; j < num_tiles_wide; ++j) {
             if (!floor->grid[i][j]) {
-                floor->grid[i][j] = rock->create_tile(j * tile_width, i * tile_width);
+                floor->grid[i][j] = rock->create_tile(WorldPos(j * tile_width, i * tile_width, num));
             }
         }
     }

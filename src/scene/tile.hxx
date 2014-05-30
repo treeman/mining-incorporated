@@ -1,6 +1,7 @@
 #pragma once
 
 #include "std.hxx"
+#include "pos.hxx"
 #include "scene/planningobject.hxx"
 
 namespace scene {
@@ -10,7 +11,8 @@ namespace scene {
 
     class Tile {
     public:
-        void set_pos(int x, int y);
+        void set_pos(const WorldPos &p);
+        WorldPos get_pos() const;
 
         void draw(sf::RenderWindow &w);
 
@@ -26,7 +28,7 @@ namespace scene {
 
     private:
         sf::Sprite ground_spr;
-        sf::Vector2i pos;
+        WorldPos pos;
 
         Tile(const Ground *ground);
         const Ground *ground;

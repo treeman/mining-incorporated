@@ -9,10 +9,9 @@ namespace scene {
 Ground::Ground() : is_walkable(false), remove_time(0), build_time(0)
 { }
 
-unique_ptr<Tile> Ground::create_tile(int x, int y) const {
-    // TODO refactor Tile
+unique_ptr<Tile> Ground::create_tile(const WorldPos &p) const {
     unique_ptr<Tile> tile(new Tile(this));
-    tile->set_pos(x, y);
+    tile->set_pos(p);
     return move(tile);
 }
 

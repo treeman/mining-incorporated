@@ -64,6 +64,16 @@ namespace scene {
         MapArea area;
     };
 
+    class RemoveRoomEvent : public Event {
+    public:
+        RemoveRoomEvent(MapArea area);
+
+        string to_string() const override;
+        void handle(World *world) override;
+
+        MapArea area;
+    };
+
     class TaskDoneEvent : public Event {
     public:
         TaskDoneEvent(shared_ptr<Task> o);

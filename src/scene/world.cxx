@@ -240,16 +240,7 @@ void World::mark_room(shared_ptr<RoomType> type, MapArea area) {
         }
     }
 
-    // Find and remove empty rooms
-    vector<shared_ptr<Room>> next_rooms;
-    next_rooms.reserve(rooms.size());
-    for (auto r : rooms) {
-        if (!r->empty())
-            next_rooms.push_back(r);
-        //else
-            //L_("Removing room!\n");
-    }
-    rooms.swap(next_rooms);
+    remove_empty_rooms();
 
     if (create_new) {
         //L_("New room\n");
@@ -262,9 +253,32 @@ void World::mark_room(shared_ptr<RoomType> type, MapArea area) {
         get_tile(p)->set_room(room);
     }
 }
+void World::remove_room(MapArea area) {
+    for (auto r : rooms)
+        r->remove(area);
+
+    for (MapPos p : area) {
+        get_tile(p)->set_room(nullptr);
+    }
+
+    remove_empty_rooms();
+}
 
 shared_ptr<Room> World::get_room(const MapPos &p) const {
     return get_tile(p)->get_room();
+}
+
+void World::remove_empty_rooms() {
+    // Find and remove empty rooms
+    vector<shared_ptr<Room>> next_rooms;
+    next_rooms.reserve(rooms.size());
+    for (auto r : rooms) {
+        if (!r->empty())
+            next_rooms.push_back(r);
+        //else
+            //L_("Removing room!\n");
+    }
+    rooms.swap(next_rooms);
 }
 
 }; // Scene

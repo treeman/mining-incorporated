@@ -97,6 +97,7 @@ namespace gui {
         shared_ptr<scene::RoomType> type;
         unique_ptr<Selection> selection;
         unique_ptr<sf::Sprite> preview_spr;
+        unique_ptr<sf::Sprite> remove_spr;
     };
 
     class PlanningState : public State {

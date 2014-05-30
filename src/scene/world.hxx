@@ -74,11 +74,13 @@ namespace scene {
     public:
         const Resources &get_resources() const;
 
-    private:
-        vector<shared_ptr<Room>> rooms;
     public:
         void mark_room(shared_ptr<RoomType> type, MapArea area);
+        void remove_room(MapArea area);
         shared_ptr<Room> get_room(const MapPos &p) const;
+    private:
+        void remove_empty_rooms();
+        vector<shared_ptr<Room>> rooms;
     };
 
 }; // Scene
