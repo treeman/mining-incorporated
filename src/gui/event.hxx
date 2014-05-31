@@ -3,6 +3,7 @@
 #include "scene/planningobject.hxx"
 #include "scene/material.hxx"
 #include "scene/roomtype.hxx"
+#include "scene/objecttype.hxx"
 
 namespace gui {
 
@@ -13,6 +14,21 @@ namespace gui {
 
         virtual string to_string() const = 0;
     };
+
+    /*
+    template<typename T>
+    class ChooseObjectEvent : public Event {
+        ChooseObjectEvent(shared_ptr<T> o) : obj(o) { }
+
+        string to_string() const {
+            return obj->to_string();
+        }
+
+        shared_ptr<T> obj;
+    };
+
+    typedef ChooseObjectEvent<scene::PlanningObject> PlanningObjectEvent;
+    */
 
     // Choose a planning object.
     class PlanningObjectEvent : public Event {
@@ -48,6 +64,18 @@ namespace gui {
         }
 
         shared_ptr<scene::RoomType> obj;
+    };
+
+    // Choose object to build.
+    class ObjectTypeEvent : public Event {
+    public:
+        ObjectTypeEvent(shared_ptr<scene::ObjectType> o) : obj(o) { }
+
+        string to_string() const {
+            return obj->name;
+        }
+
+        shared_ptr<scene::ObjectType> obj;
     };
 }
 

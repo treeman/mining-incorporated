@@ -29,6 +29,7 @@ namespace gui {
             UNSELECTED = -1,
             MATERIAL,
             ROOM,
+            OBJECTS,
             PLANNING,
 
             NUM_CATEGORIES,
@@ -45,6 +46,7 @@ namespace gui {
         // TODO incorporate loading design from lua (later)
         void init_material_button();
         void init_room_button();
+        void init_objects_button();
         void init_planning_button();
     };
 

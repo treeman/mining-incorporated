@@ -17,6 +17,7 @@ Interface::Interface(scene::World *w, sf::RenderWindow &win) : world(w), window(
     states.resize(static_cast<unsigned>(GuiState::NUM_STATES));
     states[static_cast<unsigned>(GuiState::INFO)].reset(new InfoState(this, world));
     states[static_cast<unsigned>(GuiState::MATERIAL)].reset(new MaterialState(this, world));
+    states[static_cast<unsigned>(GuiState::OBJECTS)].reset(new ObjectState(this, world));
     states[static_cast<unsigned>(GuiState::ROOM)].reset(new RoomState(this, world));
     states[static_cast<unsigned>(GuiState::PLANNING)].reset(new PlanningState(this, world));
     states[static_cast<unsigned>(GuiState::MINE)].reset(new MineState(this, world));
@@ -79,6 +80,7 @@ void Interface::set_state(GuiState state) {
     D_.set_key("gui state", type2string(state));
     assert(x < states.size());
     current_state = states[x];
+    assert(current_state != nullptr);
     current_state->reset();
 }
 

@@ -21,7 +21,6 @@ Next steps
         5. Resource handling (can be inside resources)
 8. Refactor Tile.  
     Readd objects.
-8. Remove rooms the way they are now.
 8. Refactor objects.
 8. Remove constants.hxx
 8. Specify all data things from lua.  

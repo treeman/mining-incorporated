@@ -6,6 +6,7 @@
 #include "scene/world.hxx"
 #include "scene/material.hxx"
 #include "scene/roomtype.hxx"
+#include "scene/objecttype.hxx"
 
 using PType = scene::PlanningType;
 
@@ -25,9 +26,7 @@ ButtonPanel::ButtonPanel(Interface &_gui) : gui(_gui), curr(Categories::UNSELECT
 
     init_material_button();
     init_room_button();
-    categories->add(shared_ptr<BoundedObject>(
-        new PicButton(make_category_selector(Categories::UNSELECTED), "objects"))
-    );
+    init_objects_button();
     categories->add(shared_ptr<BoundedObject>(
         new PicButton(make_category_selector(Categories::UNSELECTED), "staff"))
     );
@@ -176,6 +175,40 @@ void ButtonPanel::init_room_button() {
 
     subcategories[static_cast<int>(Categories::ROOM)].swap(cat);
 }
+
+void ButtonPanel::init_objects_button() {
+    categories->add(shared_ptr<BoundedObject>(
+        new PicButton(make_category_selector(Categories::OBJECTS), "objects"))
+    );
+    unique_ptr<List> cat(new List(12, 525));
+
+    string path = "objects.lua";
+    LuaState L;
+    L.dofile(path);
+
+    lua_getglobal(L, "objects");
+    if (!lua_istable(L, -1))
+        throw lua_parse_error(path, fmt("objects not a table."));
+
+    for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+        string key = lua_tostring(L, -2);
+        if (!lua_istable(L, -1))
+            throw lua_parse_error(path, fmt("objects: %s not a table.", key));
+
+        shared_ptr<scene::ObjectType> type(new scene::ObjectType());
+        type->name = key;
+
+        cat->add(shared_ptr<BoundedObject>(new PicButton([this, type, key](BaseButton &) {
+            gui.set_state(GuiState::OBJECTS);
+            gui.handle_event(ObjectTypeEvent(type));
+        }, key)));
+    }
+    lua_pop(L, 1);
+    assert(L.stack_size() == 0);
+
+    subcategories[static_cast<int>(Categories::OBJECTS)].swap(cat);
+}
+
 void ButtonPanel::init_planning_button() {
     categories->add(shared_ptr<BoundedObject>(
         new PicButton(make_category_selector(Categories::PLANNING), "planning"))

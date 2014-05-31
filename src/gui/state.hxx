@@ -9,6 +9,7 @@ namespace scene {
     class World;
     class Worker;
     class RoomType;
+    class ObjectType;
 };
 
 namespace gui {
@@ -42,6 +43,7 @@ namespace gui {
         INFO,
         MATERIAL,
         ROOM,
+        OBJECTS,
         PLANNING,
         MINE,
 
@@ -75,6 +77,24 @@ namespace gui {
         void draw(sf::RenderWindow &w) override;
     private:
         shared_ptr<scene::Material> material;
+        unique_ptr<Selection> selection;
+        unique_ptr<sf::Sprite> preview_spr;
+        unique_ptr<sf::Text> txt;
+    };
+
+    class ObjectState : public State {
+    public:
+        ObjectState(Interface *gui, scene::World *world);
+
+        void reset() override;
+
+        void handle_event(const gui::Event &) override;
+        bool handle_input(const sf::Event &e) override;
+
+        void update(const sf::Time &dt) override;
+        void draw(sf::RenderWindow &w) override;
+    private:
+        shared_ptr<scene::ObjectType> obj;
         unique_ptr<Selection> selection;
         unique_ptr<sf::Sprite> preview_spr;
         unique_ptr<sf::Text> txt;
