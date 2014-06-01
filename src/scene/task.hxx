@@ -7,7 +7,9 @@
 // verified by the world so it works.
 namespace scene {
     class World;
+    class ObjectType;
 
+    // TODO rework... Handling is ugly as hell. Code duplication etc. Yuk
     class Task {
     public:
         virtual ~Task() { }
@@ -36,6 +38,21 @@ namespace scene {
         string to_string() const override;
 
         const Ground *ground;
+        MapPos pos;
+
+        void draw_preview(sf::RenderWindow &w, World *world) override;
+    private:
+        sf::Sprite spr;
+    };
+
+    class BuildObjectTask : public Task {
+    public:
+        BuildObjectTask(shared_ptr<ObjectType> type, MapPos pos);
+
+        string to_string() const override;
+
+        // TODO const pointer!
+        shared_ptr<ObjectType> type;
         MapPos pos;
 
         void draw_preview(sf::RenderWindow &w, World *world) override;

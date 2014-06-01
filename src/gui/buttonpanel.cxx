@@ -198,6 +198,8 @@ void ButtonPanel::init_objects_button() {
         shared_ptr<scene::ObjectType> type(new scene::ObjectType());
         type->name = key;
 
+        type->spr = L.require_string("sprite", fmt("sprite missing from %s", key));
+
         cat->add(shared_ptr<BoundedObject>(new PicButton([this, type, key](BaseButton &) {
             gui.set_state(GuiState::OBJECTS);
             gui.handle_event(ObjectTypeEvent(type));
@@ -217,13 +219,11 @@ void ButtonPanel::init_planning_button() {
     // TODO cleanup!
     unique_ptr<List> cat(new List(12, 525));
     cat->add(shared_ptr<BoundedObject>(new PicButton([this](BaseButton &button) {
-        L_("Plan room\n");
         gui.set_state(GuiState::PLANNING);
         auto x = Locator::get_object_factory().create_planning_object(PType::ROOM);
         gui.handle_event(PlanningObjectEvent(move(x)));
     }, "room")));
     cat->add(shared_ptr<BoundedObject>(new PicButton([this](BaseButton &button) {
-        L_("Plan object\n");
         gui.set_state(GuiState::PLANNING);
         auto x = Locator::get_object_factory().create_planning_object(PType::OBJECT);
         gui.handle_event(PlanningObjectEvent(move(x)));

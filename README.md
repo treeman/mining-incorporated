@@ -10,8 +10,9 @@ Todo
 Next steps
 ----------
 
-3. Buildable/Non-buildable objects
-5. Properly mine ores and move to storage room
+4. Refactor stuff...
+4. Objects on tiles
+6. Properly mine ores and move to storage room
 8. Refactor world.  
     * World could be split into Components  
         1. Coordinate mappings
@@ -19,9 +20,6 @@ Next steps
         3. Task handling
         4. Worker handling (map to tasks etc)
         5. Resource handling (can be inside resources)
-8. Refactor Tile.  
-    Readd objects.
-8. Refactor objects.
 8. Remove constants.hxx
 8. Specify all data things from lua.  
     * Planning objects (currently in world, move?)
@@ -89,6 +87,11 @@ Considerations
 Refactor
 --------
 
+* Task handling in worker!! Shit ugly.
+    * Task done handling in world
+    * Time for task in worker
+    * Path finding in worker (in world?)
+* Event creation!
 * Tile, cut up into components
 * World, cut up into components
 * Sprite handling via lua + sprite collection

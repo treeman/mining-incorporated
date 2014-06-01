@@ -34,6 +34,7 @@ namespace scene {
 
         bool can_build(const MapPos &p, shared_ptr<Material> material) const;
         bool can_build(const MapPos &p, shared_ptr<RoomType> roomtype) const;
+        bool can_build(const MapPos &p, shared_ptr<ObjectType> objecttype) const;
         bool can_mine(const MapPos &p) const;
 
         int num_floors() const;

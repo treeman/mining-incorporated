@@ -88,6 +88,14 @@ bool World::can_build(const MapPos &p, shared_ptr<RoomType>) const {
         return false;
     return ground->key != "rock";
 }
+bool World::can_build(const MapPos &p, shared_ptr<ObjectType> objecttype) const {
+    // TODO check tile busy
+    // TODO move to lua
+    const Ground *ground = get_tile(p)->get_ground();
+    if (dynamic_cast<const Ore*>(ground))
+        return false;
+    return ground->key != "rock";
+}
 
 int World::num_floors() const { return map->num_floors(); }
 

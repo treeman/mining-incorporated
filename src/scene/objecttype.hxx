@@ -11,10 +11,10 @@ namespace scene {
 
         string to_string() const { return name; }
 
-        bool operator == (const RoomType &t) const {
+        bool operator == (const ObjectType &t) const {
             return name == t.name;
         }
-        bool operator != (const RoomType &t) const {
+        bool operator != (const ObjectType &t) const {
             return !(*this == t);
         }
     };

@@ -8,6 +8,7 @@ namespace scene {
     class Material;
     class Task;
     class RoomType;
+    class ObjectType;
 
     // Use built-in type system for switch case.
     // Testing out how it works.
@@ -50,6 +51,17 @@ namespace scene {
         void handle(World *world) override;
 
         shared_ptr<Material> material;
+        MapArea area;
+    };
+
+    class BuildObjectEvent : public Event {
+    public:
+        BuildObjectEvent(shared_ptr<ObjectType> o, MapArea area);
+
+        string to_string() const override;
+        void handle(World *world) override;
+
+        shared_ptr<ObjectType> obj;
         MapArea area;
     };
 

@@ -4,6 +4,7 @@
 #include "scene/material.hxx"
 #include "scene/task.hxx"
 #include "scene/roomtype.hxx"
+#include "scene/objecttype.hxx"
 #include "scene/world.hxx"
 
 namespace scene {
@@ -45,6 +46,21 @@ void BuildMaterialEvent::handle(World *world) {
     for (MapPos p : area) {
         if (world->can_build(p, material)) {
             world->push_task(shared_ptr<Task>(new BuildGroundTask(material->ground, p)));
+        }
+    }
+}
+
+BuildObjectEvent::BuildObjectEvent(shared_ptr<ObjectType> o, MapArea sel) :
+    obj(o), area(sel)
+{ }
+
+string BuildObjectEvent::to_string() const {
+    return "Build " + obj->to_string() + " at " + area.to_string();
+}
+void BuildObjectEvent::handle(World *world) {
+    for (MapPos p : area) {
+        if (world->can_build(p, obj)) {
+            world->push_task(shared_ptr<Task>(new BuildObjectTask(obj, p)));
         }
     }
 }

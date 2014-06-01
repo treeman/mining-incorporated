@@ -1,3 +1,4 @@
+#include "log.hxx"
 #include "locator.hxx"
 #include "butler.hxx"
 #include "util/ext.hxx"
@@ -14,12 +15,11 @@ ObjectState::ObjectState(Interface *gui, scene::World *world) : State(gui, world
         world,
         gui,
         [this](scene::WorldArea sel) mutable {
-            // TODO
-            //scene::MapArea mapsel = to_map(this->world, sel);
+            scene::MapArea mapsel = to_map(this->world, sel);
 
-            //assert(material != nullptr);
-            //unique_ptr<scene::Event> cmd(new scene::BuildMaterialEvent(material, mapsel));
-            //this->world->push_event(std::move(cmd));
+            assert(obj != nullptr);
+            unique_ptr<scene::Event> cmd(new scene::BuildObjectEvent(obj, mapsel));
+            this->world->push_event(std::move(cmd));
         },
         [](scene::WorldArea sel) { }))
 {
@@ -31,9 +31,12 @@ void ObjectState::reset() {
 }
 
 void ObjectState::handle_event(const gui::Event &e) {
+    L_("Have: %s\n", e.to_string());
     if (auto p = dynamic_cast<const ObjectTypeEvent*>(&e)) {
         obj = p->obj;
-        //preview_spr.reset(new sf::Sprite(create_sprite(material->ground->spr)));
+        assert(obj != nullptr);
+        L_("Sprite: %s\n", obj->spr);
+        preview_spr.reset(new sf::Sprite(create_sprite(obj->spr)));
     }
 }
 
@@ -46,8 +49,6 @@ void ObjectState::update(const sf::Time &dt) {
     selection->show_debug();
 }
 void ObjectState::draw(sf::RenderWindow &w) {
-    // TODO
-    /*
     if (!selection->want_remove() && selection->is_active()) {
         assert(obj != nullptr);
         assert(preview_spr != nullptr);
@@ -56,7 +57,7 @@ void ObjectState::draw(sf::RenderWindow &w) {
         for (MapPos mp : sel) {
             WindowPos winpos = world->map2window(mp);
             preview_spr->setPosition(winpos.x, winpos.y);
-            if (world->can_build(mp, material)) {
+            if (world->can_build(mp, obj)) {
                 preview_spr->setColor(make_color(255, 255, 255, 150));
             }
             else {
@@ -66,7 +67,7 @@ void ObjectState::draw(sf::RenderWindow &w) {
             w.draw(*preview_spr);
         }
 
-        int preview_cost = sel.area<int>() * material->cost;
+        int preview_cost = sel.area<int>() * obj->cost;
         if (preview_cost > 0) {
             WindowPos preview_pos = selection->get_outside_txt_pos();
             txt->setPosition(preview_pos);
@@ -74,7 +75,6 @@ void ObjectState::draw(sf::RenderWindow &w) {
             w.draw(*txt);
         }
     }
-    */
 }
 
 } // Gui
