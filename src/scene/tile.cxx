@@ -1,12 +1,13 @@
-#include "tile.hxx"
 #include "butler.hxx"
-#include "ground.hxx"
+#include "scene/object.hxx"
+#include "scene/ground.hxx"
+#include "scene/tile.hxx"
 
 namespace scene {
 
 // Tile class
 Tile::Tile(const Ground *_ground) : preview(nullptr),
-    tmp_suppress_preview(false), pos(-1, -1, -1), room(nullptr)
+    tmp_suppress_preview(false), pos(-1, -1, -1), room(nullptr), object(nullptr)
 {
     set_ground(_ground);
 }
@@ -21,6 +22,8 @@ void Tile::set_pos(const WorldPos &p) {
     ground_spr.setPosition(pos.pos);
     if (preview != nullptr)
         preview->set_pos(pos.pos.x, pos.pos.y);
+    if (object != nullptr)
+        object->set_pos(p);
 }
 WorldPos Tile::get_pos() const {
     return pos;
@@ -29,6 +32,9 @@ WorldPos Tile::get_pos() const {
 void Tile::draw(sf::RenderWindow &w) {
     ground_spr.setColor(sf::Color::White);
     w.draw(ground_spr);
+
+    if (object != nullptr)
+        object->draw(w);
 
     if (tmp_suppress_preview)
         tmp_suppress_preview = false;
@@ -68,6 +74,13 @@ shared_ptr<Room> Tile::get_room() const {
 }
 void Tile::set_room(shared_ptr<Room> _room) {
     room = _room;
+}
+shared_ptr<Object> Tile::get_object() const {
+    return object;
+}
+void Tile::set_object(shared_ptr<Object> o) {
+    object = o;
+    object->set_pos(pos);
 }
 
 } // scene
