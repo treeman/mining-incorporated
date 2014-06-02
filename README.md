@@ -86,11 +86,10 @@ Considerations
 Refactor
 --------
 
-* Task handling in worker!! Shit ugly.
-    * Task done handling in world
-    * Time for task in worker
-    * Path finding in worker (in world?)
+* Task handling
+    * Split into separate files for different tasks?
 * Event creation!
+    * Split into separate files for different events?
 * Tile, cut up into components
 * World, cut up into components
 * Sprite handling via lua + sprite collection
