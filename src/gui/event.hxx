@@ -69,13 +69,13 @@ namespace gui {
     // Choose object to build.
     class ObjectTypeEvent : public Event {
     public:
-        ObjectTypeEvent(shared_ptr<scene::ObjectType> o) : obj(o) { }
+        ObjectTypeEvent(const scene::ObjectType *o) : obj(o) { }
 
         string to_string() const {
             return obj->name;
         }
 
-        shared_ptr<scene::ObjectType> obj;
+        const scene::ObjectType *obj;
     };
 }
 

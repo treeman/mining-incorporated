@@ -56,12 +56,12 @@ namespace scene {
 
     class BuildObjectEvent : public Event {
     public:
-        BuildObjectEvent(shared_ptr<ObjectType> o, MapArea area);
+        BuildObjectEvent(const ObjectType *o, MapArea area);
 
         string to_string() const override;
         void handle(World *world) override;
 
-        shared_ptr<ObjectType> obj;
+        const ObjectType *obj;
         MapArea area;
     };
 

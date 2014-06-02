@@ -10,7 +10,7 @@
 
 namespace gui {
 
-ObjectState::ObjectState(Interface *gui, scene::World *world) : State(gui, world), //obj(nullptr),
+ObjectState::ObjectState(Interface *gui, scene::World *world) : State(gui, world), obj(nullptr),
     selection(new Selection(
         world,
         gui,

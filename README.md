@@ -11,7 +11,6 @@ Next steps
 ----------
 
 4. Refactor stuff...
-4. Objects on tiles
 6. Properly mine ores and move to storage room
 8. Refactor world.  
     * World could be split into Components  

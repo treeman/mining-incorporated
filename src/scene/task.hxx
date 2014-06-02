@@ -47,12 +47,11 @@ namespace scene {
 
     class BuildObjectTask : public Task {
     public:
-        BuildObjectTask(shared_ptr<ObjectType> type, MapPos pos);
+        BuildObjectTask(const ObjectType *type, MapPos pos);
 
         string to_string() const override;
 
-        // TODO const pointer!
-        shared_ptr<ObjectType> type;
+        const ObjectType *type;
         MapPos pos;
 
         void draw_preview(sf::RenderWindow &w, World *world) override;

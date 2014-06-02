@@ -88,7 +88,7 @@ bool World::can_build(const MapPos &p, shared_ptr<RoomType>) const {
         return false;
     return ground->key != "rock";
 }
-bool World::can_build(const MapPos &p, shared_ptr<ObjectType> objecttype) const {
+bool World::can_build(const MapPos &p, const ObjectType *objecttype) const {
     // TODO check tile busy
     // TODO move to lua
     auto tile = get_tile(p);

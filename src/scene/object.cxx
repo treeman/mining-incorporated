@@ -3,7 +3,7 @@
 
 namespace scene {
 
-Object::Object(shared_ptr<ObjectType> _type, World *_world) : world(_world), type(_type),
+Object::Object(const ObjectType *_type, World *_world) : world(_world), type(_type),
     pos(-1, -1, -1)
 {
     spr = create_sprite(type->spr);
@@ -13,7 +13,7 @@ string Object::to_string() const {
     return "Object of type " + type->to_string();
 }
 
-shared_ptr<ObjectType> Object::get_type() const {
+const ObjectType *Object::get_type() const {
     return type;
 }
 

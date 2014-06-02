@@ -182,6 +182,14 @@ void ButtonPanel::init_objects_button() {
     );
     unique_ptr<List> cat(new List(12, 525));
 
+    for (auto o : Locator::get_object_factory().get_buildable_objects()) {
+        cat->add(shared_ptr<BoundedObject>(new PicButton([this, o](BaseButton &) {
+            gui.set_state(GuiState::OBJECTS);
+            gui.handle_event(ObjectTypeEvent(o));
+        }, o->name)));
+    }
+
+    /*
     string path = "objects.lua";
     LuaState L;
     L.dofile(path);
@@ -207,6 +215,7 @@ void ButtonPanel::init_objects_button() {
     }
     lua_pop(L, 1);
     assert(L.stack_size() == 0);
+    */
 
     subcategories[static_cast<int>(Categories::OBJECTS)].swap(cat);
 }

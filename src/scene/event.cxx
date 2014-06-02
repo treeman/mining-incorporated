@@ -50,7 +50,7 @@ void BuildMaterialEvent::handle(World *world) {
     }
 }
 
-BuildObjectEvent::BuildObjectEvent(shared_ptr<ObjectType> o, MapArea sel) :
+BuildObjectEvent::BuildObjectEvent(const ObjectType *o, MapArea sel) :
     obj(o), area(sel)
 { }
 

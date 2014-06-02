@@ -94,7 +94,7 @@ namespace gui {
         void update(const sf::Time &dt) override;
         void draw(sf::RenderWindow &w) override;
     private:
-        shared_ptr<scene::ObjectType> obj;
+        const scene::ObjectType *obj;
         unique_ptr<Selection> selection;
         unique_ptr<sf::Sprite> preview_spr;
         unique_ptr<sf::Text> txt;

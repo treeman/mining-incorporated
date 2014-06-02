@@ -11,6 +11,7 @@ ObjectFactory::ObjectFactory() {
     init_planning_objects();
     load_ground_definitions("ground.lua");
     load_ore_definitions("ore.lua");
+    load_object_definitions("objects.lua");
 }
 
 shared_ptr<PlanningObject> ObjectFactory::create_planning_object(PlanningType o) const {
@@ -316,6 +317,47 @@ shared_ptr<Map> ObjectFactory::make_map() const {
         res->floors.push_back(make_floor(i));
     }
     return res;
+}
+
+const ObjectType *ObjectFactory::get_object_type(string key) const {
+    auto it = objects.find(key);
+    if (it == objects.end()) {
+        throw lua_parse_error(fmt("Could not find object definition for '%s'", key));
+    }
+    return it->second.get();
+}
+vector<const ObjectType*> ObjectFactory::get_buildable_objects() const {
+    // TODO choose which are buildable and which are not.
+    vector<const ObjectType*> res;
+    for (auto x : objects) {
+        res.push_back(x.second.get());
+    }
+    return res;
+}
+void ObjectFactory::load_object_definitions(string path) {
+    LuaState L;
+    L.dofile(path);
+
+    lua_getglobal(L, "objects");
+    if (!lua_istable(L, -1))
+        throw lua_parse_error(path, fmt("objects not a table."));
+
+    for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+        string key = lua_tostring(L, -2);
+        if (!lua_istable(L, -1))
+            throw lua_parse_error(path, fmt("objects: %s not a table.", key));
+
+        shared_ptr<scene::ObjectType> type(new scene::ObjectType());
+        type->name = key;
+
+        type->spr = L.require_string("sprite", fmt("sprite missing from %s", key));
+
+        L_("Found object %s\n", key);
+
+        objects.insert({key, type});
+    }
+    lua_pop(L, 1);
+    assert(L.stack_size() == 0);
 }
 
 };

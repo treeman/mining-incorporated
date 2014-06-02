@@ -37,7 +37,7 @@ void BuildGroundTask::draw_preview(sf::RenderWindow &w, World *world) {
     w.draw(spr);
 }
 
-BuildObjectTask::BuildObjectTask(shared_ptr<ObjectType> t, MapPos p) : type(t), pos(p)
+BuildObjectTask::BuildObjectTask(const ObjectType *t, MapPos p) : type(t), pos(p)
 {
     spr = create_sprite(type->spr);
     spr.setColor(sf::Color(255, 255, 255, 100));

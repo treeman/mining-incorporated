@@ -7,17 +7,17 @@ namespace scene {
 
     class Object {
     public:
-        Object(shared_ptr<ObjectType> type, World *world);
+        Object(const ObjectType *type, World *world);
 
         string to_string() const;
-        shared_ptr<ObjectType> get_type() const;
+        const ObjectType *get_type() const;
 
         void set_pos(const WorldPos &p);
 
         void draw(sf::RenderWindow &w);
     private:
         World *world;
-        shared_ptr<ObjectType> type;
+        const ObjectType *type;
 
         WorldPos pos;
         sf::Sprite spr;
