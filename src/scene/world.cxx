@@ -205,6 +205,10 @@ void World::assign_tasks() {
     pending_tasks.swap(unfinished);
 }
 
+void World::task_done(shared_ptr<Task> task) {
+    task->handle_completion(this);
+}
+
 const Resources &World::get_resources() const {
     return resources;
 }

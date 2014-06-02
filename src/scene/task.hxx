@@ -12,10 +12,19 @@ namespace scene {
     // TODO rework... Handling is ugly as hell. Code duplication etc. Yuk
     class Task {
     public:
+        Task(MapPos pos, float work_time);
         virtual ~Task() { }
 
         virtual string to_string() const = 0;
         virtual void draw_preview(sf::RenderWindow &, World *) { }
+
+        MapPos get_target_pos() const;
+        float get_work_time() const;
+
+        virtual void handle_completion(World *world) = 0;
+    protected:
+        MapPos pos;
+        float work_time;
     };
 
     class MineTask : public Task {
@@ -24,9 +33,8 @@ namespace scene {
 
         string to_string() const override;
 
-        MapPos pos;
-
         void draw_preview(sf::RenderWindow &w, World *world) override;
+        void handle_completion(World *world) override;
     private:
         sf::Sprite spr;
     };
@@ -38,9 +46,9 @@ namespace scene {
         string to_string() const override;
 
         const Ground *ground;
-        MapPos pos;
 
         void draw_preview(sf::RenderWindow &w, World *world) override;
+        void handle_completion(World *world) override;
     private:
         sf::Sprite spr;
     };
@@ -52,9 +60,9 @@ namespace scene {
         string to_string() const override;
 
         const ObjectType *type;
-        MapPos pos;
 
         void draw_preview(sf::RenderWindow &w, World *world) override;
+        void handle_completion(World *world) override;
     private:
         sf::Sprite spr;
     };

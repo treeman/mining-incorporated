@@ -37,60 +37,20 @@ bool Worker::is_free() const {
 bool Worker::assign_task(shared_ptr<Task> task) {
     if (!is_free()) return false;
 
-    // TODO use dynamic dispatch to clean this up.
-    // Or make a general task handling mechanism...
-    if (auto t = dynamic_cast<BuildGroundTask*>(task.get())) {
-        if (map_pos == t->pos) {
-            current_task = task;
-            path.clear();
-            p_ind = 0;
-        }
-        else {
-            path = world->pathfind(map_pos, t->pos);
-            p_ind = 0;
-
-            if (path.empty()) return false;
-            current_task = task;
-        }
-        has_work_time = false;
-        return true;
-    }
-    else if (auto t = dynamic_cast<MineTask*>(task.get())) {
-        if (map_pos == t->pos) {
-            current_task = task;
-            path.clear();
-            p_ind = 0;
-        }
-        else {
-            path = world->pathfind(map_pos, t->pos);
-            p_ind = 0;
-
-            if (path.empty()) return false;
-            current_task = task;
-        }
-        has_work_time = false;
-        return true;
-    }
-    else if (auto t = dynamic_cast<BuildObjectTask*>(task.get())) {
-        if (map_pos == t->pos) {
-            current_task = task;
-            path.clear();
-            p_ind = 0;
-        }
-        else {
-            path = world->pathfind(map_pos, t->pos);
-            p_ind = 0;
-
-            if (path.empty()) return false;
-            current_task = task;
-        }
-        has_work_time = false;
-        return true;
+    MapPos target = task->get_target_pos();
+    if (map_pos == target) {
+        path.clear();
+        p_ind = 0;
     }
     else {
-        L_("unknown task %s in worker\n", task->to_string());
-        return false;
+        path = world->pathfind(map_pos, target);
+        p_ind = 0;
+
+        if (path.empty()) return false;
     }
+    current_task = task;
+    has_work_time = false;
+    return true;
 }
 bool Worker::has_task() const {
     return get_task() != nullptr;
@@ -114,25 +74,7 @@ void Worker::update(const sf::Time &dt) {
         if (!has_work_time) {
             has_work_time = true;
 
-            work_time = 0;
-
-            // TODO move to dynamic dispatch
-            if (auto t = dynamic_cast<BuildGroundTask*>(current_task.get())) {
-                // TODO factor in remove time?
-                // Or that is a separate task?
-                work_time += t->ground->build_time;
-            }
-            else if (dynamic_cast<MineTask*>(current_task.get())) {
-                // TODO something?
-                work_time += 3;
-            }
-            else if (dynamic_cast<BuildObjectTask*>(current_task.get())) {
-                // TODO something?
-                work_time += 1;
-            }
-            else {
-                L_("handling unknown task %s in worker\n", current_task->to_string());
-            }
+            work_time = current_task->get_work_time();
 
             // TODO this may crash if setting is missing.
             if (Locator::get_settings().get_bool("build_fast")) {
