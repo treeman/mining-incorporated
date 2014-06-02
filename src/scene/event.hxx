@@ -10,6 +10,8 @@ namespace scene {
     class RoomType;
     class ObjectType;
 
+    // TODO prettify?
+
     // Use built-in type system for switch case.
     // Testing out how it works.
     class Event {

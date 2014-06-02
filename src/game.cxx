@@ -12,10 +12,6 @@
 #include "state/game.hxx"
 #include "scene/objectfactory.hxx"
 
-// TODO remove later
-#include "scene/ground.hxx"
-#include "scene/ore.hxx"
-
 typedef state::StateStack<state::State> StateHandler;
 
 Game::Game() {
@@ -53,9 +49,6 @@ Game::Game() {
     Locator::provide_debug(unique_ptr<VisualDebug>(new VisualDebug({10, 30})));
     L_("Window opened.\n");
 
-    // TODO remove/move!
-    // Yes it's happning here!
-    //init_rooms();
     set_seed(time(0));
 
     console.reset(new Console(*window));

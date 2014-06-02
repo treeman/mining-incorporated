@@ -88,12 +88,16 @@ Refactor
 
 * Task handling
     * Split into separate files for different tasks?
-* Event creation!
+* scene::Event creation!
     * Split into separate files for different events?
-* Tile, cut up into components
+* gui::Event creation!
+    * Split into separate files for different events?
 * World, cut up into components
 * Sprite handling via lua + sprite collection
 * Constants from lua
+* Make a butler class or something
+* PlanningObject use modern position
+* gui::State, could use some code reuse?
 
 Larger changes
 --------------
