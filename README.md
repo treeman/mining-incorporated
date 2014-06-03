@@ -88,8 +88,6 @@ Refactor
 
 * Task handling
     * Split into separate files for different tasks?
-* scene::Event creation!
-    * Split into separate files for different events?
 * gui::Event creation!
     * Split into separate files for different events?
 * World, cut up into components

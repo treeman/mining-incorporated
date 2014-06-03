@@ -18,13 +18,23 @@ RoomState::RoomState(Interface *gui, scene::World *world) : State(gui, world), t
             scene::MapArea mapsel = to_map(this->world, sel);
 
             assert(type != nullptr);
-            unique_ptr<scene::Event> cmd(new scene::BuildRoomEvent(type, mapsel));
+            unique_ptr<scene::Event> cmd(new scene::HandleEvent(
+                [this, mapsel](scene::World *world) {
+                    world->mark_room(type, mapsel);
+                },
+                "Place " + type->to_string() + " at " + mapsel.to_string()
+            ));
             this->world->push_event(std::move(cmd));
         },
         [this](scene::WorldArea sel) mutable {
             scene::MapArea mapsel = to_map(this->world, sel);
 
-            unique_ptr<scene::Event> cmd(new scene::RemoveRoomEvent(mapsel));
+            unique_ptr<scene::Event> cmd(new scene::HandleEvent(
+                [mapsel](scene::World *world) {
+                    world->remove_room(mapsel);
+                },
+                "Remove rooms at " + mapsel.to_string()
+            ));
             this->world->push_event(std::move(cmd));
         }))
 {

@@ -16,7 +16,18 @@ MineState::MineState(Interface *gui, scene::World *world) : State(gui, world),
         [this](scene::WorldArea sel) mutable {
             scene::MapArea mapsel = to_map(this->world, sel);
 
-            unique_ptr<scene::Event> cmd(new scene::MineEvent(mapsel));
+            unique_ptr<scene::Event> cmd(new scene::HandleEvent(
+                [this, mapsel](scene::World *world) {
+                    for (MapPos p : mapsel) {
+                        if (world->can_mine(p)) {
+                            world->push_task(shared_ptr<scene::Task>(
+                                new scene::MineTask(p))
+                            );
+                        }
+                    }
+                },
+                "Mine " + mapsel.to_string()
+            ));
             this->world->push_event(std::move(cmd));
         },
         [](scene::WorldArea) {}

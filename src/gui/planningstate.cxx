@@ -16,13 +16,31 @@ PlanningState::PlanningState(Interface *gui, scene::World *world) : State(gui, w
         [this](scene::WorldArea sel) mutable {
             scene::MapArea mapsel = to_map(this->world, sel);
 
-            unique_ptr<scene::Event> cmd(new scene::PlacePlanningEvent(obj, mapsel));
+            // When event is handled, register previews in world.
+            unique_ptr<scene::Event> cmd(new scene::HandleEvent(
+                [this, mapsel](scene::World *world) {
+                    for (MapPos p : mapsel) {
+                        shared_ptr<scene::Tile> tile(world->get_tile(p));
+                        tile->set_preview(obj);
+                    }
+                },
+                "Planning: " + obj->to_string() + " at " + mapsel.to_string()
+            ));
             this->world->push_event(std::move(cmd));
         },
         [this](scene::WorldArea sel) mutable {
             scene::MapArea mapsel = to_map(this->world, sel);
 
-            unique_ptr<scene::Event> cmd(new scene::RemovePlanningEvent(mapsel));
+            // When event is handled, unregister previews
+            unique_ptr<scene::Event> cmd(new scene::HandleEvent(
+                [this, mapsel](scene::World *world) {
+                    for (MapPos p : mapsel) {
+                        shared_ptr<scene::Tile> tile(world->get_tile(p));
+                        tile->remove_preview();
+                    }
+                },
+                "Remove planning: " + mapsel.to_string()
+            ));
             this->world->push_event(std::move(cmd));
         }))
 {

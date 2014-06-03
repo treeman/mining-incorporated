@@ -90,7 +90,12 @@ void Worker::update(const sf::Time &dt) {
         progressbar.set_completion(work_done);
 
         if (work_done >= work_time) {
-            world->push_event(move(unique_ptr<Event>(new TaskDoneEvent(current_task))));
+            world->push_event(move(unique_ptr<Event>(new HandleEvent(
+                [this](World *world) {
+                    world->task_done(current_task);
+                },
+                "Task done: " + current_task->to_string()
+            ))));
             has_work_time = false;
 
             //L_("Done!\n");

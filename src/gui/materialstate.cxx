@@ -17,7 +17,18 @@ MaterialState::MaterialState(Interface *gui, scene::World *world) : State(gui, w
             scene::MapArea mapsel = to_map(this->world, sel);
 
             assert(material != nullptr);
-            unique_ptr<scene::Event> cmd(new scene::BuildMaterialEvent(material, mapsel));
+            unique_ptr<scene::Event> cmd(new scene::HandleEvent(
+                [this, mapsel](scene::World *world) {
+                    for (MapPos p : mapsel) {
+                        if (world->can_build(p, material)) {
+                            world->push_task(shared_ptr<scene::Task>(
+                                new scene::BuildGroundTask(material->ground, p))
+                            );
+                        }
+                    }
+                },
+                "Build " + material->to_string() + " at " + mapsel.to_string()
+            ));
             this->world->push_event(std::move(cmd));
         },
         [](scene::WorldArea sel) { }))

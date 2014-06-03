@@ -18,7 +18,18 @@ ObjectState::ObjectState(Interface *gui, scene::World *world) : State(gui, world
             scene::MapArea mapsel = to_map(this->world, sel);
 
             assert(obj != nullptr);
-            unique_ptr<scene::Event> cmd(new scene::BuildObjectEvent(obj, mapsel));
+            unique_ptr<scene::Event> cmd(new scene::HandleEvent(
+                [this, mapsel](scene::World *world) {
+                    for (MapPos p : mapsel) {
+                        if (world->can_build(p, obj)) {
+                            world->push_task(shared_ptr<scene::Task>(
+                                new scene::BuildObjectTask(obj, p))
+                            );
+                        }
+                    }
+                },
+                "Build " + obj->to_string() + " at " + mapsel.to_string()
+            ));
             this->world->push_event(std::move(cmd));
         },
         [](scene::WorldArea sel) { }))
