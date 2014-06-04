@@ -7,11 +7,11 @@ namespace state {
     public:
         HelpState(sf::RenderWindow &w);
 
-        string id() const { return "help"; }
+        string id() const override { return "help"; }
 
-        void handle_input(const sf::Event &e);
-        void update(const sf::Time &dt);
-        void draw();
+        void handle_input(const sf::Event &e) override;
+        void update(const sf::Time &dt) override;
+        void draw() override;
     private:
         sf::Text txt;
         sf::Sprite pic;

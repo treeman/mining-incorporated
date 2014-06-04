@@ -1,6 +1,8 @@
 #include "locator.hxx"
 #include "settings.hxx"
 #include "butler.hxx"
+#include "state/game.hxx"
+#include "scene/objectfactory.hxx"
 
 //void Locator::init() {
     //unique_ptr<Settings>(new Settings()).swap(settings);
@@ -59,6 +61,13 @@ scene::ObjectFactory &Locator::get_object_factory() {
 void Locator::provide_object_factory(unique_ptr<scene::ObjectFactory> f) {
     object_factory.swap(f);
 }
+state::GameState &Locator::get_game_state() {
+    assert(game != nullptr);
+    return *game;
+}
+void Locator::provide_game_state(state::GameState *_game) {
+    game = _game;
+}
 
 unique_ptr<Settings> Locator::settings{ nullptr };
 unique_ptr<Logger> Locator::logger{ nullptr };
@@ -66,4 +75,5 @@ unique_ptr<Debug> Locator::debug{ nullptr };
 sf::RenderWindow *Locator::window{ nullptr };
 unique_ptr<state::StateStack<state::State>> Locator::statestack{ nullptr };
 unique_ptr<scene::ObjectFactory> Locator::object_factory{ nullptr };
+state::GameState *Locator::game{ nullptr };
 

@@ -57,7 +57,12 @@ Game::Game() {
     // Setup possible reachable states.
     unique_ptr<StateHandler> states(new StateHandler());
     states->add_generator("help", [this](){ return new state::HelpState(*window); });
-    states->add_generator("game", [this](){ return new state::GameState(*window); });
+    states->add_generator("game", [this](){
+        auto game = new state::GameState(*window);
+        // This is a bit hacky... What if we generate more than one?
+        Locator::provide_game_state(game);
+        return game;
+    });
     Locator::provide_statestack(move(states));
 
     fps_txt = create_txt("lucon.ttf", 20);

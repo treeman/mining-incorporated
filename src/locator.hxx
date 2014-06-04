@@ -4,9 +4,15 @@
 #include "settings.hxx"
 #include "logger.hxx"
 #include "debug.hxx"
-#include "scene/objectfactory.hxx"
 #include "state/state.hxx"
 #include "state/statestack.hxx"
+
+namespace state {
+    class GameState;
+};
+namespace scene {
+    class ObjectFactory;
+};
 
 #define D_ (Locator::get_debug())
 
@@ -17,6 +23,7 @@ public:
     // TODO make a butler class?
     //static Butler &get_butler();
     //static void provide_butler(unique_ptr<Butler> butler);
+
     static Settings &get_settings();
     static void provide_settings(unique_ptr<Settings> settings);
 
@@ -35,6 +42,9 @@ public:
 
     static scene::ObjectFactory &get_object_factory();
     static void provide_object_factory(unique_ptr<scene::ObjectFactory> f);
+
+    static state::GameState &get_game_state();
+    static void provide_game_state(state::GameState *game);
 private:
     //static unique_ptr<Butler> butler;
     static unique_ptr<Settings> settings;
@@ -43,5 +53,6 @@ private:
     static sf::RenderWindow *window;
     static unique_ptr<state::StateStack<state::State>> statestack;
     static unique_ptr<scene::ObjectFactory> object_factory;
+    static state::GameState *game;
 };
 

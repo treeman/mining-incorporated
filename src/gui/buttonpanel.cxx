@@ -7,6 +7,7 @@
 #include "scene/material.hxx"
 #include "scene/roomtype.hxx"
 #include "scene/objecttype.hxx"
+#include "scene/objectfactory.hxx"
 
 using PType = scene::PlanningType;
 

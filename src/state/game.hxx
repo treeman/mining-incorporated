@@ -10,15 +10,17 @@ namespace state {
     public:
         GameState(sf::RenderWindow &w);
 
-        string id() const { return "game"; }
+        string id() const override { return "game"; }
 
-        void handle_input(const sf::Event &e);
-        void update(const sf::Time &dt);
-        void draw();
+        void handle_input(const sf::Event &e) override;
+        void update(const sf::Time &dt) override;
+        void draw() override;
     private:
         sf::Text txt;
         scene::World world;
         gui::Interface gui;
+    public:
+        scene::World &get_world() const;
     };
 
 }

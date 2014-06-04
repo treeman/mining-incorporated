@@ -10,7 +10,6 @@ namespace scene {
     class Ore : public Ground {
     public:
         virtual ~Ore() { }
-        //virtual unique_ptr<Tile> create_tile(int x, int y) const override;
         virtual unique_ptr<Tile> create_tile(const WorldPos &p) const override;
 
         float mine_time;

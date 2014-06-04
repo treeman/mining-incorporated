@@ -9,6 +9,7 @@
 #include "scene/task.hxx"
 #include "scene/material.hxx"
 #include "scene/ore.hxx"
+#include "scene/objectfactory.hxx"
 
 namespace scene {
 
@@ -154,15 +155,15 @@ Path World::pathfind(const MapPos &from, const MapPos &to) const {
     return map->pathfind(from, to);
 }
 void World::draw_pending_tasks() {
-    // Draw unhandler
+    // Draw unhandled
     for (auto &t : pending_tasks) {
-        t->draw_preview(w, this);
+        t->draw_preview(w);
     }
 
     // Draw currently handling
     for (auto &worker : workers) {
         if (worker->has_task())
-            worker->get_task()->draw_preview(w, this);
+            worker->get_task()->draw_preview(w);
     }
 }
 

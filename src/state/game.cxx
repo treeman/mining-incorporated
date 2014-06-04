@@ -20,5 +20,9 @@ void GameState::draw() {
     gui.draw();
 }
 
+scene::World &GameState::get_world() const {
+
+}
+
 }
 

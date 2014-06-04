@@ -19,7 +19,6 @@ string HandleEvent::to_string() const {
     return str;
 }
 void HandleEvent::handle(World *world) {
-    L_("Handling event!\n");
     h(world);
 }
 

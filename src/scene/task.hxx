@@ -19,9 +19,7 @@ namespace scene {
         virtual string to_string() const = 0;
 
         void set_preview(shared_ptr<sf::Sprite> spr);
-        // TODO remove world from here.
-        // Need to set MapPos and WorldPos at the same time then.
-        void draw_preview(sf::RenderWindow &w, World *world);
+        void draw_preview(sf::RenderWindow &w);
 
         MapPos get_target_pos() const;
         float get_work_time() const;

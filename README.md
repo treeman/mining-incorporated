@@ -10,7 +10,6 @@ Todo
 Next steps
 ----------
 
-6. Properly mine ores and move to storage room
 8. Refactor world.  
     * World could be split into Components  
         1. Coordinate mappings
@@ -42,6 +41,7 @@ Next steps
 Larger changes
 --------------
 
+* Properly mine ores and move to storage room
 * Specify object behaviour from lua  
     Quite a large undertaking? Need to expose an interface to lua.
 * Cool pixelated graphics.
@@ -79,6 +79,7 @@ Random
     Better algorithm
     Use levels and specify vein size for each ores etc..
 * Prettier buttons
+* Register GameState properly in Locator (issue if we have multiple GameStates)
 
 Considerations
 --------------

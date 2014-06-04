@@ -1,9 +1,11 @@
 #include "butler.hxx"
 #include "locator.hxx"
+#include "coord.hxx"
 #include "scene/task.hxx"
 #include "scene/objecttype.hxx"
 #include "scene/object.hxx"
 #include "scene/world.hxx"
+#include "scene/objectfactory.hxx"
 
 namespace scene {
 
@@ -15,9 +17,9 @@ Task::Task(MapPos _pos, float _work_time) : spr(nullptr), pos(_pos), work_time(_
 void Task::set_preview(shared_ptr<sf::Sprite> _spr) {
     spr = _spr;
 }
-void Task::draw_preview(sf::RenderWindow &w, World *world) {
+void Task::draw_preview(sf::RenderWindow &w) {
     if (spr != nullptr) {
-        WorldPos wpos = world->map2world(pos);
+        WorldPos wpos = map2world(pos);
         spr->setPosition(wpos.pos);
         w.draw(*spr);
     }
