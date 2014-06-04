@@ -10,7 +10,6 @@ Todo
 Next steps
 ----------
 
-4. Refactor stuff...
 6. Properly mine ores and move to storage room
 8. Refactor world.  
     * World could be split into Components  
@@ -39,6 +38,15 @@ Next steps
 14. Build actions  
     * Ability to remove pending builds
     * Remove pending when building on same spot
+
+Larger changes
+--------------
+
+* Specify object behaviour from lua  
+    Quite a large undertaking? Need to expose an interface to lua.
+* Cool pixelated graphics.
+* Chunking levels?
+* Move around camera
 
 Random
 ------
@@ -96,15 +104,6 @@ Refactor
 * Make a butler class or something
 * PlanningObject use modern position
 * gui::State, could use some code reuse?
-
-Larger changes
---------------
-
-* Specify object behaviour from lua  
-    Quite a large undertaking? Need to expose an interface to lua.
-* Cool pixelated graphics.
-* Chunking levels?
-* Move around camera
 
 Ideas
 =====

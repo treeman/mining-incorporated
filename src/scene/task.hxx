@@ -9,20 +9,26 @@ namespace scene {
     class World;
     class ObjectType;
 
-    // TODO rework... Handling is ugly as hell. Code duplication etc. Yuk
+    // TODO rework. Maybe avoid subtyping?
+    // At the very least refactor out sprite preview.
     class Task {
     public:
         Task(MapPos pos, float work_time);
         virtual ~Task() { }
 
         virtual string to_string() const = 0;
-        virtual void draw_preview(sf::RenderWindow &, World *) { }
+
+        void set_preview(shared_ptr<sf::Sprite> spr);
+        // TODO remove world from here.
+        // Need to set MapPos and WorldPos at the same time then.
+        void draw_preview(sf::RenderWindow &w, World *world);
 
         MapPos get_target_pos() const;
         float get_work_time() const;
 
         virtual void handle_completion(World *world) = 0;
     protected:
+        shared_ptr<sf::Sprite> spr;
         MapPos pos;
         float work_time;
     };
@@ -33,7 +39,6 @@ namespace scene {
 
         string to_string() const override;
 
-        void draw_preview(sf::RenderWindow &w, World *world) override;
         void handle_completion(World *world) override;
     private:
         sf::Sprite spr;
@@ -47,7 +52,6 @@ namespace scene {
 
         const Ground *ground;
 
-        void draw_preview(sf::RenderWindow &w, World *world) override;
         void handle_completion(World *world) override;
     private:
         sf::Sprite spr;
@@ -61,7 +65,6 @@ namespace scene {
 
         const ObjectType *type;
 
-        void draw_preview(sf::RenderWindow &w, World *world) override;
         void handle_completion(World *world) override;
     private:
         sf::Sprite spr;
