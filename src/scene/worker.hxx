@@ -45,6 +45,16 @@ namespace scene {
         sf::Clock work_clock;
         float work_time;
         gui::Progressbar progressbar;
+
+        // TODO list of variables, specify from lua!
+        // 0.0 - 1.0
+        float fatigue;
+        float hunger;
+        float happiness;
+        float hygien;
+        float motivation;
+    public:
+        void debug();
     };
 
 }

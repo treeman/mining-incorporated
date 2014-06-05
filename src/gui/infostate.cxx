@@ -51,10 +51,12 @@ void InfoState::update(const sf::Time &dt) {
         // TODO more printouts!
         shared_ptr<scene::Worker> worker(world->select_worker(world_pos));
         if (worker != nullptr) {
-            D_.tmp("Hovering over worker!");
+            //D_.tmp("Hovering over worker!");
+            //worker->debug();
         }
         if (selected_worker != nullptr) {
-            D_.tmp("worker selected");
+            //D_.tmp("worker selected");
+            selected_worker->debug();
         }
     }
 }

@@ -13,6 +13,8 @@ Worker::Worker(const WorldPos &p, World *_world) : world(_world), p_ind(0),
     txt = create_txt("arial.ttf", 14);
     has_work_time = false;
     work_time = 0;
+
+    fatigue = 1.0;
 }
 
 WorldPos Worker::get_pos() const {
@@ -103,6 +105,11 @@ void Worker::update(const sf::Time &dt) {
             path.clear();
         }
     }
+
+    // Update status effects
+    // TODO do some more intelligent choices here.
+    // TODO specify fatigue level
+    fatigue = max(0.0, fatigue - 0.1 * dt.asSeconds());
 }
 void Worker::draw(sf::RenderWindow &w) {
     spr.setPosition(world_pos.pos.x, world_pos.pos.y);
@@ -146,6 +153,12 @@ void Worker::follow_path(const sf::Time &dt) {
     world_pos.pos = world_pos.pos + diff;
     world_pos = world->clamp(world_pos);
     map_pos = world->world2map(world_pos);
+}
+
+void Worker::debug() {
+    D_.tmp("Worker");
+    D_.tmp("pos " + world_pos.to_string());
+    D_.tmp(fmt("fatigue: %f", fatigue));
 }
 
 } // Scene

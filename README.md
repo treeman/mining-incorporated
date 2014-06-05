@@ -27,6 +27,7 @@ Next steps
         Should be able to specify actions. Need to expose functions C++ -> lua.
     * First floor
     * Selection preview color
+    * Worker stats etc...
 8. Fog of War
 10. Multilevel pathfinding.
 10. Rework base object. Not used??
