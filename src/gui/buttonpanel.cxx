@@ -190,34 +190,6 @@ void ButtonPanel::init_objects_button() {
         }, o->name)));
     }
 
-    /*
-    string path = "objects.lua";
-    LuaState L;
-    L.dofile(path);
-
-    lua_getglobal(L, "objects");
-    if (!lua_istable(L, -1))
-        throw lua_parse_error(path, fmt("objects not a table."));
-
-    for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-        string key = lua_tostring(L, -2);
-        if (!lua_istable(L, -1))
-            throw lua_parse_error(path, fmt("objects: %s not a table.", key));
-
-        shared_ptr<scene::ObjectType> type(new scene::ObjectType());
-        type->name = key;
-
-        type->spr = L.require_string("sprite", fmt("sprite missing from %s", key));
-
-        cat->add(shared_ptr<BoundedObject>(new PicButton([this, type, key](BaseButton &) {
-            gui.set_state(GuiState::OBJECTS);
-            gui.handle_event(ObjectTypeEvent(type));
-        }, key)));
-    }
-    lua_pop(L, 1);
-    assert(L.stack_size() == 0);
-    */
-
     subcategories[static_cast<int>(Categories::OBJECTS)].swap(cat);
 }
 

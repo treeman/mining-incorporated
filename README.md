@@ -10,6 +10,8 @@ Todo
 Next steps
 ----------
 
+1. C -> lua functions etc  
+    See lua.hxx and objectfactory.cxx
 8. Refactor world.  
     * World could be split into Components  
         1. Coordinate mappings

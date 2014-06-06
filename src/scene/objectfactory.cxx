@@ -334,8 +334,56 @@ vector<const ObjectType*> ObjectFactory::get_buildable_objects() const {
     }
     return res;
 }
+
+// TODO
+// make a generic callback in lua state,
+// so we can register capturing lambdas. =)
+typedef int (*lua_CFunction) (lua_State *lua);
+
+lua_CFunction fun;
+// TODO
+// Arguments in callback function should be
+// lua_State *L
+// Should be able to get
+// 1. arg number
+// 2. list of arguments
+// easily.
+//
+// Or a way to go lua_State *L -> LuaState
+// and encapsulate callbacks in there?
+
+// Expose to lua
+int call_c(lua_State *L) {
+    int argc = lua_gettop(L);
+    L_("call_c called with %d args\n", argc);
+    // Reversed...
+    for (int i = 0; i < argc; ++i) {
+        L_(" arg%d: %s\n", i, lua_tostring(L, lua_gettop(L)));
+        lua_pop(L, 1);
+    }
+    // TODO
+    //if (!lua_isnumber(L, i)) {
+        //lua_pushstring(L, "Incorrect argument to 'average'");
+        //lua_error(L);
+    //}
+
+    lua_pushnumber(L, 12);
+    lua_pushstring(L, "KABOOOM");
+
+    return 2;
+}
+
 void ObjectFactory::load_object_definitions(string path) {
     LuaState L;
+
+    //auto f = [](lua_State *L) {
+        //L_("Callback!\n");
+        //display(L);
+    //};
+
+    // Expose C++ functions
+    lua_register(L, "call_c", call_c);
+
     L.dofile(path);
 
     lua_getglobal(L, "objects");

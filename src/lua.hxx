@@ -20,6 +20,8 @@ public:
     // Implicitly act as a lua_State pointer
     operator lua_State*() { return L; }
 
+    // TODO
+    // move outside!!
     void dofile(string path);
 
     // Getters with exception on failure
@@ -38,6 +40,7 @@ private:
     string path;
 };
 
+// TODO take lua_State *L
 void print_table(LuaState &L);
 
 class lua_parse_error : public logic_error {
